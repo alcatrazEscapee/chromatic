@@ -1,0 +1,55 @@
+  	BASIC COLORS:
+
+Labeled as ABC
+Colored as 0xAABBCC
+Prime / String Color Designation
+
+Red	- F 0 0 - 5 	(R)
+Blue	- 0 0 F - 7 	(B)
+Yellow	- F F 0 - 11 	(Y)
+
+Orange	- F 6 0 - 55	(O)
+Purple	- 9 0 9 - 35	(P)
+Green	- 0 9 0 - 77	(G)
+
+Brown	- 6 3 0 - 385	(Br)
+
+Lime	- 6 F 0 - 847	(Lm)
+Cyan	- 0 6 6 - 539	(Cy)
+Amber	- C 6 0 - 275	(Am)
+Gold	- F C 3 - 605	(Gd)
+Violet	- 3 0 3 - 245	(Vi)
+Magenta	- 9 0 3 - 175	(Mg)
+
+Invalid	- 0 0 0	- >850 	(ALL)
+
+	EXTRA INFO:
+
+Packs / Puzzles:
+0 - 3x3 Welcome to the Factory (16/16)
+1 - 3x3 High Pressure Facility (16/16)
+2 - 4x4 The New Complex (16/16)
+3 - 3x3 Low Grade Development (16/16)
+4 - 5x5 Quantom Chromodynamics (16/16)
+5 - 3x3 Laser Color Alteration (16/16)
+6 - 4x4 Integrated Mechanics (16/16)
+
+
+Development History:
+ - Over 3500 Lines of Code
+ - Concept Developed through March, 2016
+ - Development began June 2, 2016
+ - V2.0 Rewrite began July 1, 2016
+ - V2.0 Released Oct 28, 2016
+ - V3.0 (Filters) Released Nov 24, 2016
+
+	THANKS FOR HELPING!
+
+Rebecca O.
+Reese M.
+Trevor B.
+Kevin X.
+Atse B.
+Darren O.
+Qass H.
+Chad C.
