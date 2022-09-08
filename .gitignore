@@ -1,0 +1,14 @@
+*
+!*/
+!/.gitignore
+
+!/package.json
+!/package-lock.json
+
+!/src/**/*.ts
+!/test/**/*.ts
+
+!/tsconfig.json
+!/jest.config.js
+!/webpack.config.js
+
