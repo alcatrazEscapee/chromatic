@@ -1,5 +1,3 @@
-
-
 type RootData = {
     readonly packs: ReadonlyArray<PackData>
 };
@@ -11,23 +9,25 @@ type PackData = {
 };
 
 type PuzzleData = {
-    readonly inputs: Readonly<EdgeData>,
-    readonly outputs: Readonly<EdgeData>,
-    readonly filters?: Readonly<FilterData>
+    readonly inputs: ReadonlyArray<EdgeData>,
+    readonly outputs: ReadonlyArray<EdgeData>,
+    readonly filters?: ReadonlyArray<FilterData>
 };
 
 type EdgeData = {
     readonly color: ColorId,
     readonly pressure: number,
-    readonly pos: number
+    readonly x: number,
+    readonly y: number;
+    readonly dir: DirectionId
 };
 
 type FilterData = {
-    readonly pos1: number,
-    readonly pos2: number,
     readonly color: ColorId,
-    readonly direction: DirectionId
+    readonly x: number,
+    readonly y: number,
+    readonly dir: 'down' | 'right'
 };
 
 type ColorId = 'red' | 'blue' | 'yellow' | 'green' | 'purple' | 'orange' | 'brown' | 'magenta' | 'violet' | 'amber' | 'gold' | 'lime' | 'cyan';
-type DirectionId = 'H' | 'V';
+type DirectionId = 'up' | 'right' | 'down' | 'left'

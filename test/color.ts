@@ -4,7 +4,7 @@ import { Color } from '../src/color';
 describe('Color', () => {
     
     test('byId \'red\'', () => expect(Color.byId('red')).toBe(Color.RED));
-    test('byId, \'unknown\'', () => expect(() => Color.byId('unknown')).toThrowError(TypeError))
+    test('byId, \'unknown\'', () => expect(() => Color.byId('unknown')).toThrowError(TypeError));
 
     test('red + blue = purple', () => expect(Color.mix(Color.RED, Color.BLUE)).toBe(Color.PURPLE));
     test('blue + green = cyan', () => expect(Color.mix(Color.BLUE, Color.GREEN)).toBe(Color.CYAN));
