@@ -90,13 +90,13 @@ init()
 
 def convert_pos_to_input(size, pos):
     # Converts a pos to an input flow
-    return POS_AT_SIZE[size][int(pos)]
+    return dict(POS_AT_SIZE[size][int(pos)])
 
 def convert_pos_to_output(size, pos):
     # Converts a pos to an output flow
     # Output flows are opposite to input flows - they are positioned along the outer edge, with the direction of the incoming flow
     # as it lines up with the output. But the old positions are labeled the same. So, we flip the direction, add offset, then good
-    out = POS_AT_SIZE[size][int(pos)]
+    out = dict(POS_AT_SIZE[size][int(pos)])
     dx, dy = DIR_NAME_OFFSET[DIR_NAME_INVERSE[out['dir']]]
     out['x'] += dx
     out['y'] += dy
@@ -135,6 +135,7 @@ for pz_data in data['puzzle']:
     
     size = sizes[int(pz_data['pack'])]
     pz = {
+        'id': int(pz_data['pack']) * 16 + int(pz_data['id']),
         'size': size,
         'inputs': [{
             'color': COLOR_OLD_TO_NAME[p['col']],
@@ -163,11 +164,13 @@ with open('./data-rewrite.json', 'w') as f:
 
 
 compressed = {
-    'puzzles': []
+    'puzzles': [None] * len(rewrite['puzzles'])
 }
 
 for pz_data in rewrite['puzzles']:
+    index = pz_data['id']
     pz = {
+        'id': index,
         'size': SIZE_TO_GRID_ID[pz_data['size']],
         'inputs': [
             [inp['x'], inp['y'], DIR_NAME_TO_INT[inp['dir']], COLOR_NAME_TO_INT[inp['color']], inp['pressure']]
@@ -179,7 +182,7 @@ for pz_data in rewrite['puzzles']:
         ],
     }
 
-    compressed['puzzles'].append(pz)
+    compressed['puzzles'][index] = pz
 
 with open('./data-compressed.json', 'w') as f:
     json.dump(compressed, f)

@@ -399,6 +399,7 @@ async function main() {
     progress.destroy();
 
     const ALL_INPUTS_3x3: NetworkPuzzle = {
+        id: -1,
         size: GridId._3x3,
         inputs: [
             [0, 0, DirectionId.DOWN, ColorId.RED, 0],
@@ -418,6 +419,7 @@ async function main() {
     };
 
     const ALL_OUTPUTS_3x3: NetworkPuzzle = {
+        id: -2,
         size: GridId._3x3,
         inputs: [],
         outputs: [
@@ -437,6 +439,7 @@ async function main() {
     };
 
     const ALL_STRAIGHT_3x3: NetworkPuzzle = {
+        id: -3,
         size: GridId._3x3,
         inputs: [
             [0, 0, DirectionId.DOWN, ColorId.RED, 0],
@@ -457,7 +460,7 @@ async function main() {
     };
 
     window.game = new Game(app, core);
-    window.game.init(ALL_STRAIGHT_3x3);
+    window.game.init(core.puzzles.puzzles[0]!);
 }
 
 window.onload = () => main();

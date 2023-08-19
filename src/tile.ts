@@ -73,6 +73,16 @@ export class Tile {
         return this.flows[key] !== null;
     }
 
+    public totalFlows(): number {
+        let n = 0;
+        for (const flow of this.flows) {
+            if (flow) {
+                n += 1;
+            }
+        }
+        return n;
+    }
+
     public destroy(): void {
         this.clearFlow();
         this.root.destroy({ children: true });
