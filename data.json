@@ -1,0 +1,4567 @@
+{
+    "versionData": {
+      "data": "v3.7"
+    },
+    "inf": {
+      "maxpack": "6"
+    },
+    "pack": [
+      {
+        "id": "0",
+        "size": "3",
+        "nameStr": "Welcome to the Factory"
+      },
+      {
+        "id": "1",
+        "size": "3",
+        "nameStr": "High Pressure Facility"
+      },
+      {
+        "id": "2",
+        "size": "4",
+        "nameStr": "The New Complex"
+      },
+      {
+        "id": "3",
+        "size": "3",
+        "nameStr": "Low Grade Development"
+      },
+      {
+        "id": "4",
+        "size": "5",
+        "nameStr": "Quantom Chromodynamics"
+      },
+      {
+        "id": "5",
+        "size": "3",
+        "nameStr": "Laser Color Alteration"
+      },
+      {
+        "id": "6",
+        "size": "4",
+        "nameStr": "Integrated Mechanics"
+      }
+    ],
+    "puzzle": [
+      {
+        "id": "0",
+        "pack": "0",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Welcome to the Factory! Your objective is to place pipes in the grid provided to let colour flow from inputs to outputs. Drag tiles from the toolbar at the bottom to place them. Tap on them to rotate."
+        },
+        "pin": {
+          "pos": "10",
+          "col": "B",
+          "pres": "1"
+        },
+        "pout": {
+          "pos": "4",
+          "col": "B",
+          "pres": "1"
+        }
+      },
+      {
+        "id": "1",
+        "pack": "0",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Match outputs to the same colour inputs. Use whatever pipes you need to achieve your goal."
+        },
+        "pin": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "Y",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "pack": "0",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Use the mixer (+ icon) to mix two colours. Check the menu for the full list of colours that you can mix."
+        },
+        "pin": [
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "pout": {
+          "pos": "7",
+          "col": "G",
+          "pres": "1"
+        }
+      },
+      {
+        "id": "3",
+        "pack": "0",
+        "tutorial": {
+          "ex": "true",
+          "t1": "If you want more information about an input or output, tap on it, and a tooltip will pop up with all the pipe's pressure and colour information."
+        },
+        "pin": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": {
+          "pos": "3",
+          "col": "Br",
+          "pres": "1"
+        }
+      },
+      {
+        "id": "4",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "11",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "5",
+            "col": "Vi",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "Mg",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "7",
+            "col": "Cy",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Mg",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "pack": "0",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Counterpart to the mixer is the separator (- symbol). It does what the mixer does in reverse. To make sure it separates correctly, it needs to be labeled. Drag coloured labels onto pipes via the top tab. That pipe will only be able to accept that colour."
+        },
+        "pin": {
+          "pos": "1",
+          "col": "P",
+          "pres": "1"
+        },
+        "pout": [
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "pack": "0",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Remember to label your separator outputs! At least one must be labeled for the separator to work."
+        },
+        "pin": {
+          "pos": "1",
+          "col": "Br",
+          "pres": "1"
+        },
+        "pout": [
+          {
+            "pos": "10",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Y",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "Cy",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "Br",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Br",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Br",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "0",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Vi",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "pack": "0",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "P",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "1",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Am",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "0",
+        "pack": "1",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Some pipes carry High Pressure colour. Change the pressure of pipes similar to how you label pipes. Use the up arrow to increase the pressure, and the down arrow to decrease pressure."
+        },
+        "pin": {
+          "pos": "10",
+          "col": "P",
+          "pres": "2"
+        },
+        "pout": {
+          "pos": "4",
+          "col": "P",
+          "pres": "2"
+        }
+      },
+      {
+        "id": "1",
+        "pack": "1",
+        "tutorial": {
+          "ex": "true",
+          "t1": "There are four different pressure types, which you can get by using the increase pressure label multiple times. Of those, only low pressure (x1) can be used in a mixer or separator."
+        },
+        "pin": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "2",
+            "col": "R",
+            "pres": "3"
+          },
+          {
+            "pos": "10",
+            "col": "Br",
+            "pres": "4"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "7",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "Br",
+            "pres": "4"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "pack": "1",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Use the Pressurizer (/\\ symbol) to turn two low pressure pipes into a higher pressure line. Make sure the pipes are all correct pressure by using the increase and decrease pressure labels."
+        },
+        "pin": [
+          {
+            "pos": "0",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "pout": {
+          "pos": "7",
+          "col": "G",
+          "pres": "3"
+        }
+      },
+      {
+        "id": "3",
+        "pack": "1",
+        "tutorial": {
+          "ex": "true",
+          "t1": "The final machine is the Depressurizer (\\/ symbol). Use it to turn high pressure into low pressure."
+        },
+        "pin": {
+          "pos": "1",
+          "col": "P",
+          "pres": "3"
+        },
+        "pout": [
+          {
+            "pos": "10",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "P",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "pack": "1",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Remember: you cannot mix or separate colours at high pressure! Depressurize, then separate."
+        },
+        "pin": {
+          "pos": "1",
+          "col": "O",
+          "pres": "2"
+        },
+        "pout": [
+          {
+            "pos": "10",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "pack": "1",
+        "pout": {
+          "pos": "1",
+          "col": "G",
+          "pres": "2"
+        },
+        "pin": [
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "2"
+          }
+        ],
+        "pout": {
+          "pos": "4",
+          "col": "Br",
+          "pres": "2"
+        }
+      },
+      {
+        "id": "7",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "O",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Br",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "pack": "1",
+        "pout": [
+          {
+            "pos": "3",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "1",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "P",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "10",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Br",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "0",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Vi",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Am",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "pack": "1",
+        "pin": {
+          "pos": "2",
+          "col": "P",
+          "pres": "2"
+        },
+        "pout": [
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "2",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "7",
+            "col": "Am",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "6",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Mg",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "2"
+          }
+        ],
+        "pout": {
+          "pos": "9",
+          "col": "Br",
+          "pres": "3"
+        }
+      },
+      {
+        "id": "14",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "P",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "pack": "1",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "Lm",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "0",
+        "pack": "2",
+        "tutorial": {
+          "ex": "true",
+          "t1": "These grids are a little bigger than normal. They function the same, just with more room for construction!"
+        },
+        "pin": [
+          {
+            "pos": "15",
+            "col": "G",
+            "pres": "2"
+          },
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "1",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "1",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "15",
+            "col": "Vi",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "0",
+            "col": "Lm",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "15",
+            "col": "O",
+            "pres": "3"
+          },
+          {
+            "pos": "11",
+            "col": "P",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "1",
+            "col": "Br",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "R",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "0",
+        "pack": "3",
+        "pin": {
+          "pos": "9",
+          "col": "P",
+          "pres": "3"
+        },
+        "pout": [
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "1",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "P",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "0",
+        "pack": "4",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Quantum Chromodynamic Computing allows for more compact colour integration! Well sort of. This is what happens when you mix a physicist and a painter together."
+        },
+        "pin": [
+          {
+            "pos": "0",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "19",
+            "col": "G",
+            "pres": "4"
+          },
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "18",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "16",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "B",
+            "pres": "4"
+          },
+          {
+            "pos": "8",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "1",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "19",
+            "col": "R",
+            "pres": "3"
+          },
+          {
+            "pos": "10",
+            "col": "R",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "5",
+            "col": "Mg",
+            "pres": "2"
+          },
+          {
+            "pos": "15",
+            "col": "Vi",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "pack": "4",
+        "pin": {
+          "pos": "17",
+          "col": "Br",
+          "pres": "4"
+        },
+        "pout": [
+          {
+            "pos": "14",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "3"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "19",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "10",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "17",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "1",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "14",
+            "col": "Br",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "pack": "3",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "3",
+            "col": "Gd",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "1",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "pack": "3",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "Vi",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "P",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "7",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "10",
+            "col": "P",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "5",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Vi",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Y",
+            "pres": "4"
+          },
+          {
+            "pos": "6",
+            "col": "B",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "2"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "1",
+            "col": "G",
+            "pres": "2"
+          },
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "P",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "pack": "3",
+        "pout": [
+          {
+            "pos": "2",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "7",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "3",
+            "col": "P",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Mg",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "2",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Br",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "pack": "3",
+        "pin": {
+          "pos": "2",
+          "col": "Vi",
+          "pres": "2"
+        },
+        "pout": [
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "Y",
+            "pres": "4"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "P",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "2",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "5",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "4"
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "G",
+            "pres": "3"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "pack": "3",
+        "pin": [
+          {
+            "pos": "10",
+            "col": "Mg",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "P",
+            "pres": "2"
+          },
+          {
+            "pos": "5",
+            "col": "Am",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "Vi",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Cy",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "0",
+            "col": "G",
+            "pres": "3"
+          },
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "2",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "Cy",
+            "pres": "2"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "14",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "G",
+            "pres": "4"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "pack": "2",
+        "pout": [
+          {
+            "pos": "15",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "11",
+            "col": "Vi",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Br",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "3",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "4",
+            "col": "O",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Y",
+            "pres": "3"
+          },
+          {
+            "pos": "1",
+            "col": "Vi",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "4",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "G",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "5",
+            "col": "Vi",
+            "pres": "2"
+          },
+          {
+            "pos": "6",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "12",
+            "col": "B",
+            "pres": "4"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "pack": "2",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "4"
+          },
+          {
+            "pos": "12",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pin": {
+          "pos": "6",
+          "col": "Cy",
+          "pres": "3"
+        }
+      },
+      {
+        "id": "9",
+        "pack": "2",
+        "pout": [
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "6",
+            "col": "Cy",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "14",
+            "col": "G",
+            "pres": "2"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Br",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "G",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "11",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "pack": "2",
+        "pin": {
+          "pos": "4",
+          "col": "Gd",
+          "pres": "3"
+        },
+        "pout": [
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "Y",
+            "pres": "4"
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "15",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "12",
+            "col": "R",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "15",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "12",
+            "col": "Y",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "5",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "G",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "pack": "2",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "G",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "14",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "pack": "2",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "14",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Br",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "Am",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "P",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "1",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "16",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "O",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "18",
+            "col": "Y",
+            "pres": "3"
+          },
+          {
+            "pos": "11",
+            "col": "Mg",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "pack": "4",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "4"
+          },
+          {
+            "pos": "1",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "10",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "3"
+          },
+          {
+            "pos": "19",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "2",
+            "col": "Am",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "Cy",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "5",
+            "col": "Cy",
+            "pres": "3"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "Y",
+            "pres": "3"
+          },
+          {
+            "pos": "19",
+            "col": "B",
+            "pres": "4"
+          }
+        ]
+      },
+      {
+        "id": "6",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "4"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "4"
+          },
+          {
+            "pos": "9",
+            "col": "B",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "17",
+            "col": "O",
+            "pres": "3"
+          },
+          {
+            "pos": "15",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "G",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "19",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "18",
+            "col": "B",
+            "pres": "4"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "4"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "16",
+            "col": "Cy",
+            "pres": "2"
+          },
+          {
+            "pos": "5",
+            "col": "Cy",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "19",
+            "col": "O",
+            "pres": "4"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "Vi",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "18",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "17",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "Cy",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "3"
+          },
+          {
+            "pos": "11",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "14",
+            "col": "O",
+            "pres": "3"
+          },
+          {
+            "pos": "10",
+            "col": "G",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "12",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "16",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "18",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "14",
+            "col": "Vi",
+            "pres": "2"
+          },
+          {
+            "pos": "10",
+            "col": "Mg",
+            "pres": "2"
+          },
+          {
+            "pos": "19",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "5",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "P",
+            "pres": "4"
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "5",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "B",
+            "pres": "4"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "8",
+            "col": "G",
+            "pres": "2"
+          },
+          {
+            "pos": "3",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "19",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "17",
+            "col": "P",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "12",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Gd",
+            "pres": "3"
+          },
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "2",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "14",
+            "col": "R",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "13",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "2",
+            "col": "Br",
+            "pres": "3"
+          },
+          {
+            "pos": "1",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "18",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "17",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "14",
+            "col": "P",
+            "pres": "4"
+          },
+          {
+            "pos": "10",
+            "col": "G",
+            "pres": "2"
+          },
+          {
+            "pos": "7",
+            "col": "R",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "pack": "4",
+        "pin": [
+          {
+            "pos": "17",
+            "col": "O",
+            "pres": "3"
+          },
+          {
+            "pos": "7",
+            "col": "P",
+            "pres": "4"
+          },
+          {
+            "pos": "2",
+            "col": "G",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "12",
+            "col": "Am",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "1",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "0",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "19",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "18",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "14",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "16",
+            "col": "B",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "0",
+        "pack": "5",
+        "tutorial": {
+          "ex": "true",
+          "t1": "The latest colour technology is the ability to spontaneously change colors by pumping them through lasers! These lasers can change any color to the color of the laser by passing the pipe through the laser."
+        },
+        "pin": {
+          "pos": "1",
+          "col": "P",
+          "pres": "1"
+        },
+        "pout": {
+          "pos": "7",
+          "col": "G",
+          "pres": "1"
+        },
+        "fil": {
+          "p1": "0",
+          "p2": "3",
+          "dir": "V",
+          "col": "Y"
+        }
+      },
+      {
+        "id": "1",
+        "pack": "5",
+        "tutorial": {
+          "ex": "true",
+          "t1": "If you click on a filter, it will bring up a tooltip that shows you the colour of the filter, and also how to make said colour."
+        },
+        "pin": [
+          {
+            "pos": "0",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pout": {
+          "pos": "7",
+          "col": "R",
+          "pres": "4"
+        },
+        "fil": [
+          {
+            "p1": "0",
+            "p2": "3",
+            "dir": "V",
+            "col": "R"
+          },
+          {
+            "p1": "5",
+            "p2": "8",
+            "dir": "V",
+            "col": "R"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "pack": "5",
+        "tutorial": {
+          "ex": "true",
+          "t1": "Filters can accept any pressure of colour, and will not change the pressure of the colour. Try and figure out what needs to be filtered in each puzzle. Good luck!"
+        },
+        "pin": [
+          {
+            "pos": "11",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "pout": {
+          "pos": "7",
+          "col": "P",
+          "pres": "2"
+        },
+        "fil": {
+          "p1": "1",
+          "p2": "4",
+          "dir": "V",
+          "col": "R"
+        }
+      },
+      {
+        "id": "3",
+        "pack": "5",
+        "pin": {
+          "pos": "11",
+          "col": "G",
+          "pres": "3"
+        },
+        "pout": [
+          {
+            "pos": "2",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "4",
+          "p2": "7",
+          "dir": "V",
+          "col": "R"
+        }
+      },
+      {
+        "id": "4",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "1",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "2",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "P",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "G",
+            "pres": "2"
+          }
+        ],
+        "fil": {
+          "p1": "4",
+          "p2": "5",
+          "dir": "H",
+          "col": "G"
+        }
+      },
+      {
+        "id": "6",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "3",
+          "p2": "4",
+          "dir": "H",
+          "col": "P"
+        }
+      },
+      {
+        "id": "7",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "pout": {
+          "pos": "3",
+          "col": "P",
+          "pres": "2"
+        },
+        "fil": {
+          "p1": "4",
+          "p2": "5",
+          "dir": "H",
+          "col": "Vi"
+        }
+      },
+      {
+        "id": "10",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "1",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pout": {
+          "pos": "3",
+          "col": "Cy",
+          "pres": "2"
+        },
+        "fil": {
+          "p1": "4",
+          "p2": "5",
+          "dir": "H",
+          "col": "B"
+        }
+      },
+      {
+        "id": "13",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "fil": [
+          {
+            "p1": "0",
+            "p2": "3",
+            "dir": "V",
+            "col": "B"
+          },
+          {
+            "p1": "1",
+            "p2": "4",
+            "dir": "V",
+            "col": "O"
+          }
+        ]
+      },
+      {
+        "id": "5",
+        "pack": "5",
+        "pout": [
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "2"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "5",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Vi",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "8",
+            "col": "G",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "2",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "0",
+          "p2": "3",
+          "dir": "V",
+          "col": "R"
+        }
+      },
+      {
+        "id": "12",
+        "pack": "5",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "3",
+            "col": "R",
+            "pres": "3"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "3"
+          }
+        ],
+        "fil": {
+          "p1": "2",
+          "p2": "5",
+          "dir": "V",
+          "col": "Y"
+        }
+      },
+      {
+        "id": "8",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "3",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "G",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "11",
+        "pack": "5",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "4"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "10",
+            "col": "Cy",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Vi",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "pack": "5",
+        "pout": [
+          {
+            "pos": "1",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "2",
+            "col": "P",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "3"
+          }
+        ]
+      },
+      {
+        "id": "15",
+        "pack": "5",
+        "pin": [
+          {
+            "pos": "9",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "2",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "fil": [
+          {
+            "p1": "3",
+            "p2": "6",
+            "dir": "V",
+            "col": "R"
+          },
+          {
+            "p1": "1",
+            "p2": "4",
+            "dir": "V",
+            "col": "Y"
+          },
+          {
+            "p1": "5",
+            "p2": "8",
+            "dir": "V",
+            "col": "B"
+          }
+        ]
+      },
+      {
+        "id": "0",
+        "pack": "6",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Lm",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "Gd",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "O",
+            "pres": "2"
+          }
+        ],
+        "fil": {
+          "p1": "5",
+          "p2": "9",
+          "dir": "V",
+          "col": "R"
+        }
+      },
+      {
+        "id": "1",
+        "pack": "6",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "1",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "pin": {
+          "pos": "13",
+          "col": "Am",
+          "pres": "2"
+        },
+        "fil": {
+          "p1": "10",
+          "p2": "11",
+          "dir": "H",
+          "col": "B"
+        }
+      },
+      {
+        "id": "2",
+        "pack": "6",
+        "pin": {
+          "pos": "0",
+          "col": "Vi",
+          "pres": "3"
+        },
+        "pout": [
+          {
+            "pos": "13",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "4"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "pack": "6",
+        "pout": [
+          {
+            "pos": "15",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "Y",
+            "pres": "4"
+          },
+          {
+            "pos": "3",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "14",
+            "col": "G",
+            "pres": "4"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "pack": "6",
+        "pout": [
+          {
+            "pos": "2",
+            "col": "Y",
+            "pres": "3"
+          },
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "Vi",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "1",
+          "p2": "5",
+          "dir": "V",
+          "col": "Lm"
+        }
+      },
+      {
+        "id": "5",
+        "pack": "6",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Vi",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "2"
+          },
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "4",
+            "col": "Mg",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "4",
+          "p2": "5",
+          "dir": "H",
+          "col": "P"
+        }
+      },
+      {
+        "id": "6",
+        "pack": "6",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "P",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "O",
+            "pres": "3"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "3"
+          },
+          {
+            "pos": "7",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Br",
+            "pres": "1"
+          },
+          {
+            "pos": "12",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "14",
+            "col": "Y",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "7",
+        "pack": "6",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Am",
+            "pres": "2"
+          },
+          {
+            "pos": "11",
+            "col": "B",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "P",
+            "pres": "3"
+          },
+          {
+            "pos": "15",
+            "col": "Y",
+            "pres": "2"
+          }
+        ]
+      },
+      {
+        "id": "8",
+        "pack": "6",
+        "pin": {
+          "pos": "4",
+          "col": "Cy",
+          "pres": "3"
+        },
+        "pout": [
+          {
+            "pos": "5",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "14",
+            "col": "G",
+            "pres": "1"
+          }
+        ],
+        "fil": [
+          {
+            "p1": "13",
+            "p2": "14",
+            "dir": "H",
+            "col": "Y"
+          },
+          {
+            "p1": "6",
+            "p2": "10",
+            "dir": "V",
+            "col": "R"
+          }
+        ]
+      },
+      {
+        "id": "9",
+        "pack": "6",
+        "pin": [
+          {
+            "pos": "0",
+            "col": "Br",
+            "pres": "3"
+          },
+          {
+            "pos": "5",
+            "col": "R",
+            "pres": "2"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "4",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "P",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "10",
+        "pack": "6",
+        "pout": [
+          {
+            "pos": "2",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "Cy",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "4",
+            "col": "P",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "Gd",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "4",
+          "p2": "5",
+          "dir": "H",
+          "col": "G"
+        }
+      },
+      {
+        "id": "11",
+        "pack": "6",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "Y",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "6",
+            "col": "O",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "8",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Br",
+            "pres": "2"
+          }
+        ],
+        "fil": {
+          "p1": "5",
+          "p2": "9",
+          "dir": "V",
+          "col": "G"
+        }
+      },
+      {
+        "id": "12",
+        "pack": "6",
+        "pout": [
+          {
+            "pos": "1",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "5",
+            "col": "B",
+            "pres": "3"
+          },
+          {
+            "pos": "8",
+            "col": "Y",
+            "pres": "2"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "10",
+            "col": "P",
+            "pres": "2"
+          },
+          {
+            "pos": "11",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "2",
+          "p2": "3",
+          "dir": "H",
+          "col": "Cy"
+        }
+      },
+      {
+        "id": "13",
+        "pack": "6",
+        "pin": [
+          {
+            "pos": "4",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "6",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "13",
+            "col": "R",
+            "pres": "3"
+          },
+          {
+            "pos": "15",
+            "col": "P",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "8",
+            "col": "Mg",
+            "pres": "2"
+          },
+          {
+            "pos": "9",
+            "col": "O",
+            "pres": "1"
+          },
+          {
+            "pos": "11",
+            "col": "O",
+            "pres": "1"
+          }
+        ]
+      },
+      {
+        "id": "14",
+        "pack": "6",
+        "pout": [
+          {
+            "pos": "0",
+            "col": "R",
+            "pres": "1"
+          },
+          {
+            "pos": "3",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "7",
+            "col": "O",
+            "pres": "2"
+          },
+          {
+            "pos": "10",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pin": [
+          {
+            "pos": "2",
+            "col": "Vi",
+            "pres": "2"
+          },
+          {
+            "pos": "11",
+            "col": "R",
+            "pres": "1"
+          }
+        ],
+        "fil": {
+          "p1": "4",
+          "p2": "8",
+          "dir": "V",
+          "col": "Y"
+        }
+      },
+      {
+        "id": "15",
+        "pack": "6",
+        "pin": [
+          {
+            "pos": "2",
+            "col": "R",
+            "pres": "2"
+          },
+          {
+            "pos": "4",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "10",
+            "col": "Lm",
+            "pres": "1"
+          },
+          {
+            "pos": "15",
+            "col": "Y",
+            "pres": "1"
+          }
+        ],
+        "pout": [
+          {
+            "pos": "3",
+            "col": "G",
+            "pres": "1"
+          },
+          {
+            "pos": "8",
+            "col": "B",
+            "pres": "1"
+          },
+          {
+            "pos": "9",
+            "col": "Y",
+            "pres": "2"
+          }
+        ],
+        "fil": {
+          "p1": "4",
+          "p2": "5",
+          "dir": "H",
+          "col": "G"
+        }
+      }
+    ]
+  }
