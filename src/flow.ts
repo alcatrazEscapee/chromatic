@@ -35,7 +35,7 @@ abstract class BaseFlow implements Flow {
     }
 
     tick(delta: number): void {
-        this.delta += delta / Constants.SIMULATOR_TICKS_PER_STEP;
+        this.delta += delta / Constants.TICKS_PER_SIMULATOR_STEP;
         if (this.delta > 1) {
             PIXI.Ticker.shared.remove(this.tick, this); // Stop ticking
             this.delta = 1;
@@ -99,7 +99,7 @@ export class StraightFlow extends BaseFlow {
     }
 }
 
-class PartialFlow extends BaseFlow {
+export class PartialFlow extends BaseFlow {
 
     private readonly obj: Graphics;
 
@@ -120,8 +120,12 @@ class PartialFlow extends BaseFlow {
      */
     private readonly input: boolean;
 
-    constructor(palette: Palette, color: ColorId, dir: DirectionId, input: boolean, width: number) {
+    constructor(palette: Palette, color: ColorId, dir: DirectionId, input: boolean, width: number = -1) {
         super();
+
+        if (width == -1) {
+            width = palette.insideLength;
+        }
 
         // Flow moving left -> right, horizontal, in the first section (if input), otherwise in the last section
         this.obj = new PIXI.Graphics();

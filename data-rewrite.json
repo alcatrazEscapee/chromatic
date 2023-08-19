@@ -1,6 +1,7 @@
 {
   "puzzles": [
     {
+      "id": 0,
       "size": 3,
       "inputs": [
         {
@@ -22,6 +23,7 @@
       ]
     },
     {
+      "id": 1,
       "size": 3,
       "inputs": [
         {
@@ -43,9 +45,9 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
@@ -57,6 +59,7 @@
       ]
     },
     {
+      "id": 2,
       "size": 3,
       "inputs": [
         {
@@ -85,6 +88,7 @@
       ]
     },
     {
+      "id": 3,
       "size": 3,
       "inputs": [
         {
@@ -120,6 +124,7 @@
       ]
     },
     {
+      "id": 4,
       "size": 3,
       "inputs": [
         {
@@ -147,8 +152,8 @@
           "color": "red",
           "pressure": 1,
           "x": 1,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -162,13 +167,14 @@
         {
           "color": "magenta",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 5,
       "size": 3,
       "inputs": [
         {
@@ -203,8 +209,8 @@
           "color": "blue",
           "pressure": 1,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -219,8 +225,8 @@
           "color": "cyan",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "magenta",
@@ -232,6 +238,7 @@
       ]
     },
     {
+      "id": 6,
       "size": 3,
       "inputs": [
         {
@@ -253,13 +260,14 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 7,
       "size": 3,
       "inputs": [
         {
@@ -281,9 +289,9 @@
         {
           "color": "blue",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
@@ -295,6 +303,7 @@
       ]
     },
     {
+      "id": 8,
       "size": 3,
       "inputs": [
         {
@@ -308,8 +317,8 @@
           "color": "cyan",
           "pressure": 1,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
@@ -323,9 +332,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
@@ -337,9 +346,9 @@
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -358,6 +367,7 @@
       ]
     },
     {
+      "id": 9,
       "size": 3,
       "inputs": [
         {
@@ -378,8 +388,8 @@
           "color": "orange",
           "pressure": 1,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
@@ -393,9 +403,9 @@
         {
           "color": "blue",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
@@ -407,9 +417,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
@@ -428,6 +438,7 @@
       ]
     },
     {
+      "id": 10,
       "size": 3,
       "inputs": [
         {
@@ -441,31 +452,31 @@
           "color": "brown",
           "pressure": 1,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "blue",
@@ -478,19 +489,20 @@
           "color": "red",
           "pressure": 1,
           "x": 2,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 11,
       "size": 3,
       "inputs": [
         {
@@ -519,9 +531,9 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -541,8 +553,8 @@
           "color": "yellow",
           "pressure": 1,
           "x": 2,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "yellow",
@@ -554,6 +566,7 @@
       ]
     },
     {
+      "id": 12,
       "size": 3,
       "inputs": [
         {
@@ -567,8 +580,8 @@
           "color": "purple",
           "pressure": 1,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -589,9 +602,9 @@
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -617,28 +630,29 @@
       ]
     },
     {
+      "id": 13,
       "size": 3,
       "inputs": [
         {
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "brown",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -646,27 +660,28 @@
           "color": "green",
           "pressure": 1,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "violet",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 14,
       "size": 3,
       "inputs": [
         {
           "color": "purple",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         },
         {
           "color": "purple",
@@ -678,9 +693,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
@@ -701,35 +716,36 @@
         {
           "color": "orange",
           "pressure": 1,
-          "x": 2,
-          "y": 1,
-          "dir": "left"
-        },
-        {
-          "color": "blue",
-          "pressure": 1,
-          "x": 0,
+          "x": 3,
           "y": 1,
           "dir": "right"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 2,
-          "y": 2,
+          "x": -1,
+          "y": 1,
           "dir": "left"
+        },
+        {
+          "color": "blue",
+          "pressure": 1,
+          "x": 3,
+          "y": 2,
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 15,
       "size": 3,
       "inputs": [
         {
           "color": "green",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "orange",
@@ -765,8 +781,8 @@
           "color": "yellow",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "amber",
@@ -778,6 +794,7 @@
       ]
     },
     {
+      "id": 16,
       "size": 3,
       "inputs": [
         {
@@ -799,21 +816,22 @@
       ]
     },
     {
+      "id": 17,
       "size": 3,
       "inputs": [
         {
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "yellow",
           "pressure": 2,
           "x": 1,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "red",
@@ -841,42 +859,43 @@
         {
           "color": "brown",
           "pressure": 4,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 3,
           "x": 2,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 18,
       "size": 3,
       "inputs": [
         {
           "color": "green",
           "pressure": 1,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "green",
           "pressure": 1,
           "x": 1,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "green",
@@ -891,20 +910,21 @@
           "color": "green",
           "pressure": 3,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 19,
       "size": 3,
       "inputs": [
         {
           "color": "purple",
           "pressure": 3,
           "x": 1,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
@@ -932,30 +952,31 @@
       ]
     },
     {
+      "id": 20,
       "size": 3,
       "inputs": [
         {
           "color": "orange",
           "pressure": 2,
           "x": 1,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
         {
           "color": "red",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
@@ -974,126 +995,130 @@
       ]
     },
     {
+      "id": 21,
       "size": 3,
       "inputs": [
         {
           "color": "blue",
+          "pressure": 1,
+          "x": 0,
+          "y": 2,
+          "dir": "right"
+        },
+        {
+          "color": "blue",
+          "pressure": 1,
+          "x": 0,
+          "y": 2,
+          "dir": "up"
+        },
+        {
+          "color": "yellow",
+          "pressure": 1,
+          "x": 2,
+          "y": 2,
+          "dir": "up"
+        },
+        {
+          "color": "yellow",
+          "pressure": 1,
+          "x": 2,
+          "y": 2,
+          "dir": "left"
+        }
+      ],
+      "outputs": [
+        {
+          "color": "green",
+          "pressure": 2,
+          "x": 1,
+          "y": -1,
+          "dir": "up"
+        }
+      ]
+    },
+    {
+      "id": 22,
+      "size": 3,
+      "inputs": [
+        {
+          "color": "yellow",
+          "pressure": 2,
+          "x": 0,
+          "y": 0,
+          "dir": "down"
+        },
+        {
+          "color": "purple",
+          "pressure": 2,
+          "x": 0,
+          "y": 2,
+          "dir": "up"
+        }
+      ],
+      "outputs": [
+        {
+          "color": "brown",
+          "pressure": 2,
+          "x": 3,
+          "y": 1,
+          "dir": "right"
+        }
+      ]
+    },
+    {
+      "id": 23,
+      "size": 3,
+      "inputs": [
+        {
+          "color": "green",
+          "pressure": 1,
+          "x": 1,
+          "y": 0,
+          "dir": "down"
+        },
+        {
+          "color": "orange",
+          "pressure": 2,
+          "x": 2,
+          "y": 0,
+          "dir": "left"
+        }
+      ],
+      "outputs": [
+        {
+          "color": "yellow",
+          "pressure": 2,
+          "x": -1,
+          "y": 0,
+          "dir": "left"
+        },
+        {
+          "color": "red",
           "pressure": 1,
           "x": -1,
           "y": 2,
           "dir": "left"
         },
         {
-          "color": "blue",
-          "pressure": 1,
-          "x": 0,
-          "y": 3,
-          "dir": "down"
-        },
-        {
-          "color": "yellow",
-          "pressure": 1,
-          "x": 2,
-          "y": 3,
-          "dir": "down"
-        },
-        {
-          "color": "yellow",
-          "pressure": 1,
-          "x": 2,
-          "y": 2,
-          "dir": "left"
-        }
-      ],
-      "outputs": [
-        {
-          "color": "green",
-          "pressure": 2,
-          "x": 1,
-          "y": 0,
-          "dir": "down"
-        }
-      ]
-    },
-    {
-      "size": 3,
-      "inputs": [
-        {
-          "color": "yellow",
-          "pressure": 2,
-          "x": 0,
-          "y": -1,
-          "dir": "up"
-        },
-        {
-          "color": "purple",
-          "pressure": 2,
-          "x": 0,
-          "y": 3,
-          "dir": "down"
-        }
-      ],
-      "outputs": [
-        {
-          "color": "brown",
-          "pressure": 2,
-          "x": 3,
-          "y": 1,
-          "dir": "right"
-        }
-      ]
-    },
-    {
-      "size": 3,
-      "inputs": [
-        {
-          "color": "green",
-          "pressure": 1,
-          "x": 1,
-          "y": 0,
-          "dir": "down"
-        },
-        {
-          "color": "orange",
-          "pressure": 2,
-          "x": 3,
-          "y": 0,
-          "dir": "right"
-        }
-      ],
-      "outputs": [
-        {
-          "color": "yellow",
-          "pressure": 2,
-          "x": -1,
-          "y": 0,
-          "dir": "left"
-        },
-        {
-          "color": "red",
-          "pressure": 1,
-          "x": 0,
-          "y": 2,
-          "dir": "right"
-        },
-        {
           "color": "brown",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 24,
       "size": 3,
       "inputs": [
         {
           "color": "yellow",
           "pressure": 2,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "red",
@@ -1114,9 +1139,9 @@
         {
           "color": "orange",
           "pressure": 2,
-          "x": 2,
+          "x": 3,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "blue",
@@ -1128,6 +1153,7 @@
       ]
     },
     {
+      "id": 25,
       "size": 3,
       "inputs": [
         {
@@ -1147,9 +1173,9 @@
         {
           "color": "brown",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -1157,26 +1183,27 @@
           "color": "green",
           "pressure": 1,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "yellow",
           "pressure": 1,
           "x": 0,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "violet",
           "pressure": 1,
           "x": 2,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 26,
       "size": 3,
       "inputs": [
         {
@@ -1189,9 +1216,9 @@
         {
           "color": "purple",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "orange",
@@ -1205,9 +1232,9 @@
         {
           "color": "blue",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
@@ -1226,6 +1253,7 @@
       ]
     },
     {
+      "id": 27,
       "size": 3,
       "inputs": [
         {
@@ -1247,13 +1275,14 @@
         {
           "color": "blue",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 28,
       "size": 3,
       "inputs": [
         {
@@ -1267,8 +1296,8 @@
           "color": "amber",
           "pressure": 1,
           "x": 1,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -1289,6 +1318,7 @@
       ]
     },
     {
+      "id": 29,
       "size": 3,
       "inputs": [
         {
@@ -1323,8 +1353,8 @@
           "color": "blue",
           "pressure": 2,
           "x": 1,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -1338,6 +1368,7 @@
       ]
     },
     {
+      "id": 30,
       "size": 3,
       "inputs": [
         {
@@ -1351,8 +1382,8 @@
           "color": "yellow",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         },
         {
           "color": "purple",
@@ -1366,27 +1397,28 @@
         {
           "color": "brown",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "green",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "red",
           "pressure": 2,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 31,
       "size": 3,
       "inputs": [
         {
@@ -1407,8 +1439,8 @@
           "color": "yellow",
           "pressure": 3,
           "x": 2,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -1429,6 +1461,7 @@
       ]
     },
     {
+      "id": 32,
       "size": 4,
       "inputs": [
         {
@@ -1471,6 +1504,7 @@
       ]
     },
     {
+      "id": 33,
       "size": 4,
       "inputs": [
         {
@@ -1514,12 +1548,13 @@
           "color": "red",
           "pressure": 1,
           "x": 3,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 34,
       "size": 4,
       "inputs": [
         {
@@ -1542,15 +1577,15 @@
           "color": "brown",
           "pressure": 2,
           "x": 1,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
@@ -1576,41 +1611,43 @@
       ]
     },
     {
+      "id": 48,
       "size": 3,
       "inputs": [
         {
           "color": "purple",
           "pressure": 3,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
         {
           "color": "blue",
           "pressure": 3,
-          "x": 2,
+          "x": 3,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 2,
           "x": 2,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         }
       ]
     },
     {
+      "id": 49,
       "size": 3,
       "inputs": [
         {
@@ -1623,9 +1660,9 @@
         {
           "color": "purple",
           "pressure": 2,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -1647,12 +1684,13 @@
           "color": "orange",
           "pressure": 2,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 64,
       "size": 5,
       "inputs": [
         {
@@ -1737,6 +1775,7 @@
       ]
     },
     {
+      "id": 65,
       "size": 5,
       "inputs": [
         {
@@ -1779,13 +1818,14 @@
         {
           "color": "violet",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 4,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 66,
       "size": 5,
       "inputs": [
         {
@@ -1808,8 +1848,8 @@
           "color": "yellow",
           "pressure": 1,
           "x": 1,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -1821,23 +1861,23 @@
         {
           "color": "blue",
           "pressure": 3,
-          "x": 4,
+          "x": 5,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 2,
-          "x": 4,
+          "x": 5,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "blue",
           "pressure": 1,
           "x": 4,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "red",
@@ -1849,6 +1889,7 @@
       ]
     },
     {
+      "id": 67,
       "size": 5,
       "inputs": [
         {
@@ -1862,8 +1903,8 @@
           "color": "orange",
           "pressure": 2,
           "x": 4,
-          "y": 5,
-          "dir": "down"
+          "y": 4,
+          "dir": "up"
         },
         {
           "color": "orange",
@@ -1899,20 +1940,21 @@
           "color": "brown",
           "pressure": 2,
           "x": 0,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 50,
       "size": 3,
       "inputs": [
         {
           "color": "blue",
           "pressure": 2,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "gold",
@@ -1947,9 +1989,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
@@ -1961,14 +2003,15 @@
       ]
     },
     {
+      "id": 51,
       "size": 3,
       "inputs": [
         {
           "color": "magenta",
           "pressure": 1,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -1980,9 +2023,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -1997,19 +2040,20 @@
           "color": "red",
           "pressure": 1,
           "x": 2,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "lime",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 52,
       "size": 3,
       "inputs": [
         {
@@ -2023,8 +2067,8 @@
           "color": "purple",
           "pressure": 3,
           "x": 1,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -2032,8 +2076,8 @@
           "color": "magenta",
           "pressure": 1,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "violet",
@@ -2045,13 +2089,14 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 53,
       "size": 3,
       "inputs": [
         {
@@ -2065,15 +2110,15 @@
           "color": "yellow",
           "pressure": 2,
           "x": 1,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         },
         {
           "color": "purple",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -2095,12 +2140,13 @@
           "color": "violet",
           "pressure": 1,
           "x": 0,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 54,
       "size": 3,
       "inputs": [
         {
@@ -2130,19 +2176,20 @@
           "color": "green",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "lime",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 55,
       "size": 3,
       "inputs": [
         {
@@ -2155,16 +2202,16 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "purple",
           "pressure": 2,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         },
         {
           "color": "yellow",
@@ -2179,8 +2226,8 @@
           "color": "green",
           "pressure": 2,
           "x": 1,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "orange",
@@ -2192,13 +2239,14 @@
         {
           "color": "purple",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 56,
       "size": 3,
       "inputs": [
         {
@@ -2219,8 +2267,8 @@
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -2228,15 +2276,15 @@
           "color": "green",
           "pressure": 1,
           "x": 2,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -2249,12 +2297,13 @@
           "color": "red",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 57,
       "size": 3,
       "inputs": [
         {
@@ -2312,12 +2361,13 @@
           "color": "lime",
           "pressure": 1,
           "x": 0,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 58,
       "size": 3,
       "inputs": [
         {
@@ -2337,18 +2387,18 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "green",
@@ -2374,6 +2424,7 @@
       ]
     },
     {
+      "id": 59,
       "size": 3,
       "inputs": [
         {
@@ -2388,34 +2439,35 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
           "pressure": 3,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 0,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "blue",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 60,
       "size": 3,
       "inputs": [
         {
@@ -2428,9 +2480,9 @@
         {
           "color": "blue",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "red",
@@ -2465,9 +2517,9 @@
         {
           "color": "orange",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -2479,6 +2531,7 @@
       ]
     },
     {
+      "id": 61,
       "size": 3,
       "inputs": [
         {
@@ -2507,9 +2560,9 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "blue",
@@ -2528,6 +2581,7 @@
       ]
     },
     {
+      "id": 62,
       "size": 3,
       "inputs": [
         {
@@ -2541,17 +2595,17 @@
           "color": "red",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "brown",
@@ -2570,6 +2624,7 @@
       ]
     },
     {
+      "id": 63,
       "size": 3,
       "inputs": [
         {
@@ -2582,9 +2637,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -2598,13 +2653,14 @@
         {
           "color": "amber",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 35,
       "size": 4,
       "inputs": [
         {
@@ -2641,8 +2697,8 @@
           "color": "green",
           "pressure": 3,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "purple",
@@ -2654,6 +2710,7 @@
       ]
     },
     {
+      "id": 36,
       "size": 4,
       "inputs": [
         {
@@ -2681,8 +2738,8 @@
           "color": "purple",
           "pressure": 2,
           "x": 3,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -2717,13 +2774,14 @@
         {
           "color": "orange",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 37,
       "size": 4,
       "inputs": [
         {
@@ -2736,9 +2794,9 @@
         {
           "color": "orange",
           "pressure": 3,
-          "x": 4,
+          "x": 3,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -2767,8 +2825,8 @@
           "color": "violet",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "red",
@@ -2781,12 +2839,13 @@
           "color": "brown",
           "pressure": 1,
           "x": 3,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 38,
       "size": 4,
       "inputs": [
         {
@@ -2800,8 +2859,8 @@
           "color": "violet",
           "pressure": 1,
           "x": 1,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "orange",
@@ -2822,35 +2881,36 @@
         {
           "color": "orange",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "green",
           "pressure": 3,
-          "x": 0,
+          "x": -1,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 39,
       "size": 4,
       "inputs": [
         {
           "color": "violet",
           "pressure": 2,
-          "x": 4,
+          "x": 3,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "orange",
@@ -2879,8 +2939,8 @@
           "color": "red",
           "pressure": 2,
           "x": 1,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "blue",
@@ -2892,6 +2952,7 @@
       ]
     },
     {
+      "id": 40,
       "size": 4,
       "inputs": [
         {
@@ -2913,9 +2974,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "blue",
@@ -2927,20 +2988,21 @@
         {
           "color": "blue",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
           "pressure": 1,
           "x": 1,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 41,
       "size": 4,
       "inputs": [
         {
@@ -2976,20 +3038,21 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "green",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 42,
       "size": 4,
       "inputs": [
         {
@@ -3016,9 +3079,9 @@
         {
           "color": "green",
           "pressure": 2,
-          "x": 4,
+          "x": 3,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -3039,21 +3102,22 @@
         {
           "color": "yellow",
           "pressure": 3,
-          "x": 3,
+          "x": 4,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 43,
       "size": 4,
       "inputs": [
         {
           "color": "gold",
           "pressure": 3,
-          "x": 4,
+          "x": 3,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -3067,9 +3131,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
@@ -3082,15 +3146,15 @@
           "color": "red",
           "pressure": 1,
           "x": 2,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -3102,14 +3166,15 @@
       ]
     },
     {
+      "id": 44,
       "size": 4,
       "inputs": [
         {
           "color": "red",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
@@ -3121,9 +3186,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 4,
+          "x": 3,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -3135,9 +3200,9 @@
         {
           "color": "red",
           "pressure": 3,
-          "x": -1,
+          "x": 0,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -3151,35 +3216,36 @@
         {
           "color": "purple",
           "pressure": 3,
-          "x": 3,
+          "x": 4,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 45,
       "size": 4,
       "inputs": [
         {
           "color": "purple",
           "pressure": 3,
-          "x": -1,
+          "x": 0,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
           "pressure": 3,
-          "x": -1,
+          "x": 0,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -3187,8 +3253,8 @@
           "color": "red",
           "pressure": 2,
           "x": 3,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "purple",
@@ -3214,6 +3280,7 @@
       ]
     },
     {
+      "id": 46,
       "size": 4,
       "inputs": [
         {
@@ -3243,8 +3310,8 @@
           "color": "blue",
           "pressure": 3,
           "x": 1,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -3256,35 +3323,36 @@
       ]
     },
     {
+      "id": 47,
       "size": 4,
       "inputs": [
         {
           "color": "red",
           "pressure": 1,
-          "x": 4,
+          "x": 3,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "brown",
           "pressure": 2,
-          "x": 4,
+          "x": 3,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "amber",
           "pressure": 1,
           "x": 3,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         },
         {
           "color": "purple",
           "pressure": 1,
           "x": 2,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -3292,22 +3360,22 @@
           "color": "brown",
           "pressure": 1,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "red",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
@@ -3326,28 +3394,29 @@
         {
           "color": "orange",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 68,
       "size": 5,
       "inputs": [
         {
           "color": "brown",
           "pressure": 1,
           "x": 1,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "orange",
@@ -3368,9 +3437,9 @@
         {
           "color": "yellow",
           "pressure": 3,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "magenta",
@@ -3382,6 +3451,7 @@
       ]
     },
     {
+      "id": 69,
       "size": 5,
       "inputs": [
         {
@@ -3401,9 +3471,9 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 5,
+          "x": 4,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -3411,15 +3481,15 @@
           "color": "red",
           "pressure": 4,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "blue",
           "pressure": 1,
           "x": 1,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "blue",
@@ -3431,23 +3501,23 @@
         {
           "color": "blue",
           "pressure": 2,
-          "x": 4,
+          "x": 5,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 4,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "yellow",
           "pressure": 3,
           "x": 3,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -3459,28 +3529,29 @@
       ]
     },
     {
+      "id": 78,
       "size": 5,
       "inputs": [
         {
           "color": "cyan",
           "pressure": 3,
-          "x": 5,
+          "x": 4,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 5,
+          "x": 4,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 5,
+          "x": 4,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -3488,8 +3559,8 @@
           "color": "magenta",
           "pressure": 1,
           "x": 3,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "blue",
@@ -3508,13 +3579,14 @@
         {
           "color": "blue",
           "pressure": 4,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 70,
       "size": 5,
       "inputs": [
         {
@@ -3550,9 +3622,9 @@
         {
           "color": "purple",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 4,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "green",
@@ -3564,6 +3636,7 @@
       ]
     },
     {
+      "id": 71,
       "size": 5,
       "inputs": [
         {
@@ -3583,9 +3656,9 @@
         {
           "color": "blue",
           "pressure": 4,
-          "x": 5,
+          "x": 4,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
@@ -3599,20 +3672,21 @@
         {
           "color": "cyan",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "cyan",
           "pressure": 2,
-          "x": 4,
+          "x": 5,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 72,
       "size": 5,
       "inputs": [
         {
@@ -3639,9 +3713,9 @@
         {
           "color": "green",
           "pressure": 1,
-          "x": 5,
+          "x": 4,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "violet",
@@ -3662,9 +3736,9 @@
         {
           "color": "brown",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "cyan",
@@ -3684,12 +3758,13 @@
           "color": "lime",
           "pressure": 1,
           "x": 3,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 73,
       "size": 5,
       "inputs": [
         {
@@ -3703,8 +3778,8 @@
           "color": "green",
           "pressure": 3,
           "x": 4,
-          "y": 5,
-          "dir": "down"
+          "y": 4,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -3712,8 +3787,8 @@
           "color": "purple",
           "pressure": 3,
           "x": 2,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "yellow",
@@ -3725,9 +3800,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
@@ -3739,20 +3814,21 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 4,
+          "x": 5,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 4,
+          "x": 5,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 74,
       "size": 5,
       "inputs": [
         {
@@ -3766,8 +3842,8 @@
           "color": "magenta",
           "pressure": 2,
           "x": 4,
-          "y": 5,
-          "dir": "down"
+          "y": 4,
+          "dir": "up"
         },
         {
           "color": "lime",
@@ -3809,14 +3885,15 @@
       ]
     },
     {
+      "id": 75,
       "size": 5,
       "inputs": [
         {
           "color": "lime",
           "pressure": 1,
-          "x": 5,
+          "x": 4,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -3828,9 +3905,9 @@
         {
           "color": "red",
           "pressure": 3,
-          "x": 5,
+          "x": 4,
           "y": 4,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -3845,8 +3922,8 @@
           "color": "purple",
           "pressure": 1,
           "x": 3,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "purple",
@@ -3865,6 +3942,7 @@
       ]
     },
     {
+      "id": 76,
       "size": 5,
       "inputs": [
         {
@@ -3893,9 +3971,9 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 4,
+          "x": 5,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "green",
@@ -3907,16 +3985,16 @@
         {
           "color": "orange",
           "pressure": 1,
-          "x": 4,
+          "x": 5,
           "y": 4,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "lime",
           "pressure": 1,
           "x": 2,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "red",
@@ -3928,35 +4006,36 @@
       ]
     },
     {
+      "id": 77,
       "size": 5,
       "inputs": [
         {
           "color": "brown",
           "pressure": 3,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "purple",
           "pressure": 1,
           "x": 1,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "blue",
           "pressure": 1,
           "x": 1,
-          "y": 5,
-          "dir": "down"
+          "y": 4,
+          "dir": "up"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 5,
+          "x": 4,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "green",
@@ -3977,34 +4056,35 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "purple",
           "pressure": 4,
           "x": 0,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "green",
           "pressure": 2,
           "x": 4,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 4,
+          "x": 5,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 79,
       "size": 5,
       "inputs": [
         {
@@ -4025,8 +4105,8 @@
           "color": "green",
           "pressure": 3,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
@@ -4041,15 +4121,15 @@
           "color": "red",
           "pressure": 2,
           "x": 1,
-          "y": 4,
-          "dir": "up"
+          "y": 5,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 1,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "yellow",
@@ -4061,16 +4141,16 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
@@ -4083,8 +4163,8 @@
           "color": "green",
           "pressure": 1,
           "x": 4,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "yellow",
@@ -4138,13 +4218,14 @@
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 80,
       "size": 3,
       "inputs": [
         {
@@ -4160,8 +4241,8 @@
           "color": "green",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ],
       "filters": [
@@ -4174,6 +4255,7 @@
       ]
     },
     {
+      "id": 81,
       "size": 3,
       "inputs": [
         {
@@ -4187,8 +4269,8 @@
           "color": "orange",
           "pressure": 1,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
@@ -4216,21 +4298,22 @@
       ]
     },
     {
+      "id": 82,
       "size": 3,
       "inputs": [
         {
           "color": "green",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "green",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -4238,8 +4321,8 @@
           "color": "purple",
           "pressure": 2,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ],
       "filters": [
@@ -4252,14 +4335,15 @@
       ]
     },
     {
+      "id": 83,
       "size": 3,
       "inputs": [
         {
           "color": "green",
           "pressure": 3,
-          "x": -1,
+          "x": 0,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -4267,8 +4351,8 @@
           "color": "yellow",
           "pressure": 2,
           "x": 2,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "red",
@@ -4281,8 +4365,8 @@
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ],
       "filters": [
@@ -4295,6 +4379,7 @@
       ]
     },
     {
+      "id": 84,
       "size": 3,
       "inputs": [
         {
@@ -4345,8 +4430,8 @@
           "color": "green",
           "pressure": 2,
           "x": 2,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ],
       "filters": [
@@ -4359,6 +4444,7 @@
       ]
     },
     {
+      "id": 86,
       "size": 3,
       "inputs": [
         {
@@ -4371,32 +4457,32 @@
         {
           "color": "orange",
           "pressure": 2,
-          "x": 3,
+          "x": 2,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
         {
           "color": "red",
           "pressure": 2,
-          "x": 2,
+          "x": 3,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "green",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "filters": [
@@ -4409,6 +4495,7 @@
       ]
     },
     {
+      "id": 87,
       "size": 3,
       "inputs": [
         {
@@ -4422,8 +4509,8 @@
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -4445,6 +4532,7 @@
       ]
     },
     {
+      "id": 90,
       "size": 3,
       "inputs": [
         {
@@ -4473,9 +4561,9 @@
         {
           "color": "cyan",
           "pressure": 2,
-          "x": 2,
+          "x": 3,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "filters": [
@@ -4488,6 +4576,7 @@
       ]
     },
     {
+      "id": 93,
       "size": 3,
       "inputs": [
         {
@@ -4501,8 +4590,8 @@
           "color": "yellow",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -4516,9 +4605,9 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "filters": [
@@ -4537,14 +4626,15 @@
       ]
     },
     {
+      "id": 85,
       "size": 3,
       "inputs": [
         {
           "color": "purple",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "violet",
@@ -4572,6 +4662,7 @@
       ]
     },
     {
+      "id": 89,
       "size": 3,
       "inputs": [
         {
@@ -4585,8 +4676,8 @@
           "color": "green",
           "pressure": 2,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -4629,21 +4720,22 @@
       ]
     },
     {
+      "id": 92,
       "size": 3,
       "inputs": [
         {
           "color": "red",
           "pressure": 3,
-          "x": 3,
+          "x": 2,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
           "pressure": 3,
           "x": 0,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -4664,9 +4756,9 @@
         {
           "color": "green",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "filters": [
@@ -4679,28 +4771,29 @@
       ]
     },
     {
+      "id": 88,
       "size": 3,
       "inputs": [
         {
           "color": "purple",
           "pressure": 1,
-          "x": 3,
+          "x": 2,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "green",
           "pressure": 2,
           "x": 1,
-          "y": 3,
-          "dir": "down"
+          "y": 2,
+          "dir": "up"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -4708,15 +4801,15 @@
           "color": "blue",
           "pressure": 2,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "orange",
@@ -4728,21 +4821,22 @@
       ]
     },
     {
+      "id": 91,
       "size": 3,
       "inputs": [
         {
           "color": "cyan",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "violet",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -4756,35 +4850,36 @@
         {
           "color": "blue",
           "pressure": 4,
-          "x": 2,
+          "x": 3,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
           "pressure": 1,
           "x": 2,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 94,
       "size": 3,
       "inputs": [
         {
           "color": "purple",
           "pressure": 2,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "yellow",
           "pressure": 3,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -4798,35 +4893,36 @@
         {
           "color": "orange",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "orange",
           "pressure": 1,
           "x": 1,
-          "y": 2,
-          "dir": "up"
+          "y": 3,
+          "dir": "down"
         },
         {
           "color": "green",
           "pressure": 1,
-          "x": 2,
+          "x": 3,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ]
     },
     {
+      "id": 95,
       "size": 3,
       "inputs": [
         {
           "color": "green",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "blue",
@@ -4841,8 +4937,8 @@
           "color": "purple",
           "pressure": 1,
           "x": 2,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "blue",
@@ -4874,6 +4970,7 @@
       ]
     },
     {
+      "id": 96,
       "size": 4,
       "inputs": [
         {
@@ -4893,23 +4990,23 @@
         {
           "color": "yellow",
           "pressure": 1,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
           "pressure": 1,
           "x": 3,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         },
         {
           "color": "lime",
           "pressure": 1,
-          "x": 4,
+          "x": 3,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -4938,14 +5035,15 @@
       ]
     },
     {
+      "id": 97,
       "size": 4,
       "inputs": [
         {
           "color": "amber",
           "pressure": 2,
-          "x": -1,
+          "x": 0,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -4966,9 +5064,9 @@
         {
           "color": "green",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "filters": [
@@ -4981,37 +5079,38 @@
       ]
     },
     {
+      "id": 98,
       "size": 4,
       "inputs": [
         {
           "color": "violet",
           "pressure": 3,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         }
       ],
       "outputs": [
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 0,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "red",
@@ -5024,19 +5123,20 @@
           "color": "red",
           "pressure": 1,
           "x": 2,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "blue",
           "pressure": 4,
           "x": 3,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         }
       ]
     },
     {
+      "id": 99,
       "size": 4,
       "inputs": [
         {
@@ -5080,8 +5180,8 @@
           "color": "purple",
           "pressure": 1,
           "x": 3,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "purple",
@@ -5093,6 +5193,7 @@
       ]
     },
     {
+      "id": 100,
       "size": 4,
       "inputs": [
         {
@@ -5106,8 +5207,8 @@
           "color": "yellow",
           "pressure": 1,
           "x": 1,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         },
         {
           "color": "violet",
@@ -5122,22 +5223,22 @@
           "color": "yellow",
           "pressure": 3,
           "x": 2,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "red",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "magenta",
@@ -5149,9 +5250,9 @@
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 2,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "filters": [
@@ -5164,14 +5265,15 @@
       ]
     },
     {
+      "id": 101,
       "size": 4,
       "inputs": [
         {
           "color": "red",
           "pressure": 1,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "violet",
@@ -5184,8 +5286,8 @@
           "color": "yellow",
           "pressure": 2,
           "x": 1,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         },
         {
           "color": "red",
@@ -5214,8 +5316,8 @@
           "color": "blue",
           "pressure": 1,
           "x": 3,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         }
       ],
       "filters": [
@@ -5228,14 +5330,15 @@
       ]
     },
     {
+      "id": 102,
       "size": 4,
       "inputs": [
         {
           "color": "purple",
           "pressure": 2,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "green",
@@ -5247,9 +5350,9 @@
         {
           "color": "orange",
           "pressure": 3,
-          "x": -1,
+          "x": 0,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "outputs": [
@@ -5263,30 +5366,30 @@
         {
           "color": "red",
           "pressure": 3,
-          "x": 3,
+          "x": 4,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "brown",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "brown",
           "pressure": 1,
           "x": 1,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 3,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "yellow",
@@ -5298,21 +5401,22 @@
       ]
     },
     {
+      "id": 103,
       "size": 4,
       "inputs": [
         {
           "color": "blue",
           "pressure": 1,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "blue",
           "pressure": 1,
           "x": 3,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "amber",
@@ -5333,9 +5437,9 @@
         {
           "color": "red",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "purple",
@@ -5347,13 +5451,14 @@
         {
           "color": "yellow",
           "pressure": 2,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 104,
       "size": 4,
       "inputs": [
         {
@@ -5389,9 +5494,9 @@
         {
           "color": "green",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "filters": [
@@ -5410,21 +5515,22 @@
       ]
     },
     {
+      "id": 105,
       "size": 4,
       "inputs": [
         {
           "color": "brown",
           "pressure": 3,
           "x": 0,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 2,
-          "x": 4,
+          "x": 3,
           "y": 1,
-          "dir": "right"
+          "dir": "left"
         }
       ],
       "outputs": [
@@ -5445,16 +5551,16 @@
         {
           "color": "purple",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 3,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 3,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "green",
@@ -5466,21 +5572,22 @@
         {
           "color": "purple",
           "pressure": 1,
-          "x": 0,
+          "x": -1,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         }
       ]
     },
     {
+      "id": 106,
       "size": 4,
       "inputs": [
         {
           "color": "purple",
           "pressure": 1,
-          "x": 4,
+          "x": 3,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "gold",
@@ -5501,9 +5608,9 @@
         {
           "color": "cyan",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
@@ -5523,6 +5630,7 @@
       ]
     },
     {
+      "id": 107,
       "size": 4,
       "inputs": [
         {
@@ -5536,8 +5644,8 @@
           "color": "brown",
           "pressure": 2,
           "x": 1,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -5545,15 +5653,15 @@
           "color": "lime",
           "pressure": 1,
           "x": 0,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "yellow",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 0,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "blue",
@@ -5565,9 +5673,9 @@
         {
           "color": "orange",
           "pressure": 1,
-          "x": 3,
+          "x": 4,
           "y": 2,
-          "dir": "left"
+          "dir": "right"
         }
       ],
       "filters": [
@@ -5580,14 +5688,15 @@
       ]
     },
     {
+      "id": 108,
       "size": 4,
       "inputs": [
         {
           "color": "purple",
           "pressure": 2,
           "x": 1,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         },
         {
           "color": "yellow",
@@ -5602,8 +5711,8 @@
           "color": "red",
           "pressure": 1,
           "x": 1,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "blue",
@@ -5615,9 +5724,9 @@
         {
           "color": "blue",
           "pressure": 3,
-          "x": 3,
+          "x": 4,
           "y": 1,
-          "dir": "left"
+          "dir": "right"
         },
         {
           "color": "yellow",
@@ -5637,14 +5746,15 @@
       ]
     },
     {
+      "id": 109,
       "size": 4,
       "inputs": [
         {
           "color": "red",
           "pressure": 1,
-          "x": 4,
+          "x": 3,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "red",
@@ -5680,15 +5790,15 @@
           "color": "magenta",
           "pressure": 2,
           "x": 3,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "orange",
           "pressure": 1,
           "x": 2,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         },
         {
           "color": "orange",
@@ -5700,21 +5810,22 @@
       ]
     },
     {
+      "id": 110,
       "size": 4,
       "inputs": [
         {
           "color": "violet",
           "pressure": 2,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "red",
           "pressure": 1,
           "x": 0,
-          "y": 4,
-          "dir": "down"
+          "y": 3,
+          "dir": "up"
         }
       ],
       "outputs": [
@@ -5729,8 +5840,8 @@
           "color": "blue",
           "pressure": 1,
           "x": 3,
-          "y": 0,
-          "dir": "down"
+          "y": -1,
+          "dir": "up"
         },
         {
           "color": "orange",
@@ -5743,8 +5854,8 @@
           "color": "yellow",
           "pressure": 1,
           "x": 1,
-          "y": 3,
-          "dir": "up"
+          "y": 4,
+          "dir": "down"
         }
       ],
       "filters": [
@@ -5757,21 +5868,22 @@
       ]
     },
     {
+      "id": 111,
       "size": 4,
       "inputs": [
         {
           "color": "red",
           "pressure": 2,
           "x": 2,
-          "y": -1,
-          "dir": "up"
+          "y": 0,
+          "dir": "down"
         },
         {
           "color": "blue",
           "pressure": 1,
-          "x": 4,
+          "x": 3,
           "y": 0,
-          "dir": "right"
+          "dir": "left"
         },
         {
           "color": "lime",

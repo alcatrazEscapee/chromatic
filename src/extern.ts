@@ -25,8 +25,17 @@ type AssetMap<Texture> = {
 };
 
 type NetworkFlow = [number, number, DirectionId, ColorId, PressureId];
-type NetworkPuzzle = { size: GridId, inputs: NetworkFlow[], outputs: NetworkFlow[] };
-type NetworkData = { puzzles: NetworkPuzzle[] };
+
+interface NetworkPuzzle {
+    id: number,
+    size: GridId,
+    inputs: NetworkFlow[],
+    outputs: NetworkFlow[]
+};
+
+type NetworkData = {
+    puzzles: NetworkPuzzle[]
+};
 
 type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
 
@@ -95,7 +104,10 @@ const enum Constants {
     COLOR_WHITE = 0xffffff,
     COLOR_GREEN = 0x00b000,
 
-    SIMULATOR_TICKS_PER_STEP = 40,
+    TICKS_PER_SIMULATOR_STEP = 40,
+    TICKS_PER_LEAK_BLOB = 3,
+
+    MAX_BLOBS_PER_LEAK = 40,
 }
 
 const enum ColorId {
@@ -126,8 +138,6 @@ const enum DirectionId {
     UP = 1,
     RIGHT = 2,
     DOWN = 3,
-
-    length = 4,
 }
 
 const enum AxisId {
