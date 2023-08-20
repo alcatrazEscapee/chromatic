@@ -272,15 +272,30 @@ export class Simulator {
                     return;
                 }
 
-                const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
-                const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
-                
-                tile.addFlow(keyDir, new PartialFlow(palette, mix, outDir, false));
-                this.enqueue(left, outDir, mix, 1);
+                {
+                    const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
+                    const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
+                    
+                    tile.addFlow(keyDir, new PartialFlow(palette, mix, outDir, false));
+                    this.enqueue(left, outDir, mix, 1 as PressureId);
+                }
                 break;
             case TileId.UNMIX:
                 break;
             case TileId.UP:
+                // Up requires equal colors
+                if (left.color !== right.color) {
+                    this.addLeakAt(palette, left, right);
+                    return;
+                }
+
+                {
+                    const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
+                    const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
+
+                    tile.addFlow(keyDir, new PartialFlow(palette, left.color, outDir, false));
+                    this.enqueue(left, outDir, left.color, left.pressure + right.pressure);
+                }
                 break;
             case TileId.DOWN:
                 break;

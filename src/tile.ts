@@ -18,9 +18,6 @@ export class Tile {
 
     dir: DirectionId;
     
-    // Prevents us from immediately rotating a tile the first time it's dropped
-    private skipFirstRotate: boolean = true;
-
     constructor(palette: TexturePalette<Texture>, tileId: TileId) {
 
         this.tileId = tileId;
@@ -41,10 +38,6 @@ export class Tile {
     }
 
     public rotate(): void {
-        if (this.skipFirstRotate) {
-            this.skipFirstRotate = false;
-            return;
-        }
         this.dir = Util.cw(this.dir);
         this.pipe.angle += 90; // Only rotate the pipe - not the icon
         for (const flow of this.flows) {
