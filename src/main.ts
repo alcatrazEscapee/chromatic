@@ -11,10 +11,12 @@ declare global {
 }
 
 const enum StateId {
-    PLAY = 0,
-    SIMULATION = 1,
-    VICTORY = 2,
-    MENU = 3,
+    PLAY,
+    DRAGGING_TILE,
+    CONFIGURE_TILE,
+    SIMULATION,
+    VICTORY,
+    MENU,
 }
 
 
@@ -24,10 +26,13 @@ class Game {
     readonly core: AssetMap<Texture>;
     readonly tiles: (Tile | null)[];
 
-    readonly gridContainer: Container;
-    readonly tilesContainer: Container;
-    readonly edgesContainer: Container;
-    readonly heldContainer: Container;
+    // UI Layer (background display)
+    readonly gridContainer: Container; // The NxN grid, which is puzzle-dependent
+    // Buttons layer (all tile buttons, start, stop, etc.)
+    readonly tilesContainer: Container; // All placed tiles
+    readonly edgesContainer: Container; // All input / output edges. Also holds input / output flows, added by the simulator
+    readonly topContainer: Container; // Top layer (held sprite, things that need to be fully top level)
+
     readonly palettes: PaletteMap<Texture>;
 
     readonly btnPlay: Sprite;
@@ -38,7 +43,18 @@ class Game {
     puzzle: NetworkPuzzle | null = null;
     state: StateId = StateId.PLAY;
     grid: GridId = GridId.DEFAULT;
-    heldTile: Tile | null = null;
+
+    held: Tile | null = null;
+
+    cfgWaitHandle: NodeJS.Timeout | null = null;
+    cfgIndex: number = 0;
+
+    // The last recorded screenX / screenY of the mouse, from mouse move event
+    screenX: number = 0;
+    screenY: number = 0;
+
+    // If `true`, the next tap on the stage will by ignored
+    bypassNextTap: boolean = false;;
 
     constructor(app: Application, core: AssetMap<Texture>) {
         
@@ -49,7 +65,7 @@ class Game {
         this.gridContainer = new PIXI.Container();
         this.tilesContainer = new PIXI.Container();
         this.edgesContainer = new PIXI.Container();
-        this.heldContainer = new PIXI.Container();
+        this.topContainer = new PIXI.Container();
 
         this.palettes = [
             {
@@ -102,7 +118,7 @@ class Game {
             const tileId: TileId = i;
             const btn = new PIXI.Sprite();
 
-            btn.hitArea = new PIXI.Rectangle(10 + (i % 4) * 80, 438 + Math.floor(i / 4) * 80, 72, 72);
+            btn.hitArea = new PIXI.Rectangle(10 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66, 60, 60);
             btn.eventMode = 'static';
             btn.on('pointerdown', event => this.grabTile(event, tileId));
             
@@ -110,13 +126,13 @@ class Game {
         }
 
         this.btnPlay = new PIXI.Sprite(this.core.ui_btn_play);
-        this.btnPlay.position.set(333, 438);
+        this.btnPlay.position.set(330, 438);
         this.btnPlay.eventMode = 'static';
         this.btnPlay.on('pointertap', event => this.onPlay(event));
         buttons.addChild(this.btnPlay);
 
         this.btnStop = new PIXI.Sprite(this.core.ui_btn_stop);
-        this.btnStop.position.set(364, 440);
+        this.btnStop.position.set(361, 440);
         this.btnStop.eventMode = 'static';
         this.btnStop.alpha = 0.5;
         this.btnStop.on('pointertap', event => this.onStop(event));
@@ -129,12 +145,13 @@ class Game {
         stage.addChild(buttons);
         stage.addChild(this.tilesContainer);
         stage.addChild(this.edgesContainer);
-        stage.addChild(this.heldContainer);
+        stage.addChild(this.topContainer);
 
         stage.eventMode = 'static';
-        stage.on('pointertap', event => this.rotateTile(event));
-        stage.on('pointerup', event => this.dropTile(event));
-        stage.on('pointermove', event => this.move(event));
+        stage.on('pointertap', event => this.onPointerTap(event));
+        stage.on('pointerdown', event => this.onPointerDown(event));
+        stage.on('pointerup', event => this.onPointerUp(event));
+        stage.on('pointermove', event => this.onPointerMove(event));
     }
 
     /**
@@ -158,7 +175,7 @@ class Game {
             this.tiles.push(null);
         }
 
-        for (const [x, y, dir, color, pressure] of puzzle.inputs) {
+        for (const [x, y, dir, color, _] of puzzle.inputs) {
             const edge = new PIXI.Container();
             const edgePipe = new PIXI.Sprite(palette.textures[TileId.EDGE]);
             
@@ -185,7 +202,7 @@ class Game {
             this.edgesContainer.addChild(edge);
         }
 
-        for (const [x, y, dir, color, pressure] of puzzle.outputs) {
+        for (const [x, y, dir, color, _] of puzzle.outputs) {
             const edge = new PIXI.Container();
             const edgePipe = new PIXI.Sprite(palette.textures[TileId.EDGE]);
 
@@ -214,37 +231,84 @@ class Game {
         this.puzzle = puzzle;
     }
 
-    private move(event: FederatedPointerEvent): void {
-        if (this.heldTile) {
-            const held = this.heldContainer.children[0]!;
+    private grabTile(event: FederatedPointerEvent, tileId: TileId): void {
+        if (this.state == StateId.PLAY) {
+            this.held = new Tile(this.palettes[Constants.HELD_TILE_GRID_ID], tileId);
+            this.held.root.position.set(event.screenX, event.screenY);
+            this.state = StateId.DRAGGING_TILE;
+
+            this.topContainer.addChild(this.held.root);
+        }
+    }
+
+    private onPointerMove(event: FederatedPointerEvent): void {
+        this.screenX = event.screenX;
+        this.screenY = event.screenY;
+
+        // Update the position of the held tile
+        if (this.held) {
+            const held = this.held.root;
             held.x = event.screenX;
             held.y = event.screenY;
         }
     }
 
-    private grabTile(event: FederatedPointerEvent, tileId: TileId): void {
-        if (this.state == StateId.PLAY && !this.heldTile) {
-            this.heldTile = new Tile(this.palettes[Constants.HELD_TILE_GRID_ID], tileId);
-            this.heldTile.root.position.set(event.screenX, event.screenY);
+    private onPointerDown(event: FederatedPointerEvent): void {
+        // Clear any previous handle
+        if (this.cfgWaitHandle !== null) {
+            clearTimeout(this.cfgWaitHandle);
+            this.cfgWaitHandle = null;
+        }
 
-            this.heldContainer.addChild(this.heldTile.root);
+        if (this.state == StateId.PLAY && this.isInGrid(event)) {
+            // Detect if we have a long tap on a action tile which supports configuration
+            const pos = this.projectToGrid(event);
+            const tile: Tile | null = this.tiles[pos.index]!;
+            
+            if (tile !== null && (tile.tileId == TileId.UNMIX || tile.tileId == TileId.DOWN)) {
+                this.cfgWaitHandle = setTimeout(() => this.onPointerHeld(), Constants.POINTER_HOLD_MS);
+                this.cfgIndex = pos.index;
+            }
         }
     }
 
-    private dropTile(event: FederatedPointerEvent): void {
-        if (this.heldTile) {
-            const heldTile: Tile = this.heldTile;
+    private onPointerHeld(): void {
+        this.cfgWaitHandle = null; // Clear any handles
 
-            if (Util.isIn(event.screenX, event.screenY, Constants.GRID_LEFT, Constants.GRID_TOP, Constants.GRID_SIZE)) {
+        if (this.state == StateId.PLAY && this.isInGrid(this)) {
+            const pos = this.projectToGrid(this);
+
+            if (pos.index === this.cfgIndex) { // If we are on the same tile we started holding on, then start configuring
+                const root: Container = new PIXI.Container();
+
+                // Add an overlay at 80% opacity over the rest
+                const overlay = new PIXI.Graphics();
+                overlay.beginFill('#000');
+                overlay.drawRect(0, 0, 400, 400);
+                overlay.alpha = 0.8;
+
+                root.addChild(overlay);
+
+                this.topContainer.addChild(root);
+
+                this.state = StateId.CONFIGURE_TILE;
+                this.bypassNextTap = true;
+            }
+        }
+    }
+
+    private onPointerUp(event: FederatedPointerEvent): void {
+        if (this.state === StateId.DRAGGING_TILE) {
+            const heldTile: Tile = this.held!;
+
+            if (this.isInGrid(event)) {
                 const palette = this.palettes[this.grid];
-                const tileX: number = Math.floor((event.screenX - Constants.GRID_LEFT) / palette.tileWidth);
-                const tileY: number = Math.floor((event.screenY - Constants.GRID_TOP) / palette.tileWidth);
-                const tileIndex: number = tileX + palette.width * tileY;
+                const pos = this.projectToGrid(event);
 
                 // Replace the previous tile, if it exists
-                const prevTile = this.tiles[tileIndex]!;
+                const prevTile = this.tiles[pos.index]!;
                 if (prevTile !== null) {
-                    this.tiles[tileIndex] = null;
+                    this.tiles[pos.index] = null;
                     prevTile.destroy();
                 }
 
@@ -253,33 +317,42 @@ class Game {
                     const newTile = new Tile(palette, heldTile.tileId);
                     
                     newTile.root.position.set(
-                        Constants.GRID_LEFT + tileX * palette.tileWidth + palette.tileWidth / 2,
-                        Constants.GRID_TOP + tileY * palette.tileWidth + palette.tileWidth / 2);
+                        Constants.GRID_LEFT + pos.x * palette.tileWidth + palette.tileWidth / 2,
+                        Constants.GRID_TOP + pos.y * palette.tileWidth + palette.tileWidth / 2);
                     
-                    this.tiles[tileIndex] = newTile;
+                    this.tiles[pos.index] = newTile;
                     this.tilesContainer.addChild(newTile.root);
                 }
             }
 
-            this.heldTile = null;
+            this.held = null;
+            this.state = StateId.PLAY;
+            this.bypassNextTap = true; // Don't rotate the tile immediately
             heldTile.destroy();
         }
     }
 
-    private rotateTile(event: FederatedPointerEvent): void {
-        if (this.state == StateId.PLAY &&
-            !this.heldTile &&
-            Util.isIn(event.screenX, event.screenY, Constants.GRID_LEFT, Constants.GRID_TOP, Constants.GRID_SIZE)) {
-            const palette = this.palettes[this.grid];
+    private onPointerTap(event: FederatedPointerEvent): void {
+        if (this.bypassNextTap) {
+            this.bypassNextTap = false;
+            return;
+        }
 
-            const tileX: number = Math.floor((event.screenX - Constants.GRID_LEFT) / palette.tileWidth);
-            const tileY: number = Math.floor((event.screenY - Constants.GRID_TOP) / palette.tileWidth);
-            const tileIndex: number = tileX + palette.width * tileY;
+        if (this.state == StateId.PLAY && this.isInGrid(event)) {
+            const pos = this.projectToGrid(event);
+            const tile: Tile | null = this.tiles[pos.index]!;
 
-            const tile = this.tiles[tileIndex]!;
             if (tile !== null) {
                 tile.rotate();
             }
+        }
+
+        if (this.state == StateId.CONFIGURE_TILE) {
+            // If we tap elsewhere on the stage while configuring a tile, then it's done
+            this.state = StateId.PLAY;
+
+            // Remove the overlay
+            this.topContainer.children[0]?.destroy();
         }
     }
 
@@ -313,7 +386,23 @@ class Game {
     private onSimulatorTick(delta: number): void {
         this.simulator.tick(delta, this.palettes[this.grid], this.tiles);
     }
+
+    /** Returns true if the given position is within the grid */
+    private isInGrid(event: { screenX: number, screenY: number }): boolean {
+        return Util.isIn(event.screenX, event.screenY, Constants.GRID_LEFT, Constants.GRID_TOP, Constants.GRID_SIZE);
+    }
+
+    /** If a point is `isInGrid()`, then this returns the tile X, Y coordinates for that point. */
+    private projectToGrid(event: { screenX: number, screenY: number }): Point & { index: number } {
+        const palette = this.palettes[this.grid];
+        const x: number = Math.floor((event.screenX - Constants.GRID_LEFT) / palette.tileWidth);
+        const y: number = Math.floor((event.screenY - Constants.GRID_TOP) / palette.tileWidth);
+        const index: number = x + palette.width * y;
+        
+        return { x, y, index };
+    }
 }
+
 
 
 async function main() {

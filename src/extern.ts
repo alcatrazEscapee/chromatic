@@ -1,5 +1,8 @@
 declare const PIXI: typeof import('pixi.js');
 
+
+type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
+
 type JsonAssetId = 'puzzles'
 type ImageAssetId = 'play_ui'
     | 'ui_btn_play' | 'ui_btn_stop'
@@ -33,11 +36,9 @@ interface NetworkPuzzle {
     outputs: NetworkFlow[]
 };
 
-type NetworkData = {
+interface NetworkData {
     puzzles: NetworkPuzzle[]
 };
-
-type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
 
 type PaletteMap<T> = {
     [_ in GridId]: TexturePalette<T>
@@ -108,6 +109,8 @@ const enum Constants {
     TICKS_PER_LEAK_BLOB = 3,
 
     MAX_BLOBS_PER_LEAK = 40,
+
+    POINTER_HOLD_MS = 400,
 }
 
 const enum ColorId {
@@ -145,4 +148,4 @@ const enum AxisId {
     VERTICAL = 1,
 }
 
-type PressureId = 0 | 1 | 2 | 3;
+type PressureId = number;
