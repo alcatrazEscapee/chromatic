@@ -83,7 +83,7 @@ export class Leak {
         for (const blob of this.blobs) {
             blob.obj.x += blob.dx * 0.2 * delta;
             blob.obj.y += blob.dy * 0.2 * delta;
-            blob.obj.alpha -= 0.008 * delta;
+            blob.obj.alpha -= 0.006 * delta * (2 - blob.obj.alpha);
 
             const scale = blob.obj.scale.x * 0.995;
             blob.obj.scale.set(scale);

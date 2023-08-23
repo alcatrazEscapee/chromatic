@@ -3,14 +3,16 @@ declare const PIXI: typeof import('pixi.js');
 
 type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
 
+type AssetPipeSize = '72' | '90' | '120';
+type AssetPipeType = 'straight' | 'curve' | 'cross' | 'mix' | 'unmix' | 'up' | 'down';
+
 type JsonAssetId = 'puzzles'
 type ImageAssetId = 'play_ui'
     | 'ui_btn_play' | 'ui_btn_stop'
+    | `ui_btn_pipe_${AssetPipeType | 'empty'}`
     | 'grid_3x3' | 'grid_4x4' | 'grid_5x5'
     | 'pipe_empty'
-    | 'pipe_edge_72' | 'pipe_straight_72' | 'pipe_curve_72' | 'pipe_cross_72' | 'pipe_action_72' | 'pipe_mix_72' | 'pipe_unmix_72' | 'pipe_up_72' | 'pipe_down_72'
-    | 'pipe_edge_90' | 'pipe_straight_90' | 'pipe_curve_90' | 'pipe_cross_90' | 'pipe_action_90' | 'pipe_mix_90' | 'pipe_unmix_90' | 'pipe_up_90' | 'pipe_down_90'
-    | 'pipe_edge_120' | 'pipe_straight_120' | 'pipe_curve_120' | 'pipe_cross_120' | 'pipe_action_120' | 'pipe_mix_120' | 'pipe_unmix_120' | 'pipe_up_120' | 'pipe_down_120'
+    | `pipe_${AssetPipeType | 'action' | 'edge'}_${AssetPipeSize}`
     ;
 
 type AssetId = JsonAssetId | ImageAssetId;
@@ -27,14 +29,32 @@ type AssetMap<Texture> = {
     [key in AssetId]: AssetDerivedType<key, Texture>
 };
 
-type NetworkFlow = [number, number, DirectionId, ColorId, PressureId];
 
-interface NetworkPuzzle {
-    id: number,
-    size: GridId,
-    inputs: NetworkFlow[],
-    outputs: NetworkFlow[]
-};
+type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, PressureId];
+
+type NetworkFlowAtInput<N, R>
+    = NetworkFlowAt<R, 0, DirectionId.DOWN>
+    | NetworkFlowAt<N, R, DirectionId.LEFT>
+    | NetworkFlowAt<R, N, DirectionId.UP>
+    | NetworkFlowAt<0, R, DirectionId.RIGHT>
+
+type NetworkFlowAtOutput<N, R>
+    = NetworkFlowAt<R, N, DirectionId.DOWN>
+    | NetworkFlowAt<-1, R, DirectionId.LEFT>
+    | NetworkFlowAt<R, -1, DirectionId.UP>
+    | NetworkFlowAt<N, R, DirectionId.RIGHT>;
+
+interface NetworkPuzzleSized<Grid, N, N1, R> {
+    size: Grid,
+    inputs: NetworkFlowAtInput<N, R>[],
+    outputs: NetworkFlowAtOutput<N1, R>[],
+}
+
+type NetworkPuzzle = { id: number } & (
+    NetworkPuzzleSized<GridId._3x3, 2, 3, 0 | 1 | 2> |
+    NetworkPuzzleSized<GridId._4x4, 3, 4, 0 | 1 | 2 | 3> |
+    NetworkPuzzleSized<GridId._5x5, 4, 5, 0 | 1 | 2 | 3 | 4>
+);
 
 interface NetworkData {
     puzzles: NetworkPuzzle[]
@@ -130,6 +150,8 @@ const enum ColorId {
     GOLD = 10,
     VIOLET = 11,
     MAGENTA = 12,
+
+    last = MAGENTA,
 }
 
 type Point = { x: number, y: number };
