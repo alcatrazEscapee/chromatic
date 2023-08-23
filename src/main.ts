@@ -14,6 +14,7 @@ const enum StateId {
     PLAY,
     DRAGGING_TILE,
     CONFIGURE_TILE,
+    DRAGGING_COLOR,
     SIMULATION,
     VICTORY,
     MENU,
@@ -28,10 +29,13 @@ class Game {
 
     // UI Layer (background display)
     readonly gridContainer: Container; // The NxN grid, which is puzzle-dependent
-    // Buttons layer (all tile buttons, start, stop, etc.)
+    readonly buttonsContainer: Container; // All tile buttons, start, stop, etc.)
     readonly tilesContainer: Container; // All placed tiles
     readonly edgesContainer: Container; // All input / output edges. Also holds input / output flows, added by the simulator
     readonly topContainer: Container; // Top layer (held sprite, things that need to be fully top level)
+
+    readonly tileButtonsContainer: Container; // The buttons for picking up + dragging each tile
+    readonly colorButtonsContainer: Container; // The buttons for selecting a color for the unmix configuration
 
     readonly palettes: PaletteMap<Texture>;
 
@@ -45,6 +49,7 @@ class Game {
     grid: GridId = GridId.DEFAULT;
 
     held: Tile | null = null;
+    heldColor: Sprite | null = null;
 
     cfgWaitHandle: NodeJS.Timeout | null = null;
     cfgIndex: number = 0;
@@ -63,9 +68,13 @@ class Game {
         this.tiles = [];
 
         this.gridContainer = new PIXI.Container();
+        this.buttonsContainer = new PIXI.Container();
         this.tilesContainer = new PIXI.Container();
         this.edgesContainer = new PIXI.Container();
         this.topContainer = new PIXI.Container();
+
+        this.tileButtonsContainer = new PIXI.Container();
+        this.colorButtonsContainer = new PIXI.Container();
 
         this.palettes = [
             {
@@ -112,37 +121,56 @@ class Game {
         this.simulator = new Simulator(this.edgesContainer);
 
         const ui = new PIXI.Sprite(this.core.play_ui);
-        const buttons = new PIXI.Container();
 
+        const tileButtonTextures = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
         for (let i = 0; i <= TileId.LAST; i++) {
             const tileId: TileId = i;
-            const btn = new PIXI.Sprite();
+            const btn = new PIXI.Sprite(tileButtonTextures[i]);
 
-            btn.hitArea = new PIXI.Rectangle(10 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66, 60, 60);
+            btn.position.set(10 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66);
             btn.eventMode = 'static';
             btn.on('pointerdown', event => this.grabTile(event, tileId));
             
-            buttons.addChild(btn);
+            this.tileButtonsContainer.addChild(btn);
+        }
+
+        for (let i = 0; i <= ColorId.last; i++) {
+            const color: ColorId = i;
+            const btn = new PIXI.Graphics();
+            const offset = color == ColorId.BROWN ? 7
+                : color < ColorId.BROWN ? i : i + 2;
+
+            btn.beginFill(COLORS[color]);
+            btn.drawCircle(0, 0, 12);
+            btn.position.set(22 + Math.floor(offset / 3) * 40, 460 + (offset % 3) * 40);
+
+            btn.eventMode = 'static';
+            btn.on('pointerdown', event => this.grabColor(event, color));
+
+            this.colorButtonsContainer.addChild(btn);
         }
 
         this.btnPlay = new PIXI.Sprite(this.core.ui_btn_play);
         this.btnPlay.position.set(330, 438);
         this.btnPlay.eventMode = 'static';
         this.btnPlay.on('pointertap', event => this.onPlay(event));
-        buttons.addChild(this.btnPlay);
+        this.buttonsContainer.addChild(this.btnPlay);
 
         this.btnStop = new PIXI.Sprite(this.core.ui_btn_stop);
         this.btnStop.position.set(361, 440);
         this.btnStop.eventMode = 'static';
         this.btnStop.alpha = 0.5;
         this.btnStop.on('pointertap', event => this.onStop(event));
-        buttons.addChild(this.btnStop);
+        this.buttonsContainer.addChild(this.btnStop);
 
         const stage = this.app.stage;
 
+        // Default with tile buttons visible
+        this.buttonsContainer.addChild(this.tileButtonsContainer);
+
         stage.addChild(ui);
         stage.addChild(this.gridContainer);
-        stage.addChild(buttons);
+        stage.addChild(this.buttonsContainer);
         stage.addChild(this.tilesContainer);
         stage.addChild(this.edgesContainer);
         stage.addChild(this.topContainer);
@@ -241,15 +269,25 @@ class Game {
         }
     }
 
+    private grabColor(event: FederatedPointerEvent, color: ColorId): void {
+        if (this.state === StateId.CONFIGURE_TILE) {
+            this.heldColor = new PIXI.Sprite(this.core.ui_btn_stop);
+            this.state = StateId.DRAGGING_COLOR;
+
+            this.topContainer.addChild(this.heldColor);
+        }
+    }
+
     private onPointerMove(event: FederatedPointerEvent): void {
         this.screenX = event.screenX;
         this.screenY = event.screenY;
 
-        // Update the position of the held tile
+        // Update the position of the held object
         if (this.held) {
-            const held = this.held.root;
-            held.x = event.screenX;
-            held.y = event.screenY;
+            this.held.root.position.set(event.screenX, event.screenY);
+        }
+        if (this.heldColor) {
+            this.heldColor.position.set(event.screenX, event.screenY);
         }
     }
 
@@ -279,18 +317,7 @@ class Game {
             const pos = this.projectToGrid(this);
 
             if (pos.index === this.cfgIndex) { // If we are on the same tile we started holding on, then start configuring
-                const root: Container = new PIXI.Container();
-
-                // Add an overlay at 80% opacity over the rest
-                const overlay = new PIXI.Graphics();
-                overlay.beginFill('#000');
-                overlay.drawRect(0, 0, 400, 400);
-                overlay.alpha = 0.8;
-
-                root.addChild(overlay);
-
-                this.topContainer.addChild(root);
-
+                this.enterCfg();
                 this.state = StateId.CONFIGURE_TILE;
                 this.bypassNextTap = true;
             }
@@ -301,6 +328,7 @@ class Game {
         if (this.state === StateId.DRAGGING_TILE) {
             const heldTile: Tile = this.held!;
 
+            let placedTileHasCfg = false;
             if (this.isInGrid(event)) {
                 const palette = this.palettes[this.grid];
                 const pos = this.projectToGrid(event);
@@ -322,13 +350,22 @@ class Game {
                     
                     this.tiles[pos.index] = newTile;
                     this.tilesContainer.addChild(newTile.root);
+
+                    placedTileHasCfg = newTile.tileId === TileId.UNMIX || newTile.tileId === TileId.DOWN;
                 }
             }
 
             this.held = null;
             this.state = StateId.PLAY;
             this.bypassNextTap = true; // Don't rotate the tile immediately
+
             heldTile.destroy();
+
+            // If we just placed a new tile requiring configuration, then jump straight to the cfg UI
+            if (placedTileHasCfg) {
+                this.enterCfg();
+                this.state = StateId.CONFIGURE_TILE;
+            } 
         }
     }
 
@@ -350,9 +387,7 @@ class Game {
         if (this.state == StateId.CONFIGURE_TILE) {
             // If we tap elsewhere on the stage while configuring a tile, then it's done
             this.state = StateId.PLAY;
-
-            // Remove the overlay
-            this.topContainer.children[0]?.destroy();
+            this.leaveCfg();
         }
     }
 
@@ -381,6 +416,33 @@ class Game {
                 tile?.clearFlow();
             }
         }
+    }
+
+    private enterCfg(): void {
+        const root: Container = new PIXI.Container();
+
+        // Add an overlay at 80% opacity over the rest
+        const overlay = new PIXI.Graphics();
+        overlay.beginFill('#000');
+        overlay.drawRect(0, 0, 400, 400);
+        overlay.alpha = 0.8;
+
+        root.addChild(overlay);
+
+        this.topContainer.addChild(root);
+
+        // Switch out buttons
+        this.buttonsContainer.removeChild(this.tileButtonsContainer);
+        this.buttonsContainer.addChild(this.colorButtonsContainer);
+    }
+
+    private leaveCfg(): void {
+        // Remove the overlay
+        this.topContainer.children[0]?.destroy();
+
+        // Switch out buttons
+        this.buttonsContainer.removeChild(this.colorButtonsContainer);
+        this.buttonsContainer.addChild(this.tileButtonsContainer);
     }
 
     private onSimulatorTick(delta: number): void {
@@ -419,6 +481,15 @@ async function main() {
 
         ui_btn_play: 'art/ui_btn_play.png',
         ui_btn_stop: 'art/ui_btn_stop.png',
+
+        ui_btn_pipe_empty: 'art/ui_btn_pipe_empty.png',
+        ui_btn_pipe_straight: 'art/ui_btn_pipe_straight.png',
+        ui_btn_pipe_curve: 'art/ui_btn_pipe_curve.png',
+        ui_btn_pipe_cross: 'art/ui_btn_pipe_cross.png',
+        ui_btn_pipe_mix: 'art/ui_btn_pipe_mix.png',
+        ui_btn_pipe_unmix: 'art/ui_btn_pipe_unmix.png',
+        ui_btn_pipe_up: 'art/ui_btn_pipe_up.png',
+        ui_btn_pipe_down: 'art/ui_btn_pipe_down.png',
 
         grid_3x3: 'art/grid_3x3.png',
         grid_4x4: 'art/grid_4x4.png',
@@ -549,7 +620,7 @@ async function main() {
     };
 
     window.game = new Game(app, core);
-    window.game.init(core.puzzles.puzzles[0]!);
+    window.game.init(core.puzzles.puzzles[16+16+16+16+15]!);
 }
 
 window.onload = () => main();
