@@ -78,7 +78,7 @@ class Game {
             {
                 width: 3,
                 tileWidth: 120,
-                pressureWidth: 3,
+                pressureWidth: 5,
                 pipeWidth: 4,
                 insideWidth: 18,
                 insideLength: 37,
@@ -100,7 +100,7 @@ class Game {
             {
                 width: 5,
                 tileWidth: 72,
-                pressureWidth: 5,
+                pressureWidth: 3,
                 pipeWidth: 5,
                 insideWidth: 10,
                 insideLength: 22,
@@ -202,14 +202,14 @@ class Game {
             edgePipe.anchor.set(0.5);
 
             const edgeColor = new PIXI.Graphics();
+            const insideWidth = Util.insideWidth(palette, pressure);
 
             // Arrow facing left, i.e. '<'
-            // Arrow uses inside width for pressure = 1 always
             edgeColor.beginFill(COLORS[color]);
-            edgeColor.moveTo(10, -palette.insideWidth / 2);
-            edgeColor.lineTo(10, palette.insideWidth / 2);
+            edgeColor.moveTo(10, -insideWidth / 2);
+            edgeColor.lineTo(10, insideWidth / 2);
             edgeColor.lineTo(-10 + 1, 0);
-            edgeColor.lineTo(10, -palette.insideWidth / 2);
+            edgeColor.lineTo(10, -insideWidth / 2);
             edgeColor.endFill();
 
 
@@ -230,14 +230,15 @@ class Game {
             edgePipe.anchor.set(0.5);
 
             const edgeColor = new PIXI.Graphics();
+            const insideWidth = Util.insideWidth(palette, pressure);
 
             // Arrow facing left, i.e. '<'
             // Arrow uses inside width for pressure = 1 always
             edgeColor.beginFill(COLORS[color]);
-            edgeColor.moveTo(10 - 1, -palette.insideWidth / 2);
-            edgeColor.lineTo(10 - 1, palette.insideWidth / 2);
+            edgeColor.moveTo(10 - 1, -insideWidth / 2);
+            edgeColor.lineTo(10 - 1, insideWidth / 2);
             edgeColor.lineTo(-10, 0);
-            edgeColor.lineTo(10 - 1, -palette.insideWidth / 2);
+            edgeColor.lineTo(10 - 1, -insideWidth / 2);
             edgeColor.endFill();
 
             edge.addChild(edgeColor);

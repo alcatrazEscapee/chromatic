@@ -70,7 +70,7 @@ export class Simulator {
             this.queue.push({ x, y, dir, color, pressure });
 
             // Additionally, create and start input flows
-            this.addEdgeFlow(palette, x, y, dir, color, true);
+            this.addEdgeFlow(palette, x, y, dir, color, pressure, true);
         }
 
         for (const [x, y, dir, color, pressure] of puzzle.outputs) {
@@ -112,7 +112,7 @@ export class Simulator {
                         out.satisfied = true;
                         found = true;
 
-                        this.addEdgeFlow(palette, inc.x, inc.y, inc.dir, inc.color, false);
+                        this.addEdgeFlow(palette, inc.x, inc.y, inc.dir, inc.color, inc.pressure, false);
                         break;
                     }
                 }
@@ -259,8 +259,8 @@ export class Simulator {
     private tickAction(palette: Palette, tile: Tile, left: IncomingFlow, right: IncomingFlow): void {
         switch (tile.tileId) {
             case TileId.MIX:
-                // Mixer requires pressure = 0
-                if (left.pressure !== 0 || right.pressure !== 0) {
+                // Mixer requires pressure = 1
+                if (left.pressure !== 1 || right.pressure !== 1) {
                     this.addLeakAt(palette, left, right);
                     return;
                 }
@@ -294,7 +294,7 @@ export class Simulator {
                     const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
 
                     tile.addFlow(keyDir, new PartialFlow(palette, left.color, outDir, false));
-                    this.enqueue(left, outDir, left.color, left.pressure + right.pressure);
+                    this.enqueue(left, outDir, left.color, (left.pressure + right.pressure) as PressureId);
                 }
                 break;
             case TileId.DOWN:
@@ -304,11 +304,11 @@ export class Simulator {
         }
     }
 
-    private addEdgeFlow(palette: Palette, x: number, y: number, dir: DirectionId, color: ColorId, input: boolean): void {
+    private addEdgeFlow(palette: Palette, x: number, y: number, dir: DirectionId, color: ColorId, pressure: PressureId, input: boolean): void {
         const pos: Point = input ?
             Util.getInputPos(palette, x, y, dir) :
             Util.getOutputPos(palette, x, y, dir);
-        const flow: Flow = new EdgeFlow(palette, color);
+        const flow: Flow = new EdgeFlow(palette, color, pressure);
 
         flow.root.position.set(pos.x, pos.y);
         flow.root.angle += 90 * dir;
