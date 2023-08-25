@@ -1,3 +1,5 @@
+import type { Texture } from "pixi.js";
+
 
 export const COLORS: {[_ in ColorId]: string} = [
     '#f00', '#00f', '#ff0',
@@ -115,5 +117,56 @@ export module Util {
                 return dir;
             }
         }
-    } 
+    }
+
+    export function buildPalette<T extends PipeAssetId>(id: T, core: PipeSpritesheet<T, Texture>): PaletteTextures<Texture> {
+        return {
+            straight: buildPalettePipe(id, 'straight', core),
+            curve: buildPalettePipe(id, 'curve', core),
+            port: buildPalettePipe(id, 'port', core),
+            edge: [
+                core.textures[`${id}_edge_1`],
+                core.textures[`${id}_edge_2`],
+                core.textures[`${id}_edge_3`],
+                core.textures[`${id}_edge_4`],
+            ],
+            action: [
+                core.textures[`${id}_mix`],
+                core.textures[`${id}_unmix`],
+                core.textures[`${id}_up`],
+                core.textures[`${id}_down`],
+            ],
+        }
+    }
+
+    function buildPalettePipe<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', core: PipeSpritesheet<T, Texture>): Array4<PalettePipeTextures<Texture>> {
+        return [
+            buildPalettePipePressure(id, key, 1, core),
+            buildPalettePipePressure(id, key, 2, core),
+            buildPalettePipePressure(id, key, 3, core),
+            buildPalettePipePressure(id, key, 4, core),
+        ]
+    }
+
+    function buildPalettePipePressure<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', pressure: 1 | 2 | 3 | 4, core: PipeSpritesheet<T, Texture>): PalettePipeTextures<Texture> {
+        return {
+            pipe: core.textures[`${id}_${key}_${pressure}`],
+            overlay: {
+                h: core.textures[`${id}_${key}_${pressure}_overlay_h`],
+                v: core.textures[`${id}_${key}_${pressure}_overlay_v`],
+            }
+        };
+    }
+
+    export function insideTop(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
+        return palette.insideTop - (pressure - 1) * palette.pressureWidth;
+    }
+
+    export function insideTopExt(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
+        return palette.insideTop - (pressure - 1) * palette.pressureWidth - palette.pipeWidth;
+    }
+
+    export function insideWidth(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
+        return palette.insideWidth + 2 * (pressure - 1) * palette.pressureWidth;
+    }
 }

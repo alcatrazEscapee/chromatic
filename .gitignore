@@ -10,10 +10,13 @@
 !/src/**/*.ts
 !/lib/**/*.js
 !/art/**/*.png
+!/art/**/*.json
 !/art-work/**/*.pdn
+!/art-work/**/*.png
+
+!/scripts/**/*.py
 
 !/data.json
 !/data-compressed.json
 !/data-rewrite.json
-!/rewrite.py
 
