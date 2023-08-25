@@ -2,35 +2,51 @@ declare const PIXI: typeof import('pixi.js');
 
 
 type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
+type Array4<T> = [T, T, T, T];
 
+
+type AssetPipeIcon = 'empty' | 'straight' | 'curve' | 'cross' | AssetPipeAction
 type AssetPipeSize = '72' | '90' | '120';
-type AssetPipeType = 'straight' | 'curve' | 'cross' | 'mix' | 'unmix' | 'up' | 'down';
+type AssetPipePressure = '1' | '2' | '3' | '4'
+type AssetPipeAction = 'mix' | 'unmix' | 'up' | 'down'
 
-type JsonAssetId = 'puzzles'
-type ImageAssetId = 'play_ui'
-    | 'ui_btn_play' | 'ui_btn_stop'
-    | `ui_btn_pipe_${AssetPipeType | 'empty'}`
+type PuzzlesAssetId = 'puzzles'
+type PipeAssetId = `pipe_${AssetPipeSize}`
+type CoreAssetId = 'ui_background'
+    | 'ui_btn_play'
+    | 'ui_btn_stop'
+    | `ui_btn_pipe_${AssetPipeIcon}`
     | 'grid_3x3' | 'grid_4x4' | 'grid_5x5'
-    | 'pipe_empty'
-    | `pipe_${AssetPipeType | 'action' | 'edge'}_${AssetPipeSize}`
-    ;
 
-type AssetId = JsonAssetId | ImageAssetId;
-type AssetType = 'json' | 'png';
-type AssetTypeOf<T extends AssetId> = T extends JsonAssetId ? 'json' : 'png';
-type AssetRoot<T extends AssetType> = T extends 'json' ? 'lib' : 'art';
-type AssetDerivedType<T extends AssetId, Texture> = 
-    T extends 'puzzles' ? NetworkData :
-    AssetTypeOf<T> extends 'png' ? Texture :
+type AssetId = PuzzlesAssetId | PipeAssetId | CoreAssetId;
+
+type AssetUrl<K extends AssetId> = 
+    K extends PuzzlesAssetId ? 'lib/puzzles.json' :
+    K extends PipeAssetId ? `art/sheets/${K}@1x.png.json` :
+    K extends CoreAssetId ? `art/${K}.png` :
+    never
+
+type AssetType<K extends AssetId, Texture> =
+    K extends PuzzlesAssetId ? NetworkData :
+    K extends PipeAssetId ? PipeSpritesheet<K, Texture> :
+    K extends CoreAssetId ? Texture :
     never;
-type AssetUrl<K extends AssetId> = `${AssetRoot<AssetTypeOf<K>>}/${K}.${AssetTypeOf<K>}`;
 
-type AssetMap<Texture> = {
-    [key in AssetId]: AssetDerivedType<key, Texture>
+type AssetManifest = { [key in AssetId]: AssetUrl<key> };
+type AssetBundle<Texture> = { [key in AssetId]: AssetType<key, Texture> };
+
+
+interface PipeSpritesheet<T extends PipeAssetId, Texture> {
+    readonly textures: { [key in PipeSpriteId<T>]: Texture }
 };
 
+type PipeSpriteId<T extends PipeAssetId> = 
+    `${T}_${'straight' | 'curve' | 'port'}_${AssetPipePressure}${'' | '_overlay_h' | '_overlay_v'}`
+    | `${T}_edge_${AssetPipePressure}`
+    | `${T}_${AssetPipeAction}`
 
-type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, PressureId];
+
+type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, 1 | 2 | 3 | 4];
 
 type NetworkFlowAtInput<N, R>
     = NetworkFlowAt<R, 0, DirectionId.DOWN>
@@ -71,19 +87,44 @@ interface Palette {
     /** The pixel width of a single tile in the grid. */
     tileWidth: number,
 
-    /** On a horizontal straight pipe, this is the height of the interior of the pipe. */
+    /** The number of pixels that each subsequent level of pressure increases pipe width by */
+    pressureWidth: number,
+
+    /** The number of pixels wide of the pipe edge. */
+    pipeWidth: number,
+
+    /**
+     * On a horizontal straight pipe with pressure=1, this is the height of the interior of the pipe.
+     * To obtain the insideWidth for a given pipe, use `Util.insideWidth`
+     */
     insideWidth: number,
+    
     /** On a split pipe, this is the horizontal distance from the left to the center square (or crossover) of the pipe. */
     insideLength: number,
-    /** On a horizontal straight pipe, this is the vertical distance from from the top-left to the interior of the pipe. */
+
+    /**
+     * On a horizontal straight pipe, this is the base vertical distance from the top-left to the interior of the pipe.
+     * To obtain the insideTop for a given pipe, use `Util.insideTop`
+     * To obtain the insideTop for the exterior of the pipe, add `Util.insideTopExt`
+     */
     insideTop: number,
+};
+
+type PalettePipeTextures<T> = {
+    pipe: T,
+    overlay: { h: T, v: T }
+};
+
+type PaletteTextures<T> = {
+    [key in 'straight' | 'curve' | 'port']: Array4<PalettePipeTextures<T>>
+} & {
+    // 'edge' is indexed by PressureId, 'action' is indexed by TileId - TileId.ACTION_START
+    [key in 'edge' | 'action']: Array4<T>
 };
 
 interface TexturePalette<T> extends Palette {
     grid: T,
-    textures: {
-        [_ in TileId]: T
-    }
+    textures: PaletteTextures<T>
 }
 
 const enum TileId {
@@ -99,6 +140,7 @@ const enum TileId {
 
     LAST = DOWN,
 
+    ACTION_START = 4,
     ACTION = 8,
     EDGE = 9,
 }
@@ -120,7 +162,7 @@ const enum Constants {
     GRID_TOP = 20,
     GRID_SIZE = 360,
 
-    HELD_TILE_GRID_ID = GridId._4x4,
+    HELD_TILE_GRID_ID = GridId._5x5,
 
     COLOR_WHITE = 0xffffff,
     COLOR_GREEN = 0x00b000,

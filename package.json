@@ -1,9 +1,6 @@
 {
   "name": "chromatic",
   "version": "0.0.1",
-  "scripts": {
-    "build": "tsc"
-  },
   "devDependencies": {
     "pixi.js": "^7.2.4",
     "ts-loader": "^9.4.4",

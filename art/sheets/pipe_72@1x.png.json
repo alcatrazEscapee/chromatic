@@ -1,0 +1,360 @@
+{
+  "frames": {
+    "pipe_72_curve_1": {
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_1_overlay_h": {
+      "frame": {
+        "x": 72,
+        "y": 0,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_1_overlay_v": {
+      "frame": {
+        "x": 144,
+        "y": 0,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_2": {
+      "frame": {
+        "x": 216,
+        "y": 0,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_2_overlay_h": {
+      "frame": {
+        "x": 288,
+        "y": 0,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_2_overlay_v": {
+      "frame": {
+        "x": 360,
+        "y": 0,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_3": {
+      "frame": {
+        "x": 432,
+        "y": 0,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_3_overlay_h": {
+      "frame": {
+        "x": 0,
+        "y": 72,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_3_overlay_v": {
+      "frame": {
+        "x": 72,
+        "y": 72,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_4": {
+      "frame": {
+        "x": 144,
+        "y": 72,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_4_overlay_h": {
+      "frame": {
+        "x": 216,
+        "y": 72,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_curve_4_overlay_v": {
+      "frame": {
+        "x": 288,
+        "y": 72,
+        "w": 72,
+        "h": 72
+      }
+    },
+    "pipe_72_port_4_overlay_v": {
+      "frame": {
+        "x": 360,
+        "y": 72,
+        "w": 28,
+        "h": 72
+      }
+    },
+    "pipe_72_straight_4_overlay_v": {
+      "frame": {
+        "x": 388,
+        "y": 72,
+        "w": 28,
+        "h": 72
+      }
+    },
+    "pipe_72_port_3_overlay_v": {
+      "frame": {
+        "x": 416,
+        "y": 72,
+        "w": 22,
+        "h": 72
+      }
+    },
+    "pipe_72_straight_3_overlay_v": {
+      "frame": {
+        "x": 438,
+        "y": 72,
+        "w": 22,
+        "h": 72
+      }
+    },
+    "pipe_72_port_2_overlay_v": {
+      "frame": {
+        "x": 460,
+        "y": 72,
+        "w": 16,
+        "h": 72
+      }
+    },
+    "pipe_72_straight_2_overlay_v": {
+      "frame": {
+        "x": 476,
+        "y": 72,
+        "w": 16,
+        "h": 72
+      }
+    },
+    "pipe_72_port_1_overlay_v": {
+      "frame": {
+        "x": 492,
+        "y": 72,
+        "w": 10,
+        "h": 72
+      }
+    },
+    "pipe_72_straight_1_overlay_v": {
+      "frame": {
+        "x": 502,
+        "y": 72,
+        "w": 10,
+        "h": 72
+      }
+    },
+    "pipe_72_port_4": {
+      "frame": {
+        "x": 0,
+        "y": 144,
+        "w": 72,
+        "h": 34
+      }
+    },
+    "pipe_72_straight_4": {
+      "frame": {
+        "x": 72,
+        "y": 144,
+        "w": 72,
+        "h": 34
+      }
+    },
+    "pipe_72_edge_4": {
+      "frame": {
+        "x": 144,
+        "y": 144,
+        "w": 20,
+        "h": 34
+      }
+    },
+    "pipe_72_port_3": {
+      "frame": {
+        "x": 164,
+        "y": 144,
+        "w": 72,
+        "h": 28
+      }
+    },
+    "pipe_72_port_4_overlay_h": {
+      "frame": {
+        "x": 236,
+        "y": 144,
+        "w": 72,
+        "h": 28
+      }
+    },
+    "pipe_72_straight_3": {
+      "frame": {
+        "x": 308,
+        "y": 144,
+        "w": 72,
+        "h": 28
+      }
+    },
+    "pipe_72_straight_4_overlay_h": {
+      "frame": {
+        "x": 380,
+        "y": 144,
+        "w": 72,
+        "h": 28
+      }
+    },
+    "pipe_72_edge_3": {
+      "frame": {
+        "x": 452,
+        "y": 144,
+        "w": 20,
+        "h": 28
+      }
+    },
+    "pipe_72_down": {
+      "frame": {
+        "x": 472,
+        "y": 144,
+        "w": 26,
+        "h": 26
+      }
+    },
+    "pipe_72_mix": {
+      "frame": {
+        "x": 0,
+        "y": 178,
+        "w": 26,
+        "h": 26
+      }
+    },
+    "pipe_72_unmix": {
+      "frame": {
+        "x": 26,
+        "y": 178,
+        "w": 26,
+        "h": 26
+      }
+    },
+    "pipe_72_up": {
+      "frame": {
+        "x": 52,
+        "y": 178,
+        "w": 26,
+        "h": 26
+      }
+    },
+    "pipe_72_port_2": {
+      "frame": {
+        "x": 78,
+        "y": 178,
+        "w": 72,
+        "h": 22
+      }
+    },
+    "pipe_72_port_3_overlay_h": {
+      "frame": {
+        "x": 150,
+        "y": 178,
+        "w": 72,
+        "h": 22
+      }
+    },
+    "pipe_72_straight_2": {
+      "frame": {
+        "x": 222,
+        "y": 178,
+        "w": 72,
+        "h": 22
+      }
+    },
+    "pipe_72_straight_3_overlay_h": {
+      "frame": {
+        "x": 294,
+        "y": 178,
+        "w": 72,
+        "h": 22
+      }
+    },
+    "pipe_72_edge_2": {
+      "frame": {
+        "x": 366,
+        "y": 178,
+        "w": 20,
+        "h": 22
+      }
+    },
+    "pipe_72_port_1": {
+      "frame": {
+        "x": 386,
+        "y": 178,
+        "w": 72,
+        "h": 16
+      }
+    },
+    "pipe_72_port_2_overlay_h": {
+      "frame": {
+        "x": 0,
+        "y": 204,
+        "w": 72,
+        "h": 16
+      }
+    },
+    "pipe_72_straight_1": {
+      "frame": {
+        "x": 72,
+        "y": 204,
+        "w": 72,
+        "h": 16
+      }
+    },
+    "pipe_72_straight_2_overlay_h": {
+      "frame": {
+        "x": 144,
+        "y": 204,
+        "w": 72,
+        "h": 16
+      }
+    },
+    "pipe_72_edge_1": {
+      "frame": {
+        "x": 216,
+        "y": 204,
+        "w": 20,
+        "h": 16
+      }
+    },
+    "pipe_72_port_1_overlay_h": {
+      "frame": {
+        "x": 236,
+        "y": 204,
+        "w": 72,
+        "h": 10
+      }
+    },
+    "pipe_72_straight_1_overlay_h": {
+      "frame": {
+        "x": 308,
+        "y": 204,
+        "w": 72,
+        "h": 10
+      }
+    }
+  },
+  "meta": {
+    "scale": 1,
+    "image": "pipe_72.png"
+  }
+}
