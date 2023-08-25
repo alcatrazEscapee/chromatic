@@ -25,15 +25,13 @@ def main():
     parser.add_argument('--src', type=str, required=True)
     parser.add_argument('--dest', type=str, required=True)
     parser.add_argument('--key', type=str, required=True)
+    parser.add_argument('--debug', action='store_true', default=False, dest='debug')
 
     args = parser.parse_args()
-    make(args.src, args.dest, args.key)
+    make(args.src, args.dest, args.key, args.debug)
 
 
-def make(
-    src: str,
-    dest: str,
-    key: str):
+def make(src: str, dest: str, key: str, debug: bool):
 
     images: list[Sprite] = []
     for path in os.listdir(src):
@@ -47,26 +45,28 @@ def make(
     for img in images:
         sheet.paste(img.img, (img.x, img.y))
     
-    sheet.save('%s/%s.png' % (dest, key))
-    
-    with open('%s/%s@1x.png.json' % (dest, key), 'w', encoding='utf-8') as f:
-        json.dump({
-            'frames': {
-                '%s_%s' % (key, img.src): {
-                    'frame': {
-                        'x': img.x,
-                        'y': img.y,
-                        'w': img.w,
-                        'h': img.h,
-                    }
+    frames = {
+        'frames': {
+            '%s_%s' % (key, img.src): {
+                'frame': {
+                    'x': img.x,
+                    'y': img.y,
+                    'w': img.w,
+                    'h': img.h,
                 }
-                for img in images
-            },
-            'meta': {
-                'scale': 1,
-                'image': '%s.png' % key,
             }
-        }, f, indent=2)
+            for img in images
+        },
+        'meta': {
+            'scale': 1,
+            'image': '%s.png' % key,
+        }
+    }
+    
+    sheet.save('%s/%s.png' % (dest, key))
+
+    with open('%s/%s@1x.png.json' % (dest, key), 'w', encoding='utf-8') as f:
+        json.dump(frames, f, indent=2 if debug else None)
 
 
 def pack(images: list[Sprite]) -> tuple[int, int]:

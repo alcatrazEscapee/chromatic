@@ -15,7 +15,7 @@ PIPE_OUT := $(PIPE_IN:%=art/sheets/pipe_%.json) $(PIPE_IN:%=art/sheets/pipe_%@1x
 FORCE :
 
 .PHONY : build
-build : data-compressed.json $(JS_OUT) $(JS_MAP) $(PNG_OUT)
+build : data-compressed.json $(JS_OUT) $(JS_MAP) $(PIPE_OUT)
 	@printf "Copying files...\n"
 	@rm -rf $(WEB)/lib
 	@mkdir -p $(WEB)/lib
@@ -29,12 +29,16 @@ $(JS_OUT) $(JS_MAP) &: $(TS_SRC) package-lock.json
 	@printf "Compiling tsc...\n"
 	@npx tsc
 
-$(PIPE_OUT) &: scripts/spritesheet.py $(PIPE_IN)
+$(PIPE_OUT) &: scripts/spritesheet.py $(PNG_IN)
 	@printf "Packing sprites...\n"
-	@python scripts/spritesheet.py --src art-work/pipe/72 --dest art/sheets/ --key pipe_72
-	@python scripts/spritesheet.py --src art-work/pipe/90 --dest art/sheets/ --key pipe_90
-	@python scripts/spritesheet.py --src art-work/pipe/120 --dest art/sheets/ --key pipe_120
+	@python scripts/spritesheet.py --src art-work/pipe/72 --dest art/sheets/ --key pipe_72 --debug
+	@python scripts/spritesheet.py --src art-work/pipe/90 --dest art/sheets/ --key pipe_90 --debug
+	@python scripts/spritesheet.py --src art-work/pipe/120 --dest art/sheets/ --key pipe_120 --debug
 
+.PHONY : temp
+temp : FORCE
+	echo $(PIPE_IN)
+	echo $(PIPE_OUT)
 
 data-compressed.json data-rewrite.json &: scripts/rewrite.py data.json
 	@printf "Writing puzzles.json..."
