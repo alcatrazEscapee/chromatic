@@ -1,8 +1,10 @@
 import type { Container } from "pixi.js";
 
-import { Tile } from "./tile.js";
+import type { Tile } from "./tile.js";
+import type { Flow } from "./flow.js";
+
+import { EdgeFlow, StraightFlow, CrossUnderFlow, CurveFlow, PartialFlow } from "./flow.js";
 import { Util } from "./util.js";
-import { Flow, EdgeFlow, StraightFlow, CrossUnderFlow, CurveFlow, PartialFlow } from "./flow.js";
 import { Leak } from "./leak.js";
 
 
@@ -157,7 +159,7 @@ export class Simulator {
                         this.addLeakFrom(palette, inc);
                         continue;
                     }
-                    tile.addFlow(DirectionId.INTERNAL, new StraightFlow(palette, inc.color, inc.dir));
+                    tile.addFlow(DirectionId.INTERNAL, new StraightFlow(palette, inc.color, inc.pressure, inc.dir));
                     this.enqueue(inc, inc.dir, inc.color, inc.pressure);
                     break;
                 case TileId.CURVE:
@@ -201,7 +203,7 @@ export class Simulator {
                     const tileAxis = Util.dirToAxis(tile.dir);
 
                     tile.addFlow(axis, axis == tileAxis ? 
-                        new StraightFlow(palette, inc.color, inc.dir) :
+                        new StraightFlow(palette, inc.color, inc.pressure, inc.dir) :
                         new CrossUnderFlow(palette, inc.color, inc.dir));
                     this.enqueue(inc, inc.dir, inc.color, inc.pressure);
                     break;

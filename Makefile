@@ -10,7 +10,7 @@ JS_MAP   := $(TS_SRC:src/%.ts=out/%.js.map)
 PNG_IN   := $(shell find art-work/pipe -name '*.png')
 
 PIPE_IN  := 72 90 120
-PIPE_OUT := $(PIPE_IN:%=art/sheets/pipe_%.json) $(PIPE_IN:%=art/sheets/pipe_%@1x.png.json)
+PIPE_OUT := $(PIPE_IN:%=art/sheets/pipe_%.png) $(PIPE_IN:%=art/sheets/pipe_%@1x.png.json)
 
 FORCE :
 
