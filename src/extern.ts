@@ -98,7 +98,7 @@ interface Palette {
      * To obtain the insideWidth for a given pipe, use `Util.insideWidth`
      */
     insideWidth: number,
-    
+
     /** On a split pipe, this is the horizontal distance from the left to the center square (or crossover) of the pipe. */
     insideLength: number,
 
@@ -212,4 +212,4 @@ const enum AxisId {
     VERTICAL = 1,
 }
 
-type PressureId = number;
+type PressureId = 1 | 2 | 3 | 4;

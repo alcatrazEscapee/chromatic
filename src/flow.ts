@@ -1,6 +1,6 @@
 import type { Container, Graphics } from "pixi.js";
 
-import { COLORS } from './util.js';
+import { COLORS, Util } from './util.js';
 
 
 export interface Flow {
@@ -52,14 +52,14 @@ export class EdgeFlow extends BaseFlow {
     private readonly obj: Graphics;
     private readonly factor: number;
 
-    constructor(palette: Palette, color: ColorId) {
+    constructor(palette: Palette, color: ColorId, pressure: PressureId) {
         super();
     
         // Flow moving left -> right, horizontal
         this.obj = new PIXI.Graphics();
         this.obj.beginFill(COLORS[color]);
-        this.obj.drawRect(0, 0, 20, palette.insideWidth);
-        this.obj.position.set(-10, -palette.insideWidth / 2);
+        this.obj.drawRect(0, 0, 20, Util.insideWidth(palette, pressure));
+        this.obj.position.set(-10, -Util.insideWidth(palette, pressure) / 2);
         this.obj.width = 0;
         
         this.factor = palette.tileWidth / 20;
