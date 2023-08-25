@@ -1,4 +1,4 @@
-import type { Texture } from "pixi.js";
+import type { Container, Texture } from "pixi.js";
 
 
 export const COLORS: {[_ in ColorId]: string} = [
@@ -11,6 +11,7 @@ export const COLORS: {[_ in ColorId]: string} = [
 ]
 
 export module Util {
+    /** Returns true if the position (x, y) is within the square bounded by [x0, x0 + size), [y0, y0 + size) */
     export function isIn(x: number, y: number, x0: number, y0: number, size: number): boolean {
         return x >= x0 && y >= y0 && x < x0 + size && y < y0 + size;
     }
@@ -23,13 +24,14 @@ export module Util {
         return dir % 2;
     }
 
-    export function move(pos: Point, dir: DirectionId, delta: number = 1): void {
+    export function move(pos: Point, dir: DirectionId, delta: number = 1): Point {
         switch (dir) {
             case DirectionId.LEFT:  pos.x -= delta; break;
             case DirectionId.UP:    pos.y -= delta; break;
             case DirectionId.RIGHT: pos.x += delta; break;
             case DirectionId.DOWN:  pos.y += delta; break;
         }
+        return pos;
     }
 
     export function cw(dir: DirectionId): DirectionId {
@@ -46,14 +48,12 @@ export module Util {
 
     export function getInputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
         const pos: Point = getGridPos(palette, x, y);
-        move(pos, dir, -palette.tileWidth / 2 - 10);
-        return pos;
+        return move(pos, dir, -palette.tileWidth / 2 - 10);
     }
 
     export function getOutputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
         const pos: Point = getGridPos(palette, x, y);
-        move(pos, dir, -palette.tileWidth / 2 + 10);
-        return pos;
+        return move(pos, dir, -palette.tileWidth / 2 + 10);
     }
 
     export function getGridPos(palette: Palette, x: number, y: number): Point {
@@ -156,6 +156,12 @@ export module Util {
                 v: core.textures[`${id}_${key}_${pressure}_overlay_v`],
             }
         };
+    }
+
+    export function clear(root: Container): void {
+        for (let i = root.children.length - 1; i >= 0; i--) {
+            root.children[0]?.destroy();
+        }
     }
 
     export function insideTop(palette: Palette, pressure: 1 | 2 | 3 | 4): number {

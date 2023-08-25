@@ -46,7 +46,7 @@ type PipeSpriteId<T extends PipeAssetId> =
     | `${T}_${AssetPipeAction}`
 
 
-type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, 1 | 2 | 3 | 4];
+type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, PressureId];
 
 type NetworkFlowAtInput<N, R>
     = NetworkFlowAt<R, 0, DirectionId.DOWN>
@@ -162,6 +162,7 @@ const enum Constants {
     GRID_TOP = 20,
     GRID_SIZE = 360,
 
+    GRID_ID_TO_WIDTH = 3,
     HELD_TILE_GRID_ID = GridId._5x5,
 
     COLOR_WHITE = 0xffffff,

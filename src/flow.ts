@@ -78,14 +78,14 @@ export class StraightFlow extends BaseFlow {
     private readonly obj: Graphics;
     private readonly width: number;
 
-    constructor(palette: Palette, color: ColorId, dir: DirectionId) {
+    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId) {
         super();
 
         // Flow moving left -> right, horizontal
         this.obj = new PIXI.Graphics();
         this.obj.beginFill(COLORS[color]);
-        this.obj.drawRect(0, 0, palette.tileWidth, palette.insideWidth);
-        this.obj.position.set(-palette.tileWidth / 2, palette.insideTop - palette.tileWidth / 2);
+        this.obj.drawRect(0, 0, palette.tileWidth, Util.insideWidth(palette, pressure));
+        this.obj.position.set(-palette.tileWidth / 2, Util.insideTop(palette, pressure) - palette.tileWidth / 2);
         this.obj.width = 0;
         
         this.width = palette.tileWidth;

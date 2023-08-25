@@ -1,8 +1,9 @@
-import type { Texture, Application, Container, FederatedPointerEvent, Sprite, Spritesheet } from 'pixi.js';
+import type { Texture, Application, Container, FederatedPointerEvent, Sprite } from 'pixi.js';
 
 import { Util, COLORS } from './util.js';
 import { Tile } from './tile.js';
 import { Simulator } from './simulator.js';
+import { Navigator } from './navigator.js';
 
 declare global {
     interface Window {
@@ -256,7 +257,8 @@ class Game {
 
     private grabTile(event: FederatedPointerEvent, tileId: TileId): void {
         if (this.state == StateId.MAIN_TILE) {
-            this.held = new Tile(this.palettes[Constants.HELD_TILE_GRID_ID], tileId);
+            this.held = new Tile(tileId);
+            this.held.build(this.palettes[Constants.HELD_TILE_GRID_ID]);
             this.held.root.position.set(event.screenX, event.screenY);
             this.state = StateId.DRAGGING_TILE;
 
@@ -306,8 +308,8 @@ class Game {
                 }
 
                 // Add a new tile, if we're not creating an empty tile
-                if (heldTile.tileId != TileId.EMPTY) {
-                    const newTile = new Tile(palette, heldTile.tileId);
+                if (heldTile.tileId !== TileId.EMPTY) {
+                    const newTile = new Tile(heldTile.tileId);
                     
                     newTile.root.position.set(
                         Constants.GRID_LEFT + pos.x * palette.tileWidth + palette.tileWidth / 2,
@@ -315,6 +317,10 @@ class Game {
                     
                     this.tiles[pos.index] = newTile;
                     this.tilesContainer.addChild(newTile.root);
+
+                    Navigator.setupTileProperties(this, pos, newTile);
+
+                    newTile.build(palette);
                 }
             }
 

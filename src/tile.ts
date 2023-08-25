@@ -1,44 +1,62 @@
-import type { Container, Sprite, Texture } from "pixi.js";
+import type { Container, Texture } from "pixi.js";
 
 import { Flow } from "./flow.js";
-import { Util } from "./util.js";
+import { COLORS, Util } from "./util.js";
 
 
 type Key = 0 | 1 | 2 | 3;
-type Value = Flow | null;
-type Flows = [Value, Value, Value, Value];
 
+
+export type TileProperties = { color: ColorId | null, pressure: PressureId };
 
 export class Tile {
 
     readonly tileId: TileId;
     readonly root: Container;
-    readonly pipe: Container;
-    readonly flows: Flows = [null, null, null, null];
 
-    dir: DirectionId;
+    private readonly pipe: Container; // Lowest layer of pipe - everything that rotates
+    private readonly overlayV: Container; // Overlay for vertical sections
+    private readonly pipeUpper: Container; // Upper layer of pipe - for things that render above pipe and overlayH
+    private readonly overlayH: Container; // Overlay for horizontal sections
+    private readonly pipeFixed: Container; // Parts of the pipe that don't rotate, and are above all
     
-    constructor(palette: TexturePalette<Texture>, tileId: TileId) {
+    readonly flows: Array4<Flow | null> = [null, null, null, null];
+    readonly properties: Array4<TileProperties | null> = [null, null, null, null];
 
+    dir: DirectionId = DirectionId.LEFT;
+    
+    constructor(tileId: TileId) {
         this.tileId = tileId;
         this.root = new PIXI.Container();
         this.pipe = new PIXI.Container();
+        this.overlayV = new PIXI.Container();
+        this.pipeUpper = new PIXI.Container();
+        this.overlayH = new PIXI.Container();
+        this.pipeFixed = new PIXI.Container();
 
         this.root.addChild(this.pipe);
+        this.root.addChild(this.overlayV);
+        this.root.addChild(this.pipeUpper);
+        this.root.addChild(this.overlayH);
+        this.root.addChild(this.pipeFixed);
 
-        buildTile(this.root, this.pipe, palette, tileId);
-
-        this.dir = DirectionId.LEFT;
+        // Start with overlayH as visible
+        this.overlayV.angle -= 90;
+        this.overlayV.visible = false;
     }
 
     public rotate(): void {
         this.dir = Util.cw(this.dir);
         this.pipe.angle += 90; // Only rotate the pipe - not the icon
+        
         for (const flow of this.flows) {
             if (flow) {
                 flow.root.angle += 90; // If a flow is present, rotate that as well
             }
         }
+
+        this.overlayH.visible = !this.overlayH.visible;
+        this.overlayV.visible = !this.overlayV.visible;
     }
 
     public addFlow(key: Key, flow: Flow): void {
@@ -74,70 +92,138 @@ export class Tile {
         this.clearFlow();
         this.root.destroy({ children: true });
     }
-}
 
+    /**
+     * Properties are indexed by the direction in the original rotation. So:
+     * - Straight + Curve are indexed by `DirectionId.INTERNAL`
+     * - Cross is indexed by `AxisId`
+     * - Actions are indexed by `DirectionId`, without `DirectionId.DOWN`
+     */
+    public property(key: Key): TileProperties {
+        let property = this.properties[key];
+        if (property === null) {
+            property = { color: null, pressure: 1 };
+            this.properties[key] = property;
+        }
+        return property!;
+    }
 
-function buildTile(root: Container, pipe: Container, palette: TexturePalette<Texture>, tileId: TileId): void {
-    switch (tileId) {
-        case TileId.EMPTY:
-            throw new Error(`Should not build an empty tile`);
-        case TileId.STRAIGHT:
-            {
-                const straight = new PIXI.Sprite(palette.textures.straight[0].pipe);
-                straight.anchor.set(0.5);
-                pipe.addChild(straight);
+    public build(palette: TexturePalette<Texture>, unique: boolean = false): void {
+        const textures: PaletteTextures<Texture> = palette.textures;
+
+        // Clear any existing children
+        if (!unique) { // Need to remove the existing pipe objects first
+            for (let i = 0; i < this.root.children.length; i++) {
+                Util.clear(this.root.children[i] as Container);
             }
-            break;
-        case TileId.CURVE:
-            {
-                const curve = new PIXI.Sprite(palette.textures.curve[0].pipe);
-                curve.anchor.set(0.5);
-                pipe.addChild(curve);
-            }
-            break;
-        case TileId.CROSS:
-            {
-                const horizontal = new PIXI.Sprite(palette.textures.straight[0].pipe);
-                const vertical = new PIXI.Sprite(palette.textures.straight[0].pipe);
-                const mask = new PIXI.Graphics();
+        }
 
-                const widthH = Util.insideTopExt(palette, 1);
-                const widthV = Util.insideTopExt(palette, 1);
+        // Setup new children, based on the current properties of the tile
+        switch (this.tileId) {
+            case TileId.EMPTY:
+                break; // No-op
+            case TileId.STRAIGHT:
+                {
+                    const property: TileProperties = this.property(DirectionId.INTERNAL);
+                    const texture: PalettePipeTextures<Texture> = textures.straight[property.pressure - 1]!;
+                    const straight = new PIXI.Sprite(texture.pipe);
+    
+                    straight.anchor.set(0.5);
+                    
+                    this.pipe.addChild(straight);
+                    this.addOverlay(property, texture);
+                }
+                break;
+            case TileId.CURVE:
+                {
+                    const property: TileProperties = this.property(DirectionId.INTERNAL);
+                    const texture: PalettePipeTextures<Texture> = textures.curve[property.pressure - 1]!;
+                    const curve = new PIXI.Sprite(texture.pipe);
+                
+                    curve.anchor.set(0.5);
+                    
+                    this.pipe.addChild(curve);
+                    this.addOverlay(property, texture);
+                }
+                break;
+            case TileId.CROSS:
+                {
+                    const propertyH: TileProperties = this.property(AxisId.HORIZONTAL);
+                    const propertyV: TileProperties = this.property(AxisId.VERTICAL);
 
-                mask.beginFill('#000000');
-                mask.drawRect(widthH, widthV, palette.tileWidth - 2 * widthH, palette.tileWidth - 2 * widthV);
-                mask.pivot.set(palette.tileWidth / 2, palette.tileWidth / 2)
+                    const textureH: PalettePipeTextures<Texture> = textures.straight[propertyH.pressure - 1]!;
+                    const textureV: PalettePipeTextures<Texture> = textures.straight[propertyV.pressure - 1]!;
 
-                horizontal.anchor.set(0.5);
-                vertical.anchor.set(0.5);
-                vertical.angle += 90;
+                    const horizontal = new PIXI.Sprite(textureH.pipe);
+                    const vertical = new PIXI.Sprite(textureV.pipe);
+                    const mask = new PIXI.Graphics();
+    
+                    const widthH = Util.insideTopExt(palette, 1);
+                    const widthV = Util.insideTopExt(palette, 1);
+    
+                    mask.beginFill('#000000');
+                    mask.drawRect(widthH, widthV, palette.tileWidth - 2 * widthH, palette.tileWidth - 2 * widthV);
+                    mask.pivot.set(palette.tileWidth / 2, palette.tileWidth / 2)
+    
+                    horizontal.anchor.set(0.5);
+                    vertical.anchor.set(0.5);
+                    vertical.angle += 90;
+    
+                    this.pipe.addChild(vertical);
+                    this.addOverlay(propertyH, textureH);
+                    this.pipeUpper.addChild(mask);
+                    this.addOverlay(propertyV, textureV);
+                    this.pipeUpper.addChild(horizontal);
+                }
+                break;
+            default:
+                // Any action tile looks largely the same
+                // Note the icon is added to `root`, not `pipe`, as it doesn't rotate
+                {
+                    const propertyLeft: TileProperties = this.property(DirectionId.LEFT);
+                    const propertyTop: TileProperties = this.property(DirectionId.UP);
+                    const propertyRight: TileProperties = this.property(DirectionId.RIGHT);
 
-                pipe.addChild(vertical);
-                pipe.addChild(mask);
-                pipe.addChild(horizontal);
-            }
-            break;
-        default:
-            // Any action tile looks largely the same
-            // Note the icon is added to `root`, not `pipe`, as it doesn't rotate
-            {
-                const left = new PIXI.Sprite(palette.textures.port[0].pipe);
-                const top = new PIXI.Sprite(palette.textures.port[0].pipe);
-                const right = new PIXI.Sprite(palette.textures.port[0].pipe);
-                const icon = new PIXI.Sprite(palette.textures.action[tileId - TileId.ACTION_START]);
+                    const textureLeft: PalettePipeTextures<Texture> = textures.port[propertyLeft.pressure - 1]!;
+                    const textureTop: PalettePipeTextures<Texture> = textures.port[propertyTop.pressure - 1]!;
+                    const textureRight: PalettePipeTextures<Texture> = textures.port[propertyRight.pressure - 1]!;
 
-                left.anchor.set(0.5);
-                top.anchor.set(0.5);
-                top.angle += 90;
-                right.anchor.set(0.5);
-                right.angle += 180;
-                icon.anchor.set(0.5);
+                    const left = new PIXI.Sprite(textureLeft.pipe);
+                    const top = new PIXI.Sprite(textureTop.pipe);
+                    const right = new PIXI.Sprite(textureRight.pipe);
+                    const icon = new PIXI.Sprite(palette.textures.action[this.tileId - TileId.ACTION_START]);
+    
+                    left.anchor.set(0.5);
+                    top.anchor.set(0.5);
+                    top.angle += 90;
+                    right.anchor.set(0.5);
+                    right.angle += 180;
+                    icon.anchor.set(0.5);
+    
+                    this.pipe.addChild(left);
+                    this.pipe.addChild(top);
+                    this.pipe.addChild(right);
+                    this.addOverlay(propertyLeft, textureLeft);
+                    this.addOverlay(propertyTop, textureTop);
+                    this.addOverlay(propertyRight, textureRight);
+                    this.pipeFixed.addChild(icon); // Add the icon to root (top level) so it does not rotate
+                }
+                break;
+        }
+    }
 
-                pipe.addChild(left);
-                pipe.addChild(top);
-                pipe.addChild(right);
-                root.addChild(icon);
-            }
-            break;
+    private addOverlay(property: TileProperties, texture: PalettePipeTextures<Texture>): void {
+        if (property.color !== null) {
+            const overlayH = new PIXI.Sprite(texture.overlay.h);
+            const overlayV = new PIXI.Sprite(texture.overlay.v);
+
+            overlayH.anchor.set(0.5);
+            overlayV.anchor.set(0.5);
+            overlayH.tint = COLORS[property.color];
+            overlayV.tint = COLORS[property.color];
+
+            this.overlayH.addChild(overlayH);
+            this.overlayV.addChild(overlayV);
+        }
     }
 }
