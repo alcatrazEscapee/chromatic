@@ -149,13 +149,10 @@ export class Simulator {
             switch (tile.tileId) {
                 case TileId.STRAIGHT:
                     // Straight pipes have a single flow capacity, and so use the `INTERNAL` direction
-                    if (!Util.sameAxis(tile.dir, inc.dir)) {
-                        // Tile does not connect to the adjacent one
-                        this.addLeakFrom(palette, inc);
-                        continue;
-                    }
-                    if (tile.hasFlow(DirectionId.INTERNAL)) {
-                        // Tile already has a flow
+                    if (!Util.sameAxis(tile.dir, inc.dir) || // Tile does not connect to the provided direction
+                        tile.hasFlow(DirectionId.INTERNAL) || // Or already has a flow
+                        !tile.canAccept(DirectionId.INTERNAL, inc) // Or cannot accept due to labels
+                    ) {
                         this.addLeakFrom(palette, inc);
                         continue;
                     }
@@ -167,7 +164,9 @@ export class Simulator {
                     // Default curve tile is dir = LEFT, with but is able to accept DOWN and RIGHT
                     const adj = Util.cw(inc.dir);
 
-                    if (tile.hasFlow(DirectionId.INTERNAL)) {
+                    if (tile.hasFlow(DirectionId.INTERNAL) || // Tile does not connect
+                        !tile.canAccept(DirectionId.INTERNAL, inc) // Or cannot accept due to labels
+                    ) {
                         // Tile already has a flow, which is always incompatible
                         this.addLeakFrom(palette, inc);
                         continue;
@@ -175,14 +174,14 @@ export class Simulator {
 
                     if (adj === tile.dir) {
                         // Accept from adj, and exit cw(adj)
-                        tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.dir, true));
+                        tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.pressure, inc.dir, true));
                         this.enqueue(inc, Util.cw(inc.dir), inc.color, inc.pressure);
                         continue;
                     }
                     
                     if (Util.cw(adj) === tile.dir) {
                         // Accept from cw(adj), and exit adj
-                        tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.dir, false));
+                        tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.pressure, inc.dir, false));
                         this.enqueue(inc, Util.ccw(inc.dir), inc.color, inc.pressure);
                         continue;
                     }
@@ -204,7 +203,7 @@ export class Simulator {
 
                     tile.addFlow(axis, axis == tileAxis ? 
                         new StraightFlow(palette, inc.color, inc.pressure, inc.dir) :
-                        new CrossUnderFlow(palette, inc.color, inc.dir));
+                        new CrossUnderFlow(palette, inc.color, inc.pressure, inc.dir));
                     this.enqueue(inc, inc.dir, inc.color, inc.pressure);
                     break;
                 
@@ -238,7 +237,7 @@ export class Simulator {
                     }
 
                     // Create a flow into the action tile
-                    tile.addFlow(inc.dir, new PartialFlow(palette, inc.color, inc.dir, true));
+                    tile.addFlow(inc.dir, new PartialFlow(palette, inc.color, inc.pressure, inc.dir, true));
                     
                     if (total === 0) {
                         // No previous flows, so store this one in a buffer, and exit
@@ -278,7 +277,7 @@ export class Simulator {
                     const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
                     const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
                     
-                    tile.addFlow(keyDir, new PartialFlow(palette, mix, outDir, false));
+                    tile.addFlow(keyDir, new PartialFlow(palette, mix, 1, outDir, false));
                     this.enqueue(left, outDir, mix, 1 as PressureId);
                 }
                 break;
@@ -294,9 +293,10 @@ export class Simulator {
                 {
                     const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
                     const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
-
-                    tile.addFlow(keyDir, new PartialFlow(palette, left.color, outDir, false));
-                    this.enqueue(left, outDir, left.color, (left.pressure + right.pressure) as PressureId);
+                    const sumPressure = left.pressure + right.pressure as PressureId;
+                    
+                    tile.addFlow(keyDir, new PartialFlow(palette, left.color, sumPressure, outDir, false));
+                    this.enqueue(left, outDir, left.color, sumPressure);
                 }
                 break;
             case TileId.DOWN:

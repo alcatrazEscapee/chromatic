@@ -120,7 +120,7 @@ export class PartialFlow extends BaseFlow {
      */
     private readonly input: boolean;
 
-    constructor(palette: Palette, color: ColorId, dir: DirectionId, input: boolean, width: number = -1) {
+    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId, input: boolean, width: number = -1) {
         super();
 
         if (width == -1) {
@@ -130,10 +130,10 @@ export class PartialFlow extends BaseFlow {
         // Flow moving left -> right, horizontal, in the first section (if input), otherwise in the last section
         this.obj = new PIXI.Graphics();
         this.obj.beginFill(COLORS[color]);
-        this.obj.drawRect(0, 0, width, palette.insideWidth);
+        this.obj.drawRect(0, 0, width, Util.insideWidth(palette, pressure));
         this.obj.position.set(
             input ? -palette.tileWidth / 2 : palette.tileWidth / 2 - width,
-            palette.insideTop - palette.tileWidth / 2);
+            Util.insideTop(palette, pressure) - palette.tileWidth / 2);
         this.obj.width = 0;
         
         this.width = width;
@@ -159,11 +159,11 @@ class PairFlow extends BaseFlow {
     readonly left: PartialFlow;
     readonly right: PartialFlow;
 
-    constructor(palette: Palette, color: ColorId, dir: DirectionId, leftWidth: number, rightWidth: number) {
+    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId, leftWidth: number, rightWidth: number) {
         super();
 
-        this.left = new PartialFlow(palette, color, dir, true, leftWidth);
-        this.right = new PartialFlow(palette, color, dir, false, rightWidth);
+        this.left = new PartialFlow(palette, color, pressure, dir, true, leftWidth);
+        this.right = new PartialFlow(palette, color, pressure, dir, false, rightWidth);
 
         this.root.addChild(this.left.root);
         this.root.addChild(this.right.root);
@@ -177,14 +177,14 @@ class PairFlow extends BaseFlow {
 
 
 export class CrossUnderFlow extends PairFlow {
-    constructor(palette: Palette, color: ColorId, dir: DirectionId) {
-        super(palette, color, dir, palette.insideLength, palette.insideLength);
+    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId) {
+        super(palette, color, pressure, dir, palette.insideLength, palette.insideLength);
     }
 }
 
 export class CurveFlow extends PairFlow {
-    constructor(palette: Palette, color: ColorId, dir: DirectionId, cw: boolean) {
-        super(palette, color, dir, palette.insideTop + palette.insideWidth, palette.insideTop);
+    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId, cw: boolean) {
+        super(palette, color, pressure, dir, Util.insideTop(palette, pressure) + Util.insideWidth(palette, pressure), Util.insideTop(palette, pressure));
         this.right.root.angle += cw ? 90 : -90;
     }
 }

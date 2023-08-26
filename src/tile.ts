@@ -14,6 +14,7 @@ export class Tile {
     readonly tileId: TileId;
     readonly root: Container;
 
+    private readonly flowContainer: Container; // All flows, which don't rotate, and are below all pipe elements
     private readonly pipe: Container; // Lowest layer of pipe - everything that rotates
     private readonly overlayV: Container; // Overlay for vertical sections
     private readonly pipeUpper: Container; // Upper layer of pipe - for things that render above pipe and overlayH
@@ -28,12 +29,15 @@ export class Tile {
     constructor(tileId: TileId) {
         this.tileId = tileId;
         this.root = new PIXI.Container();
+
+        this.flowContainer = new PIXI.Container();
         this.pipe = new PIXI.Container();
         this.overlayV = new PIXI.Container();
         this.pipeUpper = new PIXI.Container();
         this.overlayH = new PIXI.Container();
         this.pipeFixed = new PIXI.Container();
 
+        this.root.addChild(this.flowContainer);
         this.root.addChild(this.pipe);
         this.root.addChild(this.overlayV);
         this.root.addChild(this.pipeUpper);
@@ -47,13 +51,10 @@ export class Tile {
 
     public rotate(): void {
         this.dir = Util.cw(this.dir);
-        this.pipe.angle += 90; // Only rotate the pipe - not the icon
-        
-        for (const flow of this.flows) {
-            if (flow) {
-                flow.root.angle += 90; // If a flow is present, rotate that as well
-            }
-        }
+
+        this.root.angle += 90; // Rotate all elements, but then revert changes to the fixed rotation containers
+        this.pipeFixed.angle -= 90;
+        this.flowContainer.angle -= 90;
 
         this.overlayH.visible = !this.overlayH.visible;
         this.overlayV.visible = !this.overlayV.visible;
@@ -63,7 +64,7 @@ export class Tile {
         if (this.flows[key]) throw new Error(`Duplicate flow at index ${key}`);
         
         this.flows[key] = flow;
-        this.root.addChild(flow.root);
+        this.flowContainer.addChild(flow.root);
         PIXI.Ticker.shared.add(flow.tick, flow);
     }
 
@@ -91,6 +92,11 @@ export class Tile {
     public destroy(): void {
         this.clearFlow();
         this.root.destroy({ children: true });
+    }
+
+    public canAccept(key: Key, inc: { color: ColorId, pressure: PressureId }): boolean {
+        const property = this.property(key);
+        return (property.color === null || property.color === inc.color) && property.pressure === inc.pressure;
     }
 
     /**
@@ -158,8 +164,8 @@ export class Tile {
                     const vertical = new PIXI.Sprite(textureV.pipe);
                     const mask = new PIXI.Graphics();
     
-                    const widthH = Util.insideTopExt(palette, 1);
-                    const widthV = Util.insideTopExt(palette, 1);
+                    const widthH = Util.insideTopExt(palette, propertyV.pressure);
+                    const widthV = Util.insideTopExt(palette, propertyH.pressure);
     
                     mask.beginFill('#000000');
                     mask.drawRect(widthH, widthV, palette.tileWidth - 2 * widthH, palette.tileWidth - 2 * widthV);

@@ -31,43 +31,55 @@ export module Navigator {
      * - Higher pressures are more outlandish
      * - Non-null colors are more outlandish, then sort by `ColorId`
      */
-    export function setupTileProperties(map: Map, pos: Point & { index: number}, tile: Tile) {
+    export function updateTileProperties(map: Map, pos: Point & { index: number}, tile: Tile) {
 
         switch (tile.tileId) {
             case TileId.EMPTY:
                 return; // Nothing to do
-            case TileId.STRAIGHT:
-                {
-                    const property: TileProperties = tile.property(DirectionId.INTERNAL);
-
-                    // Query both directions
-                    const left = traverse(map, { x: pos.x, y: pos.y, dir: tile.dir });
-                    const right = traverse(map, { x: pos.x, y: pos.y, dir: Util.flip(tile.dir) });
-
-                    const leftProperty = left === null ? null : access(map, left);
-                    const rightProperty = right === null ? null : access(map, right);
-
-                    console.log(left, right, leftProperty, rightProperty);
-
-                    // Resolve conflicts, if both are present
-                    let updateLeft = false, updateRight = false;
-                    if (leftProperty !== null && rightProperty !== null) {
-                        resolveConflict(property, leftProperty, rightProperty);
-
-                        updateLeft = property.color !== leftProperty.color || property.pressure !== leftProperty.pressure;
-                        updateRight = property.color !== rightProperty.color || property.pressure !== rightProperty.pressure;
-                    } else if (leftProperty !== null) {
-                        resolveFrom(property, leftProperty);
-                    } else if (rightProperty !== null) {
-                        resolveFrom(property, rightProperty);
-                    }
-
-                    // todo: use updateLeft + updateRight to update the left and right connections
-                }
+            case TileId.STRAIGHT:    
+                updateInBothDirections(map, pos,
+                    tile.property(DirectionId.INTERNAL), // Straight pipes have a single property
+                    tile.dir, Util.flip(tile.dir)); // And can extend in `tile.dir` and `flip(tile.dir)` directions
+                break;
+            case TileId.CURVE:
+                updateInBothDirections(map, pos,
+                    tile.property(DirectionId.INTERNAL), // Curve pipes have a single property
+                    tile.dir, Util.cw(tile.dir)); // And can extend in `tile.dir` and `cw(tile.dir)` directions
+                break;
+            case TileId.CROSS:
+                updateInBothDirections(map, pos,
+                    tile.property(AxisId.HORIZONTAL), // Horizontal axis is the 'native' horizontal axis
+                    tile.dir, Util.flip(tile.dir)); // So use the `tile.dir` axis directly
+                updateInBothDirections(map, pos,
+                    tile.property(AxisId.VERTICAL), // And the other axis...
+                    Util.cw(tile.dir), Util.ccw(tile.dir)); // Uses the other directions
                 break;
             default:
                 throw new Error(`Not implemented`);
         }
+    }
+
+    function updateInBothDirections(map: Map, pos: Point & { index: number }, property: TileProperties, leftDir: DirectionId, rightDir: DirectionId): void {
+        const left = traverse(map, { x: pos.x, y: pos.y, dir: leftDir });
+        const right = traverse(map, { x: pos.x, y: pos.y, dir: rightDir });
+
+        const leftProperty = left === null ? null : access(map, left);
+        const rightProperty = right === null ? null : access(map, right);
+
+        // Resolve conflicts, if both are present
+        let updateLeft = false, updateRight = false;
+        if (leftProperty !== null && rightProperty !== null) {
+            resolveConflict(property, leftProperty, rightProperty);
+
+            updateLeft = property.color !== leftProperty.color || property.pressure !== leftProperty.pressure;
+            updateRight = property.color !== rightProperty.color || property.pressure !== rightProperty.pressure;
+        } else if (leftProperty !== null) {
+            resolveFrom(property, leftProperty);
+        } else if (rightProperty !== null) {
+            resolveFrom(property, rightProperty);
+        }
+
+        // todo: traverse the rest of the pipe, based on update left + right
     }
 
     function traverse(map: Map, pos: Position): Position | null {
@@ -82,7 +94,7 @@ export module Navigator {
         }
 
         // Adjust the direction based on what we find, and possibly return null if the tile does not connect
-        const curr = map.tiles[pos.x + width * move.y]!;
+        const curr = map.tiles[pos.x + width * pos.y]!;
         const next = map.tiles[move.x + width * move.y]!;
         
         if (next === null) return null; // No tile here, cannot connect
@@ -91,14 +103,29 @@ export module Navigator {
             case TileId.STRAIGHT:
                 move.dir = pos.dir; // Same direction
                 return Util.sameAxis(curr.dir, next.dir) ? move : null; // Can only move through if the same axis as the tile
+            case TileId.CURVE:
+                {
+                    // Same logic as simulator, for passing through curves
+                    const adj = Util.cw(pos.dir);
+
+                    if (adj === next.dir) {
+                        move.dir = Util.cw(move.dir);
+                        return move;
+                    }
+                    if (Util.cw(adj) === next.dir) {
+                        move.dir = Util.ccw(move.dir);
+                        return move;
+                    }
+                    return null;
+                }
             case TileId.CROSS:
-                return move; // Can always move through a crossover
+                return move; // Can always move through a crossover, unchanged
             default:
                 throw new Error(`Invalid tile id: ${next.tileId}`);
         }
     }
 
-    function access(map: Map, pos: Position): Readonly<TileProperties> | null {
+    function access(map: Map, pos: Position): StrictReadonly<TileProperties> | null {
         
         if (pos.dir === -1) { // Access a puzzle input / output
             for (const [x, y, dir, _, pressure] of map.puzzle!.inputs) {
@@ -122,7 +149,6 @@ export module Navigator {
 
         const width = map.grid + Constants.GRID_ID_TO_WIDTH;
         const tile = map.tiles[pos.x + width * pos.y]!;
-        console.log(tile, pos);
         
         if (tile === null) return null; // No tile here, cannot connect
 
@@ -134,16 +160,16 @@ export module Navigator {
         }
     }
 
-    function resolveFrom(self: TileProperties, other: Readonly<TileProperties>): void {
-        self.color = other.color;
-        self.pressure = other.pressure;
+    function resolveFrom(self: TileProperties, other: StrictReadonly<TileProperties>): void {
+        self.color = other.color!;
+        self.pressure = other.pressure!;
     }
 
-    function resolveConflict(self: TileProperties, left: Readonly<TileProperties>, right: Readonly<TileProperties>): void {
-        if (left.color === null) self.color = right.color;
-        else if (right.color === null) self.color = left.color;
-        else self.color = Math.max(left.color, right.color);
+    function resolveConflict(self: TileProperties, left: StrictReadonly<TileProperties>, right: StrictReadonly<TileProperties>): void {
+        if (left.color === null) self.color = right.color!;
+        else if (right.color === null) self.color = left.color!;
+        else self.color = Math.max(left.color!, right.color!);
 
-        self.pressure = Math.max(left.pressure, right.pressure) as PressureId;
+        self.pressure = Math.max(left.pressure!, right.pressure!) as PressureId;
     }
 }
