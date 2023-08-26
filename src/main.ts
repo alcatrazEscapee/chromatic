@@ -318,7 +318,7 @@ class Game {
                     this.tiles[pos.index] = newTile;
                     this.tilesContainer.addChild(newTile.root);
 
-                    Navigator.setupTileProperties(this, pos, newTile);
+                    Navigator.updateTileProperties(this, pos, newTile);
 
                     newTile.build(palette);
                 }
@@ -344,6 +344,8 @@ class Game {
 
             if (tile !== null) {
                 tile.rotate();
+                Navigator.updateTileProperties(this, pos, tile);
+                tile.build(this.palettes[this.grid]);
             }
         }
     }

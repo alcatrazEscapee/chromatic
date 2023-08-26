@@ -1,5 +1,12 @@
 declare const PIXI: typeof import('pixi.js');
 
+/**
+ * Implements a stricter - albeit unwieldy - version of `Readonly<T>` that actually prevents assignment to `T`.
+ * This requires use of `!` on reads to eliminate the `undefined` type.
+ * 
+ * See [TypeScript#13347](https://github.com/Microsoft/TypeScript/issues/13347)
+ */
+type StrictReadonly<T> = { [k in keyof T]: T[k] | undefined };
 
 type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
 type Array4<T> = [T, T, T, T];
