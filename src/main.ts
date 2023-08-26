@@ -51,7 +51,7 @@ class Game {
     state: StateId = StateId.MAIN_TILE;
     grid: GridId = GridId.DEFAULT;
 
-    held: Tile | null = null;
+    heldTile: { root: Sprite, tileId: TileId } | null = null;
     heldColor: Sprite | null = null;
 
     // The last recorded screenX / screenY of the mouse, from mouse move event
@@ -83,8 +83,8 @@ class Game {
                 pressureWidth: 5,
                 pipeWidth: 4,
                 insideWidth: 18,
-                insideLength: 37,
                 insideTop: 51,
+                portWidth: 27,
                 grid: core.grid_3x3,
                 textures: Util.buildPalette('pipe_120', core.pipe_120),
             },
@@ -94,8 +94,8 @@ class Game {
                 pressureWidth: 4,
                 pipeWidth: 4,
                 insideWidth: 12,
-                insideLength: 28,
                 insideTop: 39,
+                portWidth: 20,
                 grid: core.grid_4x4,
                 textures: Util.buildPalette('pipe_90', core.pipe_90),
             },
@@ -105,12 +105,12 @@ class Game {
                 pressureWidth: 3,
                 pipeWidth: 5,
                 insideWidth: 10,
-                insideLength: 22,
                 insideTop: 31,
+                portWidth: 16,
                 grid: core.grid_5x5,
                 textures: Util.buildPalette('pipe_72', core.pipe_72),
             }
-        ]
+        ];
 
         this.simulator = new Simulator(this.edgesContainer);
 
@@ -119,11 +119,12 @@ class Game {
         const tileButtonTextures = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
         for (let i = 0; i <= TileId.LAST; i++) {
             const tileId: TileId = i;
-            const btn = new PIXI.Sprite(tileButtonTextures[i]);
+            const texture: Texture = tileButtonTextures[i]!;
+            const btn = new PIXI.Sprite(texture);
 
             btn.position.set(10 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66);
             btn.eventMode = 'static';
-            btn.on('pointerdown', event => this.grabTile(event, tileId));
+            btn.on('pointerdown', event => this.grabTile(event, tileId, texture));
             
             this.tileButtonsContainer.addChild(btn);
         }
@@ -256,14 +257,18 @@ class Game {
         this.puzzle = puzzle;
     }
 
-    private grabTile(event: FederatedPointerEvent, tileId: TileId): void {
+    private grabTile(event: FederatedPointerEvent, tileId: TileId, texture: Texture): void {
         if (this.state == StateId.MAIN_TILE) {
-            this.held = new Tile(tileId);
-            this.held.build(this.palettes[Constants.HELD_TILE_GRID_ID]);
-            this.held.root.position.set(event.screenX, event.screenY);
+            this.heldTile = {
+                root: new PIXI.Sprite(texture),
+                tileId,
+            };
+
+            this.heldTile.root.anchor.set(0.5);
+            this.heldTile.root.position.set(event.screenX, event.screenY);
             this.state = StateId.DRAGGING_TILE;
 
-            this.topContainer.addChild(this.held.root);
+            this.topContainer.addChild(this.heldTile.root);
         }
     }
 
@@ -280,13 +285,9 @@ class Game {
         this.screenX = event.screenX;
         this.screenY = event.screenY;
 
-        // Update the position of the held object
-        if (this.held) {
-            this.held.root.position.set(event.screenX, event.screenY);
-        }
-        if (this.heldColor) {
-            this.heldColor.position.set(event.screenX, event.screenY);
-        }
+        // Update the position of the held object(s)
+        this.heldTile?.root.position.set(event.screenX, event.screenY);
+        this.heldColor?.position.set(event.screenX, event.screenY);
     }
 
     private onPointerDown(event: FederatedPointerEvent): void {
@@ -295,7 +296,7 @@ class Game {
 
     private onPointerUp(event: FederatedPointerEvent): void {
         if (this.state === StateId.DRAGGING_TILE) {
-            const heldTile: Tile = this.held!;
+            const heldTile = this.heldTile!;
 
             if (this.isInGrid(event)) {
                 const palette = this.palettes[this.grid];
@@ -319,17 +320,15 @@ class Game {
                     this.tiles[pos.index] = newTile;
                     this.tilesContainer.addChild(newTile.root);
 
-                    Navigator.updateTileProperties(this, pos, newTile);
-
-                    newTile.build(palette);
+                    Navigator.updateTile(this, pos, newTile);
                 }
             }
 
-            this.held = null;
+            this.heldTile = null;
             this.state = StateId.MAIN_TILE;
             this.bypassNextTap = true; // Don't rotate the tile immediately
 
-            heldTile.destroy();
+            heldTile.root.destroy();
         }
     }
 
@@ -345,8 +344,8 @@ class Game {
 
             if (tile !== null) {
                 tile.rotate();
-                Navigator.updateTileProperties(this, pos, tile);
-                tile.build(this.palettes[this.grid]);
+
+                Navigator.updateTile(this, pos, tile);
             }
         }
     }
@@ -376,6 +375,13 @@ class Game {
                 tile?.clearFlow();
             }
         }
+    }
+
+    public updateTile(pos: Point): void {
+        const palette = this.palettes[this.grid];
+        const index = pos.x + palette.width * pos.y;
+
+        this.tiles[index]?.build(palette);
     }
 
     private enterCfg(): void {

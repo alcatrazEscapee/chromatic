@@ -80,15 +80,18 @@ interface Palette {
      */
     insideWidth: number,
 
-    /** On a split pipe, this is the horizontal distance from the left to the center square (or crossover) of the pipe. */
-    insideLength: number,
-
     /**
      * On a horizontal straight pipe, this is the base vertical distance from the top-left to the interior of the pipe.
+     * 
      * To obtain the insideTop for a given pipe, use `Util.insideTop`
-     * To obtain the insideTop for the exterior of the pipe, add `Util.insideTopExt`
+     * To obtain the same distance but to the exterior of the pipe, add `Util.outsideTop`
      */
     insideTop: number,
+
+    /**
+     * On an action pipe, this is the width from the edge of the tile, to the end of the 'flow', before reaching the port.
+     */
+    portWidth: number,
 };
 
 type PalettePipeTextures<T> = {
