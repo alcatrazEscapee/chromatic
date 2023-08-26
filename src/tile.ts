@@ -23,7 +23,7 @@ export class Tile {
     private readonly pipeFixed: Container; // Parts of the pipe that don't rotate, and are above all
     
     readonly flows: Array4<Flow | null> = [null, null, null, null];
-    readonly properties: Array4<TileProperties | null> = [null, null, null, null];
+    private readonly properties: Array4<TileProperties | null> = [null, null, null, null];
 
     dir: DirectionId = DirectionId.LEFT;
     

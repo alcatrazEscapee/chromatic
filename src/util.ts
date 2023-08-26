@@ -1,6 +1,7 @@
 import type { Container, Texture } from "pixi.js";
 
-import { AxisId, ColorId, Constants, DirectionId } from "./constants";
+import { AxisId, ColorId, Constants, DirectionId } from "./constants.js";
+
 
 export const COLORS: {[_ in ColorId]: string} = [
     '#f00', '#00f', '#ff0',
@@ -109,7 +110,8 @@ export module Util {
     }
 
     /**
-     * When given the direction of an action `tile`, and two _incoming_ flow directions `left` and `right`, returns the missing flow direction, _also_ in _incoming_ flow convention.
+     * When given the direction of an action `tile`, and two _incoming_ flow directions `left` and `right`,
+     * Returns the missing flow direction, _also_ in _incoming_ flow convention.
      */
     export function outputDir(tile: DirectionId, left: DirectionId, right: DirectionId): DirectionId {
         // The default orientation is < ^ > with dir = LEFT
@@ -120,6 +122,22 @@ export module Util {
                 return dir;
             }
         }
+    }
+
+    /**
+     * When `tile` is the direction property of a curve tile, and `inc` is an _incoming_ flow direction,
+     * Returns the _outgoing_ flow direction, if it connects, otherwise `-1`.
+     */
+    export function outputCurve(tile: DirectionId, inc: DirectionId): { dir: DirectionId, cw: boolean } | { dir: -1, cw: false } {
+        // Default curve tile is dir = LEFT, with but is able to accept DOWN and RIGHT
+        const adj = cw(inc);
+        if (adj === tile) {
+            return { dir: cw(inc), cw: true };
+        }
+        if (cw(adj) === tile) {
+            return { dir: ccw(inc), cw: false };
+        }
+        return { dir: -1, cw: false };
     }
 
     export function buildPalette<T extends PipeAssetId>(id: T, core: PipeSpritesheet<T, Texture>): PaletteTextures<Texture> {
