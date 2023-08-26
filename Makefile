@@ -39,11 +39,6 @@ $(PIPE_OUT) &: scripts/spritesheet.py $(PNG_IN)
 	@python scripts/spritesheet.py --src art-work/pipe/90 --dest art/sheets/ --key pipe_90 --debug
 	@python scripts/spritesheet.py --src art-work/pipe/120 --dest art/sheets/ --key pipe_120 --debug
 
-.PHONY : temp
-temp : FORCE
-	echo $(PIPE_IN)
-	echo $(PIPE_OUT)
-
 data-compressed.json data-rewrite.json &: scripts/rewrite.py data.json
 	@printf "Writing puzzles.json..."
 	@python scripts/rewrite.py

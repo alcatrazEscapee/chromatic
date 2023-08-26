@@ -106,6 +106,8 @@ export const enum DirectionId {
     UP = 1,
     RIGHT = 2,
     DOWN = 3,
+
+    last = 3
 }
 
 export const enum AxisId {

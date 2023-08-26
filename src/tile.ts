@@ -15,12 +15,12 @@ export class Tile {
     readonly tileId: TileId;
     readonly root: Container;
 
-    private readonly flowContainer: Container; // All flows, which don't rotate, and are below all pipe elements
     private readonly pipe: Container; // Lowest layer of pipe - everything that rotates
     private readonly overlayV: Container; // Overlay for vertical sections
     private readonly pipeUpper: Container; // Upper layer of pipe - for things that render above pipe and overlayH
     private readonly overlayH: Container; // Overlay for horizontal sections
     private readonly pipeFixed: Container; // Parts of the pipe that don't rotate, and are above all
+    private readonly flowContainer: Container; // All flows, which don't rotate
     
     readonly flows: Array4<Flow | null> = [null, null, null, null];
     private readonly properties: Array4<TileProperties | null> = [null, null, null, null];
@@ -31,19 +31,19 @@ export class Tile {
         this.tileId = tileId;
         this.root = new PIXI.Container();
 
-        this.flowContainer = new PIXI.Container();
         this.pipe = new PIXI.Container();
         this.overlayV = new PIXI.Container();
         this.pipeUpper = new PIXI.Container();
         this.overlayH = new PIXI.Container();
         this.pipeFixed = new PIXI.Container();
+        this.flowContainer = new PIXI.Container();
 
-        this.root.addChild(this.flowContainer);
         this.root.addChild(this.pipe);
         this.root.addChild(this.overlayV);
         this.root.addChild(this.pipeUpper);
         this.root.addChild(this.overlayH);
         this.root.addChild(this.pipeFixed);
+        this.root.addChild(this.flowContainer);
 
         // Start with overlayH as visible
         this.overlayV.angle -= 90;
@@ -61,6 +61,12 @@ export class Tile {
         this.overlayV.visible = !this.overlayV.visible;
     }
 
+    /**
+     * Properties are indexed by the direction accounting for rotation. So:
+     * - Straight + Curve are indexed by `DirectionId.INTERNAL`
+     * - Cross is indexed by `AxisId`, but the axis will be flipped depending on `this.dir`
+     * - Actions are indexed by `DirectionId`, with the unused direction always being `ccw(this.dir)`
+     */
     public addFlow(key: Key, flow: Flow): void {
         if (this.flows[key]) throw new Error(`Duplicate flow at index ${key}`);
         
@@ -165,8 +171,8 @@ export class Tile {
                     const vertical = new PIXI.Sprite(textureV.pipe);
                     const mask = new PIXI.Graphics();
     
-                    const widthH = Util.insideTopExt(palette, propertyV.pressure);
-                    const widthV = Util.insideTopExt(palette, propertyH.pressure);
+                    const widthH = Util.outsideTop(palette, propertyV.pressure);
+                    const widthV = Util.outsideTop(palette, propertyH.pressure);
     
                     mask.beginFill('#000000');
                     mask.drawRect(widthH, widthV, palette.tileWidth - 2 * widthH, palette.tileWidth - 2 * widthV);

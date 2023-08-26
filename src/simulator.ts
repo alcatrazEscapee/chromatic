@@ -1,4 +1,4 @@
-import type { Container } from "pixi.js";
+import { VERSION, type Container } from "pixi.js";
 
 import type { Tile } from "./tile.js";
 import type { Flow } from "./flow.js";
@@ -178,20 +178,27 @@ export class Simulator {
                     this.enqueue(inc, outDir, inc.color, inc.pressure);
                     break;
                 case TileId.CROSS:
-                    // Cross can support two flows - a straight, and a split straight, so they use `AxisId` to differentiate them
+                    // Cross can support two flows - a straight, and a cross-under, so they use `AxisId` to differentiate them
+                    // The flow is keyed using the axis of the incoming flow
+                    // The type of flow (either straight, or cross-under) is set by checking axis == tileAxis
+
                     const axis: AxisId = Util.dirToAxis(inc.dir);
-                    if (tile.hasFlow(axis)) {
+                    const tileAxis = Util.dirToAxis(tile.dir);
+
+                    if (tile.hasFlow(axis) || // Already has flow in this axis
+                        !tile.canAccept(axis === tileAxis ? AxisId.HORIZONTAL : AxisId.VERTICAL, inc) // Or cannot accept in this axis
+                    ) {
                         // There is already a flow in this axis
                         this.addLeakFrom(palette, inc);
                         continue;
                     }
-                    // The flow is keyed using the axis of the incoming flow
-                    // The type of flow (either straight, or cross-under) is set by checking axis == tileAxis
-                    const tileAxis = Util.dirToAxis(tile.dir);
+
+                    // Check the pressure of the straight part of the pipe, which is needed when drawing a cross flow
+                    const straightPressure = tile.property(AxisId.HORIZONTAL).pressure;
 
                     tile.addFlow(axis, axis == tileAxis ? 
                         new StraightFlow(palette, inc.color, inc.pressure, inc.dir) :
-                        new CrossUnderFlow(palette, inc.color, inc.pressure, inc.dir));
+                        new CrossUnderFlow(palette, inc.color, inc.pressure, inc.dir, straightPressure));
                     this.enqueue(inc, inc.dir, inc.color, inc.pressure);
                     break;
                 
@@ -205,7 +212,7 @@ export class Simulator {
                 // 1. Check if we're at the cw(dir) side, if so, create a leak
                 // 2. Check if the tile has < 3 flows
                 //    -> If it has 3 flows, it has already been fully populated, which means we leak the incoming flow
-                //    -> If it has < 3 flows, it can only have incoming flows (and should have < 2)
+                //    -> If it has < 3 flows, it can only have incoming flows
                 //       This means we don't need to check if there are already flows in the tile
                 // 3. If we are the second incoming flow, then we need to perform the action operation (and add an outgoing flow)
                 //    -> Otherwise, we simply buffer the current incoming in our `buffers` field.
@@ -310,7 +317,7 @@ export class Simulator {
     }
 
     private addLeakAt(palette: Palette, left: IncomingFlow, right: IncomingFlow): void {
-        this.addLeak(palette, [left.color, right.color], left.x, left.y, -1, palette.insideLength);
+        this.addLeak(palette, [left.color, right.color], left.x, left.y, -1, palette.portWidth);
     }
 
     private addLeakFrom(palette: Palette, inc: IncomingFlow): void {

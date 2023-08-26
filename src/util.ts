@@ -189,7 +189,7 @@ export module Util {
         return palette.insideTop - (pressure - 1) * palette.pressureWidth;
     }
 
-    export function insideTopExt(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
+    export function outsideTop(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
         return palette.insideTop - (pressure - 1) * palette.pressureWidth - palette.pipeWidth;
     }
 

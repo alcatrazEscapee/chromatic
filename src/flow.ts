@@ -125,7 +125,7 @@ export class PartialFlow extends BaseFlow {
         super();
 
         if (width == -1) {
-            width = palette.insideLength;
+            width = palette.portWidth;
         }
 
         // Flow moving left -> right, horizontal, in the first section (if input), otherwise in the last section
@@ -160,8 +160,12 @@ class PairFlow extends BaseFlow {
     readonly left: PartialFlow;
     readonly right: PartialFlow;
 
-    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId, leftWidth: number, rightWidth: number) {
+    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId, leftWidth: number, rightWidth: number = -1) {
         super();
+
+        if (rightWidth === -1) {
+            rightWidth = leftWidth;
+        }
 
         this.left = new PartialFlow(palette, color, pressure, dir, true, leftWidth);
         this.right = new PartialFlow(palette, color, pressure, dir, false, rightWidth);
@@ -178,8 +182,8 @@ class PairFlow extends BaseFlow {
 
 
 export class CrossUnderFlow extends PairFlow {
-    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId) {
-        super(palette, color, pressure, dir, palette.insideLength, palette.insideLength);
+    constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId, straightPressure: PressureId) {
+        super(palette, color, pressure, dir, Util.outsideTop(palette, straightPressure));
     }
 }
 
