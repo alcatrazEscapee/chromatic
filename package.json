@@ -14,6 +14,12 @@
       "^.+\\.ts$": "ts-jest"
     },
     "testEnvironment": "node",
-    "testRegex": "/test/.*\\.test.ts$"
+    "testRegex": "/test/.*\\.test.ts$",
+    "moduleNameMapper": {
+      "^(\\./.+)\\.js$": "$1"
+    },
+    "setupFiles": [
+      "./test/setup.ts"
+    ]
   }
 }

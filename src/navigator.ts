@@ -1,18 +1,18 @@
-import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from "./constants";
-import type { Tile, TileProperties } from "./tile";
+import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from "./constants.js";
+import type { Tile, TileProperties } from "./tile.js";
 
 import { Util } from "./util.js";
 
 
 export module Navigator {
 
-    type Map = {
+    export type Map = {
         readonly grid: GridId,
         readonly tiles: (Tile | null)[],
         readonly puzzle: NetworkPuzzle | null,
     }
 
-    type Position = {
+    export type Position = {
         readonly x: number,
         readonly y: number,
         readonly dir: DirectionId | -1,
@@ -32,7 +32,7 @@ export module Navigator {
      * - Higher pressures are more outlandish
      * - Non-null colors are more outlandish, then sort by `ColorId`
      */
-    export function updateTileProperties(map: Map, pos: Point & { index: number}, tile: Tile) {
+    export function updateTileProperties(map: Map, pos: Point, tile: Tile) {
 
         switch (tile.tileId) {
             case TileId.EMPTY:
@@ -60,7 +60,7 @@ export module Navigator {
         }
     }
 
-    function updateInBothDirections(map: Map, pos: Point & { index: number }, property: TileProperties, leftDir: DirectionId, rightDir: DirectionId): void {
+    function updateInBothDirections(map: Map, pos: Point, property: TileProperties, leftDir: DirectionId, rightDir: DirectionId): void {
         const left = traverse(map, { x: pos.x, y: pos.y, dir: leftDir });
         const right = traverse(map, { x: pos.x, y: pos.y, dir: rightDir });
 
@@ -95,31 +95,27 @@ export module Navigator {
         }
 
         // Adjust the direction based on what we find, and possibly return null if the tile does not connect
-        const curr = map.tiles[pos.x + width * pos.y]!;
         const next = map.tiles[move.x + width * move.y]!;
         
-        if (next === null) return null; // No tile here, cannot connect
+        if (next === null) {
+            return null; // No tile here, cannot connect
+        }
 
         switch (next.tileId) {
             case TileId.STRAIGHT:
                 move.dir = pos.dir; // Same direction
-                return Util.sameAxis(curr.dir, next.dir) ? move : null; // Can only move through if the same axis as the tile
+                return Util.sameAxis(pos.dir, next.dir) ? move : null; // Can only move through if the same axis as the tile
             case TileId.CURVE:
                 {
-                    // Same logic as simulator, for passing through curves
-                    const adj = Util.cw(pos.dir);
-
-                    if (adj === next.dir) {
-                        move.dir = Util.cw(move.dir);
-                        return move;
-                    }
-                    if (Util.cw(adj) === next.dir) {
-                        move.dir = Util.ccw(move.dir);
+                    const { dir: outDir } = Util.outputCurve(next.dir, pos.dir);
+                    if (outDir !== -1) {
+                        move.dir = outDir;
                         return move;
                     }
                     return null;
                 }
             case TileId.CROSS:
+                move.dir = pos.dir;
                 return move; // Can always move through a crossover, unchanged
             default:
                 throw new Error(`Invalid tile id: ${next.tileId}`);
@@ -146,8 +142,6 @@ export module Navigator {
             return null; // No matching input / output
         }
 
-        // todo: access pipes, if they are compatible
-
         const width = map.grid + Constants.GRID_ID_TO_WIDTH;
         const tile = map.tiles[pos.x + width * pos.y]!;
         
@@ -156,6 +150,10 @@ export module Navigator {
         switch (tile.tileId) {
             case TileId.STRAIGHT:
                 return Util.sameAxis(tile.dir, pos.dir) ? tile.property(DirectionId.INTERNAL) : null;
+            case TileId.CURVE:
+                return Util.outputCurve(tile.dir, Util.flip(pos.dir)).dir !== -1 ? tile.property(DirectionId.INTERNAL) : null;
+            case TileId.CROSS:
+                return Util.sameAxis(tile.dir, pos.dir) ? tile.property(AxisId.HORIZONTAL) : tile.property(AxisId.VERTICAL);
             default:
                 throw new Error(`Invalid tile id: ${tile.tileId}`);
         }

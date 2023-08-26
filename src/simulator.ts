@@ -3,10 +3,10 @@ import type { Container } from "pixi.js";
 import type { Tile } from "./tile.js";
 import type { Flow } from "./flow.js";
 
+import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "./constants.js";
 import { EdgeFlow, StraightFlow, CrossUnderFlow, CurveFlow, PartialFlow } from "./flow.js";
 import { Util } from "./util.js";
 import { Leak } from "./leak.js";
-import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "./constants.js";
 
 
 interface IncomingFlow {
@@ -163,32 +163,19 @@ export class Simulator {
                 case TileId.CURVE:
                     // Curve tiles have a single flow capacity, and also use `INTERNAL` direction
                     // Default curve tile is dir = LEFT, with but is able to accept DOWN and RIGHT
-                    const adj = Util.cw(inc.dir);
+                    const { dir: outDir, cw: outCw }  = Util.outputCurve(tile.dir, inc.dir);
 
                     if (tile.hasFlow(DirectionId.INTERNAL) || // Tile does not connect
-                        !tile.canAccept(DirectionId.INTERNAL, inc) // Or cannot accept due to labels
+                        !tile.canAccept(DirectionId.INTERNAL, inc) || // Or cannot accept due to labels
+                        outDir === -1 // Tile does not connect
                     ) {
                         // Tile already has a flow, which is always incompatible
                         this.addLeakFrom(palette, inc);
                         continue;
                     }
 
-                    if (adj === tile.dir) {
-                        // Accept from adj, and exit cw(adj)
-                        tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.pressure, inc.dir, true));
-                        this.enqueue(inc, Util.cw(inc.dir), inc.color, inc.pressure);
-                        continue;
-                    }
-                    
-                    if (Util.cw(adj) === tile.dir) {
-                        // Accept from cw(adj), and exit adj
-                        tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.pressure, inc.dir, false));
-                        this.enqueue(inc, Util.ccw(inc.dir), inc.color, inc.pressure);
-                        continue;
-                    }
-
-                    // Tile does not connect
-                    this.addLeakFrom(palette, inc);
+                    tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.pressure, inc.dir, outCw));
+                    this.enqueue(inc, outDir, inc.color, inc.pressure);
                     break;
                 case TileId.CROSS:
                     // Cross can support two flows - a straight, and a split straight, so they use `AxisId` to differentiate them
