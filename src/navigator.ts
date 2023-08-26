@@ -1,3 +1,4 @@
+import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from "./constants";
 import type { Tile, TileProperties } from "./tile";
 
 import { Util } from "./util.js";

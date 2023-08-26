@@ -2,6 +2,7 @@ import type { Container, Texture } from "pixi.js";
 
 import { Flow } from "./flow.js";
 import { COLORS, Util } from "./util.js";
+import { AxisId, ColorId, DirectionId, TileId } from "./constants.js";
 
 
 type Key = 0 | 1 | 2 | 3;

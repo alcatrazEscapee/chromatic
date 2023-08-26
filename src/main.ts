@@ -1,5 +1,6 @@
 import type { Texture, Application, Container, FederatedPointerEvent, Sprite } from 'pixi.js';
 
+import { ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from './constants.js';
 import { Util, COLORS } from './util.js';
 import { Tile } from './tile.js';
 import { Simulator } from './simulator.js';
