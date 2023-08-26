@@ -6,6 +6,7 @@ import type { Flow } from "./flow.js";
 import { EdgeFlow, StraightFlow, CrossUnderFlow, CurveFlow, PartialFlow } from "./flow.js";
 import { Util } from "./util.js";
 import { Leak } from "./leak.js";
+import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "./constants.js";
 
 
 interface IncomingFlow {

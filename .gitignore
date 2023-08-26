@@ -8,6 +8,7 @@
 !/Makefile
 
 !/src/**/*.ts
+!/test/**/*.ts
 !/lib/**/*.js
 !/art/**/*.png
 !/art/**/*.json

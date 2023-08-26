@@ -1,5 +1,6 @@
 import type { Container, Texture } from "pixi.js";
 
+import { AxisId, ColorId, Constants, DirectionId } from "./constants";
 
 export const COLORS: {[_ in ColorId]: string} = [
     '#f00', '#00f', '#ff0',
@@ -16,12 +17,12 @@ export module Util {
         return x >= x0 && y >= y0 && x < x0 + size && y < y0 + size;
     }
 
-    export function sameAxis(lhs: DirectionId, rhs: DirectionId): boolean {
-        return (lhs % 2) == (rhs % 2);
-    }
-
     export function dirToAxis(dir: DirectionId): AxisId {
         return dir % 2;
+    }
+
+    export function sameAxis(lhs: DirectionId, rhs: DirectionId): boolean {
+        return (lhs % 2) == (rhs % 2);
     }
 
     export function move(pos: Point, dir: DirectionId, delta: number = 1): Point {
@@ -107,13 +108,15 @@ export module Util {
         return -1;
     }
 
+    /**
+     * When given the direction of an action `tile`, and two _incoming_ flow directions `left` and `right`, returns the missing flow direction, _also_ in _incoming_ flow convention.
+     */
     export function outputDir(tile: DirectionId, left: DirectionId, right: DirectionId): DirectionId {
         // The default orientation is < ^ > with dir = LEFT
         // `left` and `right` are both in *incoming flow* convention, so LEFT, DOWN, RIGHT
         // So, start at tile, and iterate ccw() until we find a dir we can return
         for (let dir = tile;; dir = ccw(dir)) {
             if (dir !== left && dir !== right) {
-                console.log(tile, left, right, dir);
                 return dir;
             }
         }

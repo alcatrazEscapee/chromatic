@@ -25,6 +25,10 @@ build : data-compressed.json $(JS_OUT) $(JS_MAP) $(PIPE_OUT)
 	@cp -r art $(WEB)/.
 	@cp data-compressed.json $(WEB)/lib/puzzles.json
 
+.PHONY : test
+test : FORCE
+	@npx jest
+
 $(JS_OUT) $(JS_MAP) &: $(TS_SRC) package-lock.json
 	@printf "Compiling tsc...\n"
 	@npx tsc
