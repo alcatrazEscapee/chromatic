@@ -44,8 +44,6 @@ export module Navigator {
     export function updateTile(map: Map, pos: Point, tile: Tile) {
 
         switch (tile.tileId) {
-            case TileId.EMPTY:
-                return; // Nothing to do
             case TileId.STRAIGHT:    
                 updateInBothDirections(map, pos,
                     tile.property(DirectionId.INTERNAL), // Straight pipes have a single property
@@ -64,22 +62,17 @@ export module Navigator {
                     tile.property(AxisId.VERTICAL), // And the other axis...
                     Util.cw(tile.dir), Util.ccw(tile.dir)); // Uses the other directions
                 break;
-            case TileId.MIX:
-            case TileId.UNMIX:
-            case TileId.UP:
-            case TileId.DOWN:
+            default:
                 updateAction(map, pos, tile);
                 break;
-            default:
-                throw new Error(`Not implemented`);
         }
 
         map.updateTile(pos);
     }
 
     function updateInBothDirections(map: Map, pos: Point, property: TileProperties, leftDir: DirectionId, rightDir: DirectionId): void {
-        const posLeft = { x: pos.x, y: pos.y, dir: leftDir, ty: PositionType.VALID };
-        const posRight = { x: pos.x, y: pos.y, dir: rightDir, ty: PositionType.VALID };
+        const posLeft = toPosition(pos, leftDir);
+        const posRight = toPosition(pos, rightDir);
         
         const left = traverse(map, posLeft);
         const right = traverse(map, posRight);
@@ -122,6 +115,54 @@ export module Navigator {
             realDir = Util.cw(realDir);
         }
     }
+
+
+    /**
+     * Updates a tile, and connected tiles, following the change or addition of a color (or pressure) label to the tile.
+     * 
+     * Unlike `updateTile()`, this treats the current tile as the source of truth about the color (and pressure),
+     * and propagates this to adjacent tiles.
+     * 
+     * todo: accept a direction, representing which part of the tile got updated, and only recurse that branch
+     */
+    export function updateFrom(map: Map, pos: Point, tile: Tile): void {
+        map.updateTile(pos);
+
+        switch (tile.tileId) {
+            case TileId.STRAIGHT:
+                {
+                    const property = tile.property(DirectionId.INTERNAL);
+
+                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
+                    recursiveUpdate(map, toPosition(pos, Util.flip(tile.dir)), property);
+                }
+                break;
+            case TileId.CURVE:
+                {
+                    const property = tile.property(DirectionId.INTERNAL);
+
+                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
+                    recursiveUpdate(map, toPosition(pos, Util.cw(tile.dir)), property);
+                }
+                break;
+            case TileId.CROSS:
+                {
+                    const property = tile.property(AxisId.HORIZONTAL); // todo: use parameter
+
+                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
+                    recursiveUpdate(map, toPosition(pos, Util.flip(tile.dir)), property);
+                }
+                break;
+            default:
+                {
+                    const property = tile.property(DirectionId.LEFT); // todo: use parameter
+
+                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
+                }
+                break;
+        }
+    }
+
 
     function recursiveUpdate(map: Map, pos: Position | null, copyFrom: StrictReadonly<TileProperties>): void {
         while (pos !== null) {
@@ -179,18 +220,13 @@ export module Navigator {
             case TileId.CROSS:
                 move.dir = pos.dir;
                 return move; // Can always move through a crossover, unchanged
-            case TileId.MIX:
-            case TileId.UNMIX:
-            case TileId.UP:
-            case TileId.DOWN:
+            default:
                 if (Util.cw(tile.dir) === pos.dir) {
                     return null; // Cannot connect to a action via this direction
                 }
                 move.dir = pos.dir; // Incoming direction
                 move.ty = PositionType.PORT; // Reached a port
                 return move;
-            default:
-                throw new Error(`Invalid tile id: ${tile.tileId}`);
         }
     }
 
@@ -245,17 +281,16 @@ export module Navigator {
                 return Util.outputCurve(tile.dir, Util.flip(pos.dir)).dir !== -1 ? tile.property(DirectionId.INTERNAL) : null;
             case TileId.CROSS:
                 return Util.sameAxis(tile.dir, pos.dir) ? tile.property(AxisId.HORIZONTAL) : tile.property(AxisId.VERTICAL);
-            case TileId.MIX:
-            case TileId.UNMIX:
-            case TileId.UP:
-            case TileId.DOWN:
+            default:
                 return outgoingDir === tile.dir ? tile.property(DirectionId.LEFT)
                     : outgoingDir === Util.cw(tile.dir) ? tile.property(DirectionId.UP)
                     : outgoingDir === Util.flip(tile.dir) ? tile.property(DirectionId.RIGHT)
                     : null;
-            default:
-                throw new Error(`Invalid tile id: ${tile.tileId}`);
         }
+    }
+
+    function toPosition(pos: Point, dir: DirectionId): Position {
+        return { x: pos.x, y: pos.y, dir, ty: PositionType.VALID };
     }
 
     function resolveFrom(self: TileProperties, other: StrictReadonly<TileProperties>): void {
