@@ -12,13 +12,13 @@ export type TileProperties = { color: ColorId | null, pressure: PressureId };
 
 export class Tile {
 
-    readonly tileId: TileId;
+    readonly tileId: Exclude<TileId, TileId.EMPTY>;
     readonly root: Container;
 
-    private readonly pipe: Container; // Lowest layer of pipe - everything that rotates
-    private readonly overlayV: Container; // Overlay for vertical sections
-    private readonly pipeUpper: Container; // Upper layer of pipe - for things that render above pipe and overlayH
-    private readonly overlayH: Container; // Overlay for horizontal sections
+    private readonly pipe: Container;
+    private readonly overlay: Container;
+    private readonly pipeUpper: Container;
+    private readonly overlayUpper: Container;
     private readonly pipeFixed: Container; // Parts of the pipe that don't rotate, and are above all
     private readonly flowContainer: Container; // All flows, which don't rotate
     
@@ -27,27 +27,23 @@ export class Tile {
 
     dir: DirectionId = DirectionId.LEFT;
     
-    constructor(tileId: TileId) {
+    constructor(tileId: Exclude<TileId, TileId.EMPTY>) {
         this.tileId = tileId;
         this.root = new PIXI.Container();
 
         this.pipe = new PIXI.Container();
-        this.overlayV = new PIXI.Container();
+        this.overlay = new PIXI.Container();
         this.pipeUpper = new PIXI.Container();
-        this.overlayH = new PIXI.Container();
+        this.overlayUpper = new PIXI.Container();
         this.pipeFixed = new PIXI.Container();
         this.flowContainer = new PIXI.Container();
 
         this.root.addChild(this.pipe);
-        this.root.addChild(this.overlayV);
+        this.root.addChild(this.overlay);
         this.root.addChild(this.pipeUpper);
-        this.root.addChild(this.overlayH);
+        this.root.addChild(this.overlayUpper);
         this.root.addChild(this.pipeFixed);
         this.root.addChild(this.flowContainer);
-
-        // Start with overlayH as visible
-        this.overlayV.angle -= 90;
-        this.overlayV.visible = false;
     }
 
     public rotate(): void {
@@ -57,8 +53,13 @@ export class Tile {
         this.pipeFixed.angle -= 90;
         this.flowContainer.angle -= 90;
 
-        this.overlayH.visible = !this.overlayH.visible;
-        this.overlayV.visible = !this.overlayV.visible;
+        // Toggle which overlays are visible
+        for (const overlay of this.overlay.children) {
+            overlay.visible = !overlay.visible;
+        }
+        for (const overlay of this.overlayUpper.children) {
+            overlay.visible = !overlay.visible;
+        }
     }
 
     /**
@@ -121,20 +122,16 @@ export class Tile {
         return property!;
     }
 
-    public build(palette: TexturePalette<Texture>, unique: boolean = false): void {
+    public update(palette: TexturePalette<Texture>): void {
         const textures: PaletteTextures<Texture> = palette.textures;
 
         // Clear any existing children
-        if (!unique) { // Need to remove the existing pipe objects first
-            for (let i = 0; i < this.root.children.length; i++) {
-                Util.clear(this.root.children[i] as Container);
-            }
+        for (let i = 0; i < this.root.children.length; i++) {
+            Util.clear(this.root.children[i] as Container);
         }
 
         // Setup new children, based on the current properties of the tile
         switch (this.tileId) {
-            case TileId.EMPTY:
-                break; // No-op
             case TileId.STRAIGHT:
                 {
                     const property: TileProperties = this.property(DirectionId.INTERNAL);
@@ -183,10 +180,14 @@ export class Tile {
                     vertical.angle += 90;
     
                     this.pipe.addChild(vertical);
-                    this.addOverlay(propertyH, textureH);
                     this.pipeUpper.addChild(mask);
-                    this.addOverlay(propertyV, textureV);
                     this.pipeUpper.addChild(horizontal);
+
+                    // Use the flipped texture for h/v
+                    const textureVFlip = { overlay: { h: textureV.overlay.v, v: textureV.overlay.h } };
+
+                    this.addOverlay(propertyH, textureH, true);
+                    this.addOverlay(propertyV, textureVFlip, false);
                 }
                 break;
             default:
@@ -225,7 +226,7 @@ export class Tile {
         }
     }
 
-    private addOverlay(property: TileProperties, texture: PalettePipeTextures<Texture>): void {
+    private addOverlay(property: TileProperties, texture: Omit<PalettePipeTextures<Texture>, 'pipe'>, upper: boolean = false): void {
         if (property.color !== null) {
             const overlayH = new PIXI.Sprite(texture.overlay.h);
             const overlayV = new PIXI.Sprite(texture.overlay.v);
@@ -235,8 +236,14 @@ export class Tile {
             overlayH.tint = COLORS[property.color];
             overlayV.tint = COLORS[property.color];
 
-            this.overlayH.addChild(overlayH);
-            this.overlayV.addChild(overlayV);
+            overlayH.visible = Util.dirToAxis(this.dir) === AxisId.HORIZONTAL;
+            overlayV.visible = Util.dirToAxis(this.dir) === AxisId.VERTICAL;
+            overlayV.angle -= 90; // vertical overlays are already rotated by 90, so invert that here.
+
+            const root = upper ? this.overlayUpper : this.overlay;
+
+            root.addChild(overlayH);
+            root.addChild(overlayV);
         }
     }
 }

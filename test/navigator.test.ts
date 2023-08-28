@@ -1,10 +1,10 @@
-import { AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId } from '../src/constants';
+import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../src/constants';
 import { Navigator } from '../src/navigator';
-import { Tile } from '../src/tile';
+import { Tile, TileProperties } from '../src/tile';
 
 
 test('updateTile() inherit pressure EDGE -> STRAIGHT', () => {
-    const { map, index } = mapOf({
+    const map = mapOf({
         size: GridId._3x3,
         inputs: [
             [0, 0, DirectionId.RIGHT, ColorId.RED, 3]
@@ -14,11 +14,11 @@ test('updateTile() inherit pressure EDGE -> STRAIGHT', () => {
         [0, 0, TileId.STRAIGHT, DirectionId.LEFT]
     ]);
 
-    expect(map.tiles[index]!.property(DirectionId.INTERNAL)).toStrictEqual({ color: null, pressure: 3 });
+    expect(map.at(0, 0, DirectionId.INTERNAL).pressure).toBe(3);
 });
 
 test('updateTile() inherit pressure EDGE -> STRAIGHT -> STRAIGHT', () => {
-    const { map, index } = mapOf({
+    const map = mapOf({
         size: GridId._3x3,
         inputs: [
             [0, 0, DirectionId.RIGHT, ColorId.RED, 3]
@@ -29,11 +29,11 @@ test('updateTile() inherit pressure EDGE -> STRAIGHT -> STRAIGHT', () => {
         [1, 0, TileId.STRAIGHT, DirectionId.LEFT]
     ]);
 
-    expect(map.tiles[index]!.property(DirectionId.INTERNAL)).toStrictEqual({ color: null, pressure: 3 });
+    expect(map.at(0, 0, DirectionId.INTERNAL).pressure).toBe(3);
 });
 
 test('updateTile() inherit pressure EDGE -> CURVE -> STRAIGHT', () => {
-    const { map, index } = mapOf({
+    const map = mapOf({
         size: GridId._3x3,
         inputs: [
             [0, 2, DirectionId.RIGHT, ColorId.RED, 3]
@@ -44,11 +44,11 @@ test('updateTile() inherit pressure EDGE -> CURVE -> STRAIGHT', () => {
         [0, 1, TileId.STRAIGHT, DirectionId.UP]
     ]);
 
-    expect(map.tiles[index]!.property(DirectionId.INTERNAL)).toStrictEqual({ color: null, pressure: 3 });
+    expect(map.at(0, 1, DirectionId.INTERNAL).pressure).toBe(3);
 });
 
 test('updateTile() inherit pressure EDGE -> STRAIGHT -> CURVE', () => {
-    const { map, index } = mapOf({
+    const map = mapOf({
         size: GridId._3x3,
         inputs: [
             [1, 0, DirectionId.DOWN, ColorId.RED, 3]
@@ -59,11 +59,11 @@ test('updateTile() inherit pressure EDGE -> STRAIGHT -> CURVE', () => {
         [1, 1, TileId.CURVE, DirectionId.LEFT]
     ]);
 
-    expect(map.tiles[index]!.property(DirectionId.INTERNAL)).toStrictEqual({ color: null, pressure: 3 });
+    expect(map.at(1, 1, DirectionId.INTERNAL).pressure).toBe(3);
 });
 
 test('updateTile() inherit pressure EDGE -> CROSS -> CURVE -> CROSS x2', () => {
-    const { map, index } = mapOf({
+    const map = mapOf({
         size: GridId._3x3,
         inputs: [
             [0, 0, DirectionId.DOWN, ColorId.RED, 3],
@@ -77,12 +77,12 @@ test('updateTile() inherit pressure EDGE -> CROSS -> CURVE -> CROSS x2', () => {
         [1, 1, TileId.CROSS, DirectionId.LEFT],
     ]);
 
-    expect(map.tiles[index]!.property(AxisId.HORIZONTAL)).toStrictEqual({ color: null, pressure: 3 });
-    expect(map.tiles[index]!.property(AxisId.VERTICAL)).toStrictEqual({ color: null, pressure: 2 });
+    expect(map.at(1, 1, AxisId.HORIZONTAL).pressure).toBe(3);
+    expect(map.at(1, 1, AxisId.VERTICAL).pressure).toBe(2);
 });
 
 test('updateTile() inherit pressure EDGE + EDGE + CURVE -> ACTION', () => {
-    const { map, index } = mapOf({
+    const map = mapOf({
         size: GridId._3x3,
         inputs: [
             [0, 0, DirectionId.DOWN, ColorId.RED, 2],
@@ -96,13 +96,13 @@ test('updateTile() inherit pressure EDGE + EDGE + CURVE -> ACTION', () => {
         [0, 0, TileId.MIX, DirectionId.LEFT]
     ]);
 
-    expect(map.tiles[index]!.property(DirectionId.LEFT)).toStrictEqual({ color: null, pressure: 3 });
-    expect(map.tiles[index]!.property(DirectionId.UP)).toStrictEqual({ color: null, pressure: 2 });
-    expect(map.tiles[index]!.property(DirectionId.RIGHT)).toStrictEqual({ color: null, pressure: 4 });
+    expect(map.at(0, 0, DirectionId.LEFT).pressure).toBe(3);
+    expect(map.at(0, 0, DirectionId.UP).pressure).toBe(2);
+    expect(map.at(0, 0, DirectionId.RIGHT).pressure).toBe(4);
 });
 
 test('updateTile() inherit pressure recursive STRAIGHT <- STRAIGHT <- CURVE <- EDGE', () => {
-    const { map, index } = mapOf({
+    const map = mapOf({
         size: GridId._3x3,
         inputs: [
             [2, 0, DirectionId.DOWN, ColorId.RED, 4],
@@ -114,30 +114,78 @@ test('updateTile() inherit pressure recursive STRAIGHT <- STRAIGHT <- CURVE <- E
         [2, 0, TileId.CURVE, DirectionId.LEFT],
     ]);
 
-    expect(map.tiles[index]!.property(DirectionId.INTERNAL)).toStrictEqual({ color: null, pressure: 4 });
-    expect(map.tiles[0]!.property(DirectionId.INTERNAL)).toStrictEqual({ color: null, pressure: 4 });
+    expect(map.at(2, 0, DirectionId.INTERNAL).pressure).toBe(4);
+    expect(map.at(0, 0, DirectionId.INTERNAL).pressure).toBe(4);
+});
+
+test('updateFrom() apply color to STRAIGHT -> CROSS -> STRAIGHT', () => {
+    const map = mapOf(empty(), [
+        [0, 0, TileId.STRAIGHT, DirectionId.LEFT],
+        [1, 0, TileId.CROSS, DirectionId.LEFT],
+        [2, 0, TileId.STRAIGHT, DirectionId.LEFT],
+    ]);
+
+    map.color(0, 0, DirectionId.INTERNAL, ColorId.RED);
+    
+    expect(map.at(0, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
+    expect(map.at(1, 0, AxisId.HORIZONTAL).color).toBe(ColorId.RED);
+    expect(map.at(1, 0, AxisId.VERTICAL).color).toBe(null);
+    expect(map.at(2, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
+});
+
+test('updateFrom() apply color to STRAIGHT -> CROSS (rotated) -> STRAIGHT', () => {
+    const map = mapOf(empty(), [
+        [0, 0, TileId.STRAIGHT, DirectionId.LEFT],
+        [1, 0, TileId.CROSS, DirectionId.UP],
+        [2, 0, TileId.STRAIGHT, DirectionId.LEFT],
+    ]);
+
+    map.color(0, 0, DirectionId.INTERNAL, ColorId.RED);
+    
+    expect(map.at(0, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
+    expect(map.at(1, 0, AxisId.VERTICAL).color).toBe(ColorId.RED);
+    expect(map.at(1, 0, AxisId.HORIZONTAL).color).toBe(null);
+    expect(map.at(2, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
 });
 
 
+function empty(): Omit<NetworkPuzzle, 'id'> {
+    return { size: GridId._5x5, inputs: [], outputs: [] };
+}
 
-function mapOf(puzzle: Omit<NetworkPuzzle, 'id'>, tiles: [number, number, TileId, DirectionId][]): { map: Navigator.Map, index: number } {
-    const map: Navigator.Map = {
+type MapOf = Navigator.Map & {
+    width: number;
+    
+    at(x: number, y: number, key: 0 | 1 | 2 | 3): TileProperties;
+    color(x: number, y: number, key: 0 | 1 | 2 | 3, color: ColorId): void;
+}
+
+function mapOf(puzzle: Omit<NetworkPuzzle, 'id'>, tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): MapOf {
+    const map: MapOf = {
+        width: puzzle.size + Constants.GRID_ID_TO_WIDTH,
         grid: puzzle.size,
         tiles: [null, null, null, null, null, null, null, null, null],
         puzzle: puzzle as NetworkPuzzle,
+
+        at(x: number, y: number, key: 0 | 1 | 2 | 3): TileProperties {
+            return map.tiles[x + y * map.width]!.property(key);
+        },
+        color(x: number, y: number, key: 0 | 1 | 2 | 3, color: ColorId): void {
+            map.tiles[x + y * map.width]!.property(key).color = color;
+            Navigator.updateFrom(map, { x, y }, map.tiles[x + y * map.width]!);
+        },
+
         updateTile(): void {}
     };
 
-    let index: number = -1;
     for (const [x, y, tileId, rotationId] of tiles) {
         const tile = new Tile(tileId);
         for (let i = 0; i < rotationId; i++) tile.rotate();
 
-        index = x + y * 3;
-        map.tiles[index] = tile;
+        map.tiles[x + y * map.width] = tile;
         
-        Navigator.updateTile(map, { x, y }, map.tiles[index]!);
+        Navigator.updateTile(map, { x, y }, map.tiles[x + y * map.width]!);
     }
 
-    return { map, index };
+    return map;
 }

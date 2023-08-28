@@ -1,4 +1,4 @@
-import type { Texture, Application, Container, FederatedPointerEvent, Sprite } from 'pixi.js';
+import type { Texture, Application, Container, FederatedPointerEvent, Sprite, Color, Graphics } from 'pixi.js';
 
 import { ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from './constants.js';
 import { Util, COLORS } from './util.js';
@@ -13,6 +13,7 @@ declare global {
 }
 
 const enum StateId {
+    UNLOADED,
     MAIN_TILE,
     MAIN_CONFIGURE,
     DRAGGING_TILE,
@@ -48,11 +49,12 @@ class Game {
     readonly simulator: Simulator;
 
     puzzle: NetworkPuzzle | null = null;
-    state: StateId = StateId.MAIN_TILE;
-    grid: GridId = GridId.DEFAULT;
+    state: StateId = StateId.UNLOADED;
+    tabState: StateId.MAIN_CONFIGURE | StateId.MAIN_TILE = StateId.MAIN_TILE;
+    grid: GridId = GridId.default;
 
     heldTile: { root: Sprite, tileId: TileId } | null = null;
-    heldColor: Sprite | null = null;
+    heldColor: { root: Graphics, colorId: ColorId } | null = null;
 
     // The last recorded screenX / screenY of the mouse, from mouse move event
     screenX: number = 0;
@@ -117,7 +119,7 @@ class Game {
         const ui = new PIXI.Sprite(this.core.ui_background);
 
         const tileButtonTextures = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
-        for (let i = 0; i <= TileId.LAST; i++) {
+        for (let i = 0; i <= TileId.last; i++) {
             const tileId: TileId = i;
             const texture: Texture = tileButtonTextures[i]!;
             const btn = new PIXI.Sprite(texture);
@@ -158,10 +160,24 @@ class Game {
         this.btnStop.on('pointertap', event => this.onStop(event));
         this.buttonsContainer.addChild(this.btnStop);
 
-        const stage = this.app.stage;
+        const btnTabTop = new PIXI.Sprite();
+        const btnTabBot = new PIXI.Sprite();
+
+        btnTabTop.hitArea = new PIXI.Rectangle(275, 431, 22, 70);
+        btnTabTop.eventMode = 'static';
+        btnTabTop.on('pointertap', event => this.onTabTop(event));
+
+        btnTabBot.hitArea = new PIXI.Rectangle(275, 431 + 70, 22, 70);
+        btnTabBot.eventMode = 'static';
+        btnTabBot.on('pointertap', event => this.onTabBot(event));
+
+        this.buttonsContainer.addChild(btnTabTop);
+        this.buttonsContainer.addChild(btnTabBot);
 
         // Default with tile buttons visible
         this.buttonsContainer.addChild(this.tileButtonsContainer);
+
+        const stage = this.app.stage;
 
         stage.addChild(ui);
         stage.addChild(this.gridContainer);
@@ -188,12 +204,8 @@ class Game {
         const grid = new PIXI.Sprite(palette.grid);
         grid.position.set(Constants.GRID_LEFT, Constants.GRID_TOP);
 
-        if (this.gridContainer.children) {
-            this.gridContainer.children[0]?.destroy();
-        }
         this.gridContainer.addChild(grid);
 
-        (this as Mutable<Game>).tiles = [];
         for (let i = 0; i < palette.width * palette.width; i++) {
             this.tiles.push(null);
         }
@@ -255,6 +267,22 @@ class Game {
         }
 
         this.puzzle = puzzle;
+        this.state = this.tabState;
+    }
+
+    /**
+     * Removes all puzzle-specific data, prepared for a new call to `init()` with a new puzzle
+     */
+    public teardown(): void {
+
+        Util.clear(this.tilesContainer);
+        Util.clear(this.gridContainer);
+        Util.clear(this.edgesContainer);
+
+        (this as Mutable<Game>).tiles = [];
+
+        this.puzzle = null;
+        this.state = StateId.UNLOADED;
     }
 
     private grabTile(event: FederatedPointerEvent, tileId: TileId, texture: Texture): void {
@@ -272,12 +300,18 @@ class Game {
         }
     }
 
-    private grabColor(event: FederatedPointerEvent, color: ColorId): void {
+    private grabColor(event: FederatedPointerEvent, colorId: ColorId): void {
         if (this.state === StateId.MAIN_CONFIGURE) {
-            this.heldColor = new PIXI.Sprite(this.core.ui_btn_stop);
+            const root = new PIXI.Graphics();
+
+            root.beginFill(COLORS[colorId]);
+            root.drawCircle(0, 0, 12);
+            root.position.set(event.screenX, event.screenY);
+
+            this.heldColor = { root, colorId };
             this.state = StateId.DRAGGING_COLOR;
 
-            this.topContainer.addChild(this.heldColor);
+            this.topContainer.addChild(this.heldColor.root);
         }
     }
 
@@ -287,10 +321,10 @@ class Game {
 
         // Update the position of the held object(s)
         this.heldTile?.root.position.set(event.screenX, event.screenY);
-        this.heldColor?.position.set(event.screenX, event.screenY);
+        this.heldColor?.root.position.set(event.screenX, event.screenY);
     }
 
-    private onPointerDown(event: FederatedPointerEvent): void {
+    private onPointerDown(_: FederatedPointerEvent): void {
         
     }
 
@@ -329,6 +363,29 @@ class Game {
             this.bypassNextTap = true; // Don't rotate the tile immediately
 
             heldTile.root.destroy();
+        } else if (this.state === StateId.DRAGGING_COLOR) {
+            const heldColor = this.heldColor!;
+
+            if (this.isInGrid(event)) {
+                const pos = this.projectToGrid(event);
+                const tile = this.tiles[pos.index]!;
+
+                if (tile !== null) {
+                    // todo: target individual sections of multipart tiles
+                    const key = 0;
+
+                    tile.property(key).color = heldColor.colorId;
+                    
+                    // Applies the update to not only this tile, but all connecting tiles
+                    Navigator.updateFrom(this, pos, tile);
+                }
+            }
+
+            this.heldColor = null;
+            this.state = StateId.MAIN_CONFIGURE;
+            this.bypassNextTap = true;
+
+            heldColor.root.destroy();
         }
     }
 
@@ -338,7 +395,7 @@ class Game {
             return;
         }
 
-        if (this.state == StateId.MAIN_TILE && this.isInGrid(event)) {
+        if ((this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) && this.isInGrid(event)) {
             const pos = this.projectToGrid(event);
             const tile: Tile | null = this.tiles[pos.index]!;
 
@@ -350,8 +407,8 @@ class Game {
         }
     }
 
-    private onPlay(event: FederatedPointerEvent): void {
-        if (this.state == StateId.MAIN_TILE) {
+    private onPlay(_: FederatedPointerEvent): void {
+        if (this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) {
             this.btnPlay.alpha = 0.5;
             this.btnStop.alpha = 1.0;
 
@@ -361,12 +418,12 @@ class Game {
         }
     }
 
-    private onStop(event: FederatedPointerEvent): void {
-        if (this.state == StateId.SIMULATION) {
+    private onStop(_: FederatedPointerEvent): void {
+        if (this.state === StateId.SIMULATION) {
             this.btnPlay.alpha = 1.0;
             this.btnStop.alpha = 0.5;
 
-            this.state = StateId.MAIN_TILE;
+            this.state = this.tabState;
             this.simulator.reset();
             PIXI.Ticker.shared.remove(this.onSimulatorTick, this);
 
@@ -377,23 +434,31 @@ class Game {
         }
     }
 
+    private onTabTop(_: FederatedPointerEvent): void {
+        if (this.state === StateId.MAIN_CONFIGURE) {
+            this.state = this.tabState = StateId.MAIN_TILE;
+            
+            // Switch out buttons
+            this.buttonsContainer.removeChild(this.colorButtonsContainer);
+            this.buttonsContainer.addChild(this.tileButtonsContainer);
+        }
+    }
+
+    private onTabBot(_: FederatedPointerEvent): void {
+        if (this.state === StateId.MAIN_TILE) {
+            this.state = this.tabState = StateId.MAIN_CONFIGURE;
+            
+            // Switch out buttons
+            this.buttonsContainer.removeChild(this.tileButtonsContainer);
+            this.buttonsContainer.addChild(this.colorButtonsContainer);
+        }
+    }
+
     public updateTile(pos: Point): void {
         const palette = this.palettes[this.grid];
         const index = pos.x + palette.width * pos.y;
 
-        this.tiles[index]?.build(palette);
-    }
-
-    private enterCfg(): void {
-        // Switch out buttons
-        this.buttonsContainer.removeChild(this.tileButtonsContainer);
-        this.buttonsContainer.addChild(this.colorButtonsContainer);
-    }
-
-    private leaveCfg(): void {
-        // Switch out buttons
-        this.buttonsContainer.removeChild(this.colorButtonsContainer);
-        this.buttonsContainer.addChild(this.tileButtonsContainer);
+        this.tiles[index]?.update(palette);
     }
 
     private onSimulatorTick(delta: number): void {

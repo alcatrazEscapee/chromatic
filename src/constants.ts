@@ -40,11 +40,9 @@ export const enum TileId {
     UP = 6,
     DOWN = 7,
 
-    LAST = DOWN,
+    last = DOWN,
 
     ACTION_START = 4,
-    ACTION = 8,
-    EDGE = 9,
 }
 
 export const enum GridId {
@@ -52,8 +50,7 @@ export const enum GridId {
     _4x4 = 1,
     _5x5 = 2,
 
-    LAST = _5x5,
-    DEFAULT = _4x4,
+    default = _3x3,
 }
 
 export const enum Constants {
