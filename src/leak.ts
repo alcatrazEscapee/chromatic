@@ -1,7 +1,7 @@
 import type { Container, Graphics } from "pixi.js";
 
 import { ColorId, Constants } from "./constants.js";
-import { COLORS, Util } from "./util.js";
+import { Util } from "./util.js";
 
 
 interface Blob {
@@ -45,7 +45,7 @@ export class Leak {
 
             // Spawn a new blob
             const obj = new PIXI.Graphics();
-            const color = COLORS[Util.choose(this.colors)];
+            const color = Util.COLORS[Util.choose(this.colors)];
 
             obj.beginFill(color);
             obj.drawCircle(

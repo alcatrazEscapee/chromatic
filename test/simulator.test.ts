@@ -87,13 +87,14 @@ function mapOf(puzzle: NetworkPuzzle | number): MapOf {
     if (typeof puzzle === 'number') {
         puzzle = (global as any).PUZZLES[puzzle] as NetworkPuzzle;
     }
+
     const width = puzzle.size + Constants.GRID_ID_TO_WIDTH;
     const palette = Util.buildPalettes({} as any, false)[puzzle.size];
     const map: MapOf & { _tiles: (Tile | null)[] } = {
         puzzle: puzzle,
         sim: Simulator.create(new (global as any).PIXI.Container()) as any,
 
-        _tiles: [],
+        _tiles: Util.nulls(width * width),
 
         tiles(tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): void {
             for (const [x, y, tileId, rot] of tiles) {
@@ -123,8 +124,5 @@ function mapOf(puzzle: NetworkPuzzle | number): MapOf {
     };
 
     map.sim.init(palette, puzzle);
-    for (let i = 0; i < width * width; i++) {
-        map._tiles.push(null);
-    }
     return map;
 }
