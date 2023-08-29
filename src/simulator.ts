@@ -1,4 +1,4 @@
-import { VERSION, type Container } from "pixi.js";
+import type { Container } from "pixi.js";
 
 import type { Tile } from "./tile.js";
 import type { Flow } from "./flow.js";
@@ -9,7 +9,7 @@ import { Util } from "./util.js";
 import { Leak } from "./leak.js";
 
 
-interface IncomingFlow {
+export interface IncomingFlow {
     readonly x: number,
     readonly y: number,
     readonly dir: DirectionId,
@@ -22,7 +22,24 @@ interface Satisfiable {
 }
 
 
-export class Simulator {
+// This indirection is done for a couple reasons
+// - We only expose `Simulator.Kind` as a public interface, not `Impl`
+// - That means we can define `public readonly` properties on `Impl`, which are necessary for the `Mutable<T>` array-clear hack
+// - But, since these properties are not exported, they are not exposed externally anywhere.
+export module Simulator {
+    export interface Kind {
+        reset(): void;
+        init(palette: Palette, puzzle: NetworkPuzzle): void;
+        tick(delta: number, palette: Palette, tiles: (Tile | null)[]): void;
+    }
+
+    export function create(flowContainer: Container): Kind {
+        return new Impl(flowContainer);
+    }
+}
+
+
+export class Impl implements Simulator.Kind {
 
     readonly queue: IncomingFlow[];
     readonly outputs: (IncomingFlow & Satisfiable)[];
@@ -55,9 +72,10 @@ export class Simulator {
             leak.destroy();
         }
 
-        const mut = this as Mutable<Simulator>;
+        const mut = this as Mutable<Impl>;
 
         mut.queue = [];
+        mut.outputs = [];
         mut.buffers = [];
         mut.edges = [];
         mut.leaks = [];
@@ -95,7 +113,7 @@ export class Simulator {
         this.delta -= Constants.TICKS_PER_SIMULATOR_STEP;
 
         const incoming: IncomingFlow[] = this.queue;
-        (this as Mutable<Simulator>).queue = [];
+        (this as Mutable<Impl>).queue = [];
 
         for (const inc of incoming) {
             // Handle the incoming flow
@@ -208,25 +226,27 @@ export class Simulator {
                 // Otherwise, we index the flows by the direction **of the incoming or outgoing flow**
                 // So, we create an incoming independent of the rotation.
                 //
-                // Process for creating flows on a action tile is as follows:
+                // We need to handle additive (+, ^) slightly differently from subtractive (-, v) here.
+                // In general, we follow the following steps:
+                //
                 // 1. Check if we're at the cw(dir) side, if so, create a leak
-                // 2. Check if the tile has < 3 flows
-                //    -> If it has 3 flows, it has already been fully populated, which means we leak the incoming flow
-                //    -> If it has < 3 flows, it can only have incoming flows
-                //       This means we don't need to check if there are already flows in the tile
-                // 3. If we are the second incoming flow, then we need to perform the action operation (and add an outgoing flow)
-                //    -> Otherwise, we simply buffer the current incoming in our `buffers` field.
-                case TileId.MIX:
-                case TileId.UNMIX:
-                case TileId.UP:
-                case TileId.DOWN:
+                // 2. Check the number of flows on the incoming tile
+                //    -> == 3 (or == 2 for subtractive), means the tile is already populated, so leak the incoming flow
+                //    -> == 2 (additive only), perform the additive action (and add an outgoing flow)
+                //    -> == 1 (additive only), buffer the incoming flow
+                //    -> == 1 (subtractive only), perform the subtractive action (and add two outgoing flows)
+                //
+                // N.B. Since each input only connects to the action one-way, if we know we have < 3 flows, we know there will only
+                // be incoming flows to the action, therefor we don't need to check for overlapping flows.
+                default:
                     if (Util.cw(tile.dir) == inc.dir) {
                         this.addLeakFrom(palette, inc);
                         continue;
                     }
 
+                    const additive: boolean = tile.tileId === TileId.MIX || tile.tileId === TileId.UP;
                     const total = tile.totalFlows();
-                    if (total === 3) { // Fully populated, with outgoing flow, so can't input and create a leak (ref 2.)
+                    if (total >= (additive ? 3 : 2)) {
                         this.addLeakFrom(palette, inc);
                         continue;
                     }
@@ -234,71 +254,167 @@ export class Simulator {
                     // Create a flow into the action tile
                     tile.addFlow(inc.dir, new PartialFlow(palette, inc.color, inc.pressure, inc.dir, true));
                     
-                    if (total === 0) {
+                    if (additive && total === 0) {
                         // No previous flows, so store this one in a buffer, and exit
                         this.buffers[index] = inc;
                         continue;
                     }
 
-                    // Previous flow was found
-                    const other: IncomingFlow = this.buffers[index]!;
+                    // Handle the action operation, either additive (with two inputs), or subtractive (with one)
+                    if (additive) {
+                        const other: IncomingFlow = this.buffers[index]!;
 
-                    // Delegate action handling to a separate function
-                    this.tickAction(palette, tile, other, inc);
+                        this.tickAdditive(palette, tile, inc, other);
+                    } else {
+                        this.tickSubtractive(palette, tile, inc);
+                    }
                     break;
-                default:
-                    throw new Error(`Invalid tileId=${tile.tileId}`);
             }
         }
     }
 
-    private tickAction(palette: Palette, tile: Tile, left: IncomingFlow, right: IncomingFlow): void {
+    private tickAdditive(palette: Palette, tile: Tile, left: IncomingFlow, right: IncomingFlow): void {
+        const out = { color: left.color, pressure: 1 as PressureId };
+
         switch (tile.tileId) {
             case TileId.MIX:
                 // Mixer requires pressure = 1
                 if (left.pressure !== 1 || right.pressure !== 1) {
-                    this.addLeakAt(palette, left, right);
+                    this.addLeakAt(palette, left, [left.color, right.color]);
                     return;
                 }
 
                 // Mix two colors, and create a flow on the output side if valid
                 const mix: ColorId | -1 = Util.mix(left.color, right.color);
                 if (mix == -1) {
-                    this.addLeakAt(palette, left, right);
+                    this.addLeakAt(palette, left, [left.color, right.color]);
                     return;
                 }
 
-                {
-                    const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
-                    const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
-                    
-                    tile.addFlow(keyDir, new PartialFlow(palette, mix, 1, outDir, false));
-                    this.enqueue(left, outDir, mix, 1 as PressureId);
-                }
-                break;
-            case TileId.UNMIX:
+                out.color = mix;
                 break;
             case TileId.UP:
                 // Up requires equal colors
                 if (left.color !== right.color) {
-                    this.addLeakAt(palette, left, right);
+                    this.addLeakAt(palette, left, [left.color]);
                     return;
                 }
 
-                {
-                    const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
-                    const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
-                    const sumPressure = left.pressure + right.pressure as PressureId;
+                const sum = left.pressure + right.pressure as PressureId;
+                if (sum > Constants.MAX_PRESSURE) {
+                    this.addLeakAt(palette, left, [left.color]);
+                    return;
+                }
+
+                out.pressure = sum;
+                break;
+            default:
+                throw new Error(`Invalid tileId=${tile.tileId}`);
+        }
+
+        const keyDir = Util.outputDir(tile.dir, left.dir, right.dir);
+        const outDir = Util.flip(keyDir); // The actual output dir needs to be in 'outgoing' convention, not 'incoming'
+
+        // Check output characteristics against the property
+        // Note that properties are using an un-rotated, outgoing convention.
+        const propertyDir = Util.unrotate(outDir, tile.dir);
+        if (!tile.canAccept(propertyDir, out)) {
+            this.addLeakAt(palette, left, [out.color]);
+            return;
+        }
+        
+        tile.addFlow(keyDir, new PartialFlow(palette, out.color, out.pressure, outDir, false));
+        this.enqueue(left, outDir, out.color, out.pressure);
+    }
+
+    private tickSubtractive(palette: Palette, tile: Tile, flow: IncomingFlow): void {
+
+        const [leftDir, rightDir] = Util.outputDirs(tile.dir, flow.dir);
+        
+        const leftOutDir = Util.flip(leftDir);
+        const rightOutDir = Util.flip(rightDir);
+        
+        const leftPropertyDir = Util.unrotate(leftOutDir, tile.dir);
+        const rightPropertyDir = Util.unrotate(rightOutDir, tile.dir);
+
+        const leftProperty = tile.property(leftPropertyDir);
+        const rightProperty = tile.property(rightPropertyDir);
+
+        const leftOut = { color: flow.color, pressure: 1 as PressureId };
+        const rightOut = { color: flow.color, pressure: 1 as PressureId };
+
+        switch (tile.tileId) {
+            case TileId.UNMIX:
+                if (flow.pressure !== 1) { // Separator requires pressure = 1
+                    this.addLeakAt(palette, flow, [flow.color]);
+                    return;
+                }
+
+                // Compute the left and right color, based on which properties are present
+                if (leftProperty.color !== null && rightProperty.color !== null) {
+                    const mix = Util.mix(leftProperty.color, rightProperty.color);
                     
-                    tile.addFlow(keyDir, new PartialFlow(palette, left.color, sumPressure, outDir, false));
-                    this.enqueue(left, outDir, left.color, sumPressure);
+                    if (mix !== flow.color) { // Check that both labels are valid, i.e. they make a valid mix
+                        this.addLeakAt(palette, flow, [flow.color]);
+                        return;
+                    }
+
+                    leftOut.color = leftProperty.color;
+                    rightOut.color = rightProperty.color;
+                
+                } else if (leftProperty.color !== null) { // Only left property present
+                    const unmix = Util.unmix(flow.color, leftProperty.color);
+
+                    if (unmix === -1) {
+                        this.addLeakAt(palette, flow, [flow.color]);
+                        return;
+                    }
+
+                    leftOut.color = leftProperty.color;
+                    rightOut.color = unmix;
+                
+                } else if (rightProperty.color !== null) { // Only right property present
+                    const unmix = Util.unmix(flow.color, rightProperty.color);
+
+                    if (unmix === -1) {
+                        this.addLeakAt(palette, flow, [flow.color]);
+                        return;
+                    }
+
+                    leftOut.color = unmix;
+                    rightOut.color = rightProperty.color;
+                } else {
+                    // At least one property must be present for unmix to function correctly
+                    this.addLeakAt(palette, flow, [flow.color]);
+                    return;
                 }
                 break;
             case TileId.DOWN:
+                if (leftProperty.pressure + rightProperty.pressure !== flow.pressure) {
+                    // Expected pressure != sum of output pressures
+                    this.addLeakAt(palette, flow, [flow.color]);
+                    return;
+                }
+
+                leftOut.pressure = leftProperty.pressure;
+                rightOut.pressure = rightProperty.pressure;
                 break;
             default:
-                throw new Error(`Invalid action tileId=${tile.tileId}`);
+                throw new Error(`Invalid tileId=${tile.tileId}`);
         }
+
+        // Check that both outputs are satisfied
+        if (!tile.canAccept(leftPropertyDir, leftOut) || !tile.canAccept(rightPropertyDir, rightOut)) {
+            this.addLeakAt(palette, flow, [leftOut.color, rightOut.color]);
+            return;
+        }
+
+        // Add both output flows
+        tile.addFlow(leftDir, new PartialFlow(palette, leftOut.color, leftOut.pressure, leftOutDir, false));
+        tile.addFlow(rightDir, new PartialFlow(palette, rightOut.color, rightOut.pressure, rightOutDir, false));
+        
+        this.enqueue(flow, leftOutDir, leftOut.color, leftOut.pressure);
+        this.enqueue(flow, rightOutDir, rightOut.color, rightOut.pressure);
     }
 
     private addEdgeFlow(palette: Palette, x: number, y: number, dir: DirectionId, color: ColorId, pressure: PressureId, input: boolean): void {
@@ -316,8 +432,8 @@ export class Simulator {
         PIXI.Ticker.shared.add(flow.tick, flow);
     }
 
-    private addLeakAt(palette: Palette, left: IncomingFlow, right: IncomingFlow): void {
-        this.addLeak(palette, [left.color, right.color], left.x, left.y, -1, palette.portWidth);
+    private addLeakAt(palette: Palette, pos: Point, colors: ColorId[]): void {
+        this.addLeak(palette, colors, pos.x, pos.y, -1, palette.portWidth);
     }
 
     private addLeakFrom(palette: Palette, inc: IncomingFlow): void {

@@ -35,14 +35,13 @@ export const enum TileId {
     CURVE = 2,
     CROSS = 3,
 
+    ACTION_START = 4,
     MIX = 4,
     UNMIX = 5,
     UP = 6,
     DOWN = 7,
 
     last = DOWN,
-
-    ACTION_START = 4,
 }
 
 export const enum GridId {
@@ -51,28 +50,6 @@ export const enum GridId {
     _5x5 = 2,
 
     default = _3x3,
-}
-
-export const enum Constants {
-    STAGE_WIDTH = 400,
-    STAGE_HEIGHT = 600,
-
-    GRID_LEFT = 20,
-    GRID_TOP = 20,
-    GRID_SIZE = 360,
-
-    GRID_ID_TO_WIDTH = 3,
-    HELD_TILE_GRID_ID = GridId._5x5,
-
-    COLOR_WHITE = 0xffffff,
-    COLOR_GREEN = 0x00b000,
-
-    TICKS_PER_SIMULATOR_STEP = 40,
-    TICKS_PER_LEAK_BLOB = 3,
-
-    MAX_BLOBS_PER_LEAK = 40,
-
-    POINTER_HOLD_MS = 400,
 }
 
 export const enum ColorId {
@@ -110,4 +87,38 @@ export const enum DirectionId {
 export const enum AxisId {
     HORIZONTAL = 0,
     VERTICAL = 1,
+
+    last = 1
+}
+
+
+export const enum Constants {
+    STAGE_WIDTH = 400,
+    STAGE_HEIGHT = 600,
+
+    GRID_LEFT = 20,
+    GRID_TOP = 20,
+    GRID_SIZE = 360,
+
+    GRID_LEFT_HALF = GRID_LEFT / 2,
+
+    GRID_ID_TO_WIDTH = 3,
+    HELD_TILE_GRID_ID = GridId._5x5,
+
+    COLOR_WHITE = 0xffffff,
+    COLOR_GREEN = 0x00b000,
+
+    TICKS_PER_SIMULATOR_STEP = 40,
+    TICKS_PER_LEAK_BLOB = 3,
+
+    MAX_BLOBS_PER_LEAK = 40,
+
+    POINTER_HOLD_MS = 400,
+
+    MAX_PRESSURE = 4,
+
+    N_TILES = TileId.last + 1,
+    N_COLORS = ColorId.last + 1,
+    N_AXIS = AxisId.last + 1,
+    N_DIRECTIONS = DirectionId.last + 1,
 }

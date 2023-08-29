@@ -27,6 +27,16 @@ test('ccw() of UP', () => expect(Util.ccw(DirectionId.UP)).toBe(DirectionId.LEFT
 test('flip() of LEFT', () => expect(Util.flip(DirectionId.LEFT)).toBe(DirectionId.RIGHT));
 test('flip() of DOWN', () => expect(Util.flip(DirectionId.DOWN)).toBe(DirectionId.UP));
 
+test('rotate() of LEFT by base LEFT', () => expect(Util.rotate(DirectionId.LEFT, DirectionId.LEFT)).toBe(DirectionId.LEFT));
+test('rotate() of UP by base LEFT', () => expect(Util.rotate(DirectionId.UP, DirectionId.LEFT)).toBe(DirectionId.UP));
+test('rotate() of UP by base UP', () => expect(Util.rotate(DirectionId.UP, DirectionId.UP)).toBe(DirectionId.RIGHT));
+test('rotate() of LEFT by base UP', () => expect(Util.rotate(DirectionId.LEFT, DirectionId.UP)).toBe(DirectionId.UP));
+
+test('unrotate() of LEFT by base LEFT', () => expect(Util.unrotate(DirectionId.LEFT, DirectionId.LEFT)).toBe(DirectionId.LEFT));
+test('unrotate() of UP by base LEFT', () => expect(Util.unrotate(DirectionId.UP, DirectionId.LEFT)).toBe(DirectionId.UP));
+test('unrotate() of UP by base UP', () => expect(Util.unrotate(DirectionId.UP, DirectionId.UP)).toBe(DirectionId.LEFT));
+test('unrotate() of LEFT by base UP', () => expect(Util.unrotate(DirectionId.LEFT, DirectionId.UP)).toBe(DirectionId.DOWN));
+
 test('mix RED + BLUE', () => expect(Util.mix(ColorId.RED, ColorId.BLUE)).toBe(ColorId.PURPLE));
 test('mix BLUE + RED', () => expect(Util.mix(ColorId.BLUE, ColorId.RED)).toBe(ColorId.PURPLE));
 test('mix RED + PURPLE', () => expect(Util.mix(ColorId.RED, ColorId.PURPLE)).toBe(ColorId.MAGENTA));
@@ -47,6 +57,14 @@ test('outputDir tile = LEFT, incoming = RIGHT, DOWN', () => expect(Util.outputDi
 test('outputDir tile = UP, incoming = UP, DOWN', () => expect(Util.outputDir(DirectionId.UP, DirectionId.UP, DirectionId.DOWN)).toBe(DirectionId.LEFT));
 test('outputDir tile = UP, incoming = UP, LEFT', () => expect(Util.outputDir(DirectionId.UP, DirectionId.LEFT, DirectionId.UP)).toBe(DirectionId.DOWN));
 test('outputDir tile = UP, incoming = LEFT, DOWN', () => expect(Util.outputDir(DirectionId.UP, DirectionId.LEFT, DirectionId.DOWN)).toBe(DirectionId.UP));
+
+test('outputDirs tile = LEFT, incoming = RIGHT', () => expect(Util.outputDirs(DirectionId.LEFT, DirectionId.RIGHT)).toStrictEqual([DirectionId.DOWN, DirectionId.LEFT]));
+test('outputDirs tile = LEFT, incoming = DOWN', () => expect(Util.outputDirs(DirectionId.LEFT, DirectionId.DOWN)).toStrictEqual([DirectionId.RIGHT, DirectionId.LEFT]));
+test('outputDirs tile = LEFT, incoming = LEFT', () => expect(Util.outputDirs(DirectionId.LEFT, DirectionId.LEFT)).toStrictEqual([DirectionId.RIGHT, DirectionId.DOWN]));
+
+test('outputDirs tile = UP, incoming = DOWN', () => expect(Util.outputDirs(DirectionId.UP, DirectionId.DOWN)).toStrictEqual([DirectionId.LEFT, DirectionId.UP]));
+test('outputDirs tile = UP, incoming = LEFT', () => expect(Util.outputDirs(DirectionId.UP, DirectionId.LEFT)).toStrictEqual([DirectionId.DOWN, DirectionId.UP]));
+test('outputDirs tile = UP, incoming = UP', () => expect(Util.outputDirs(DirectionId.UP, DirectionId.UP)).toStrictEqual([DirectionId.DOWN, DirectionId.LEFT]));
 
 test('outputCurve tile = LEFT, incoming = DOWN', () => expect(Util.outputCurve(DirectionId.LEFT, DirectionId.DOWN)).toStrictEqual({ dir: DirectionId.LEFT, cw: true }));
 test('outputCurve tile = LEFT, incoming = RIGHT', () => expect(Util.outputCurve(DirectionId.LEFT, DirectionId.RIGHT)).toStrictEqual({ dir: DirectionId.UP, cw: false }));
