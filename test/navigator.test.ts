@@ -1,6 +1,7 @@
 import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../src/constants';
 import { Navigator } from '../src/navigator';
 import { Tile, TileProperties } from '../src/tile';
+import { Util } from '../src/util';
 
 
 test('updateTile() inherit pressure EDGE -> STRAIGHT', () => {
@@ -161,18 +162,19 @@ type MapOf = Navigator.Map & {
 }
 
 function mapOf(puzzle: Omit<NetworkPuzzle, 'id'>, tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): MapOf {
+    const width: number = puzzle.size + Constants.GRID_ID_TO_WIDTH;
     const map: MapOf = {
-        width: puzzle.size + Constants.GRID_ID_TO_WIDTH,
+        width,
         grid: puzzle.size,
-        tiles: [null, null, null, null, null, null, null, null, null],
+        tiles: Util.nulls(width * width),
         puzzle: puzzle as NetworkPuzzle,
 
         at(x: number, y: number, key: 0 | 1 | 2 | 3): TileProperties {
-            return map.tiles[x + y * map.width]!.property(key);
+            return map.tiles[x + y * width]!.property(key);
         },
         color(x: number, y: number, key: 0 | 1 | 2 | 3, color: ColorId): void {
-            map.tiles[x + y * map.width]!.property(key).color = color;
-            Navigator.updateFrom(map, { x, y }, map.tiles[x + y * map.width]!);
+            map.tiles[x + y * width]!.property(key).color = color;
+            Navigator.updateFrom(map, { x, y }, map.tiles[x + y * width]!);
         },
 
         updateTile(): void {}
@@ -182,9 +184,9 @@ function mapOf(puzzle: Omit<NetworkPuzzle, 'id'>, tiles: [number, number, Exclud
         const tile = new Tile(tileId);
         for (let i = 0; i < rotationId; i++) tile.rotate();
 
-        map.tiles[x + y * map.width] = tile;
+        map.tiles[x + y * width] = tile;
         
-        Navigator.updateTile(map, { x, y }, map.tiles[x + y * map.width]!);
+        Navigator.updateTile(map, { x, y }, map.tiles[x + y * width]!);
     }
 
     return map;

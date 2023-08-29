@@ -3,16 +3,16 @@ import type { Container, Texture } from "pixi.js";
 import { AxisId, ColorId, Constants, DirectionId } from "./constants.js";
 
 
-export const COLORS: {[_ in ColorId]: string} = [
-    '#f00', '#00f', '#ff0',
-    '#f60', '#909', '#090',
-    '#630',
-    '#6f0', '#066',
-    '#c60', '#fc3',
-    '#303', '#903'
-]
-
 export module Util {
+    export const COLORS: Readonly<{[_ in ColorId]: string}> = [
+        '#f00', '#00f', '#ff0',
+        '#f60', '#909', '#090',
+        '#630',
+        '#6f0', '#066',
+        '#c60', '#fc3',
+        '#303', '#903'
+    ];
+
     /** Returns true if the position (x, y) is within the square bounded by [x0, x0 + size), [y0, y0 + size) */
     export function isIn(x: number, y: number, x0: number, y0: number, size: number): boolean {
         return x >= x0 && y >= y0 && x < x0 + size && y < y0 + size;
@@ -75,6 +75,10 @@ export module Util {
 
     export function choose<T>(array: T[]): T {
         return array[Math.floor(Math.random() * array.length)]!;
+    }
+
+    export function nulls<T>(n: number): (T | null)[] {
+        return new Array(n).fill(null);
     }
 
     const MIXES: [ColorId, ColorId, ColorId][] = [

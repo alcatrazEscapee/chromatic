@@ -1,7 +1,7 @@
 import type { Texture, Application, Container, FederatedPointerEvent, Sprite, Color, Graphics } from 'pixi.js';
 
 import { ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from './constants.js';
-import { Util, COLORS } from './util.js';
+import { Util } from './util.js';
 import { Tile } from './tile.js';
 import { Simulator } from './simulator.js';
 import { Navigator } from './navigator.js';
@@ -103,7 +103,7 @@ class Game {
             const offset = color == ColorId.BROWN ? 7
                 : color < ColorId.BROWN ? i : i + 2;
 
-            btn.beginFill(COLORS[color]);
+            btn.beginFill(Util.COLORS[color]);
             btn.drawCircle(0, 0, 12);
             btn.position.set(22 + Math.floor(offset / 3) * 40, 460 + (offset % 3) * 40);
 
@@ -172,9 +172,7 @@ class Game {
 
         this.gridContainer.addChild(grid);
 
-        for (let i = 0; i < palette.width * palette.width; i++) {
-            this.tiles.push(null);
-        }
+        (this as Mutable<Game>).tiles = Util.nulls(palette.width * palette.width)
 
         for (const [x, y, dir, color, pressure] of puzzle.inputs) {
             const edge = new PIXI.Container();
@@ -186,7 +184,7 @@ class Game {
             const insideWidth = Util.insideWidth(palette, pressure);
 
             // Arrow facing left, i.e. '<'
-            edgeColor.beginFill(COLORS[color]);
+            edgeColor.beginFill(Util.COLORS[color]);
             edgeColor.moveTo(10, -insideWidth / 2);
             edgeColor.lineTo(10, insideWidth / 2);
             edgeColor.lineTo(-10 + 1, 0);
@@ -215,7 +213,7 @@ class Game {
 
             // Arrow facing left, i.e. '<'
             // Arrow uses inside width for pressure = 1 always
-            edgeColor.beginFill(COLORS[color]);
+            edgeColor.beginFill(Util.COLORS[color]);
             edgeColor.moveTo(10 - 1, -insideWidth / 2);
             edgeColor.lineTo(10 - 1, insideWidth / 2);
             edgeColor.lineTo(-10, 0);
@@ -240,6 +238,10 @@ class Game {
      * Removes all puzzle-specific data, prepared for a new call to `init()` with a new puzzle
      */
     public teardown(): void {
+
+        if (this.state === StateId.SIMULATION) {
+            this.onStop(null!);
+        }
 
         Util.clear(this.tilesContainer);
         Util.clear(this.gridContainer);
@@ -270,7 +272,7 @@ class Game {
         if (this.state === StateId.MAIN_CONFIGURE) {
             const root = new PIXI.Graphics();
 
-            root.beginFill(COLORS[colorId]);
+            root.beginFill(Util.COLORS[colorId]);
             root.drawCircle(0, 0, 12);
             root.position.set(event.screenX, event.screenY);
 

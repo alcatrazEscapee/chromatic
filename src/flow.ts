@@ -1,7 +1,7 @@
 import type { Container, Graphics } from "pixi.js";
 
 import { ColorId, Constants, DirectionId } from "./constants.js";
-import { COLORS, Util } from './util.js';
+import { Util } from './util.js';
 
 
 export interface Flow {
@@ -58,7 +58,7 @@ export class EdgeFlow extends BaseFlow {
     
         // Flow moving left -> right, horizontal
         this.obj = new PIXI.Graphics();
-        this.obj.beginFill(COLORS[color]);
+        this.obj.beginFill(Util.COLORS[color]);
         this.obj.drawRect(0, 0, 20, Util.insideWidth(palette, pressure));
         this.obj.position.set(-10, -Util.insideWidth(palette, pressure) / 2);
         this.obj.width = 0;
@@ -84,7 +84,7 @@ export class StraightFlow extends BaseFlow {
 
         // Flow moving left -> right, horizontal
         this.obj = new PIXI.Graphics();
-        this.obj.beginFill(COLORS[color]);
+        this.obj.beginFill(Util.COLORS[color]);
         this.obj.drawRect(0, 0, palette.tileWidth, Util.insideWidth(palette, pressure));
         this.obj.position.set(-palette.tileWidth / 2, Util.insideTop(palette, pressure) - palette.tileWidth / 2);
         this.obj.width = 0;
@@ -130,7 +130,7 @@ export class PartialFlow extends BaseFlow {
 
         // Flow moving left -> right, horizontal, in the first section (if input), otherwise in the last section
         this.obj = new PIXI.Graphics();
-        this.obj.beginFill(COLORS[color]);
+        this.obj.beginFill(Util.COLORS[color]);
         this.obj.drawRect(0, 0, width, Util.insideWidth(palette, pressure));
         this.obj.position.set(
             input ? -palette.tileWidth / 2 : palette.tileWidth / 2 - width,

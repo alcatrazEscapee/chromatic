@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Util } from '../src/util';
+
 
 // Mock PIXI
 class Point {

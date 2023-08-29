@@ -39,7 +39,7 @@ export module Simulator {
 }
 
 
-export class Impl implements Simulator.Kind {
+class Impl implements Simulator.Kind {
 
     readonly queue: IncomingFlow[];
     readonly outputs: (IncomingFlow & Satisfiable)[];

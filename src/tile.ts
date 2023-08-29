@@ -1,7 +1,7 @@
 import type { Container, Texture } from "pixi.js";
 
 import { Flow } from "./flow.js";
-import { COLORS, Util } from "./util.js";
+import { Util } from "./util.js";
 import { AxisId, ColorId, DirectionId, TileId } from "./constants.js";
 
 
@@ -236,8 +236,8 @@ export class Tile {
 
             overlayH.anchor.set(0.5);
             overlayV.anchor.set(0.5);
-            overlayH.tint = COLORS[property.color];
-            overlayV.tint = COLORS[property.color];
+            overlayH.tint = Util.COLORS[property.color];
+            overlayV.tint = Util.COLORS[property.color];
 
             overlayH.visible = Util.dirToAxis(this.dir) === AxisId.HORIZONTAL;
             overlayV.visible = Util.dirToAxis(this.dir) === AxisId.VERTICAL;
