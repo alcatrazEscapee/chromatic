@@ -19,7 +19,7 @@
       "^(\\./.+)\\.js$": "$1"
     },
     "setupFiles": [
-      "./test/setup.ts"
+      "./test/_setup.ts"
     ]
   }
 }

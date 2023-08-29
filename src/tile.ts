@@ -183,11 +183,8 @@ export class Tile {
                     this.pipeUpper.addChild(mask);
                     this.pipeUpper.addChild(horizontal);
 
-                    // Use the flipped texture for h/v
-                    const textureVFlip = { overlay: { h: textureV.overlay.v, v: textureV.overlay.h } };
-
-                    this.addOverlay(propertyH, textureH, true);
-                    this.addOverlay(propertyV, textureVFlip, false);
+                    this.addOverlay(propertyH, textureH, { upper: true });
+                    this.addOverlay(propertyV, textureV, { rotation: 90 });
                 }
                 break;
             default:
@@ -218,16 +215,22 @@ export class Tile {
                     this.pipe.addChild(top);
                     this.pipe.addChild(right);
                     this.addOverlay(propertyLeft, textureLeft);
-                    this.addOverlay(propertyTop, textureTop);
-                    this.addOverlay(propertyRight, textureRight);
+                    this.addOverlay(propertyTop, textureTop, { rotation: 90 });
+                    this.addOverlay(propertyRight, textureRight, { rotation: 180 });
                     this.pipeFixed.addChild(icon); // Add the icon to root (top level) so it does not rotate
                 }
                 break;
         }
     }
 
-    private addOverlay(property: TileProperties, texture: Omit<PalettePipeTextures<Texture>, 'pipe'>, upper: boolean = false): void {
+    private addOverlay(property: TileProperties, texture: Omit<PalettePipeTextures<Texture>, 'pipe'>, options: { upper?: boolean, rotation?: 90 | 180 } | null = null): void {
         if (property.color !== null) {
+
+            // Need to flip the H/V texture, then rotate the H texture by 180 after
+            if (options?.rotation === 90) {
+                texture = { overlay: { h: texture.overlay.v, v: texture.overlay.h } };
+            }
+
             const overlayH = new PIXI.Sprite(texture.overlay.h);
             const overlayV = new PIXI.Sprite(texture.overlay.v);
 
@@ -240,7 +243,16 @@ export class Tile {
             overlayV.visible = Util.dirToAxis(this.dir) === AxisId.VERTICAL;
             overlayV.angle -= 90; // vertical overlays are already rotated by 90, so invert that here.
 
-            const root = upper ? this.overlayUpper : this.overlay;
+            if (options?.rotation === 90) {
+                overlayV.angle += 180;
+            }
+            
+            if (options?.rotation === 180) {
+                overlayH.angle += 180;
+                overlayV.angle += 180;
+            }
+
+            const root = options?.upper ? this.overlayUpper : this.overlay;
 
             root.addChild(overlayH);
             root.addChild(overlayV);

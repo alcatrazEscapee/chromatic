@@ -46,7 +46,7 @@ class Game {
     readonly btnPlay: Sprite;
     readonly btnStop: Sprite;
 
-    readonly simulator: Simulator;
+    readonly simulator: Simulator.Kind;
 
     puzzle: NetworkPuzzle | null = null;
     state: StateId = StateId.UNLOADED;
@@ -78,43 +78,9 @@ class Game {
         this.tileButtonsContainer = new PIXI.Container();
         this.colorButtonsContainer = new PIXI.Container();
 
-        this.palettes = [
-            {
-                width: 3,
-                tileWidth: 120,
-                pressureWidth: 5,
-                pipeWidth: 4,
-                insideWidth: 18,
-                insideTop: 51,
-                portWidth: 27,
-                grid: core.grid_3x3,
-                textures: Util.buildPalette('pipe_120', core.pipe_120),
-            },
-            {
-                width: 4,
-                tileWidth: 90,
-                pressureWidth: 4,
-                pipeWidth: 4,
-                insideWidth: 12,
-                insideTop: 39,
-                portWidth: 20,
-                grid: core.grid_4x4,
-                textures: Util.buildPalette('pipe_90', core.pipe_90),
-            },
-            {
-                width: 5,
-                tileWidth: 72,
-                pressureWidth: 3,
-                pipeWidth: 5,
-                insideWidth: 10,
-                insideTop: 31,
-                portWidth: 16,
-                grid: core.grid_5x5,
-                textures: Util.buildPalette('pipe_72', core.pipe_72),
-            }
-        ];
+        this.palettes = Util.buildPalettes(core);
 
-        this.simulator = new Simulator(this.edgesContainer);
+        this.simulator = Simulator.create(this.edgesContainer);
 
         const ui = new PIXI.Sprite(this.core.ui_background);
 

@@ -14,10 +14,23 @@ PNG_OVER := $(shell find art-work/pipe -name '*overlay*.png')
 PIPE_IN  := 72 90 120
 PIPE_OUT := $(PIPE_IN:%=art/sheets/pipe_%.png) $(PIPE_IN:%=art/sheets/pipe_%@1x.png.json)
 
-FORCE :
 
 .PHONY : build
-build : data-compressed.json $(JS_OUT) $(JS_MAP) $(PIPE_OUT)
+build : $(WEB)/touch
+
+.PHONY : test
+test :
+	@npx jest
+
+.PHONY : clean
+clean :
+	@rm -rf out
+
+.PHONY : overlay
+overlay :
+	@python scripts/overlay.py --scan
+
+$(WEB)/touch : data-compressed.json $(JS_OUT) $(JS_MAP) $(PIPE_OUT)
 	@printf "Copying files...\n"
 	@rm -rf $(WEB)/lib
 	@mkdir -p $(WEB)/lib
@@ -26,20 +39,9 @@ build : data-compressed.json $(JS_OUT) $(JS_MAP) $(PIPE_OUT)
 	@cp -r src $(WEB)/
 	@cp -r art $(WEB)/.
 	@cp data-compressed.json $(WEB)/lib/puzzles.json
-
-.PHONY : test
-test : FORCE
-	@npx jest
-
-.PHONY : overlay
-overlay : FORCE
-	@python scripts/overlay.py --scan
-
+	@touch $(WEB)/touch
 
 $(JS_OUT) $(JS_MAP) &: $(TS_SRC) $(TS_D_SRC) package-lock.json
-	echo $(JS_OUT)
-	echo $(JS_MAP)
-	echo $(TS_SRC)
 	@printf "Compiling tsc...\n"
 	@npx tsc
 

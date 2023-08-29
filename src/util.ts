@@ -19,11 +19,11 @@ export module Util {
     }
 
     export function dirToAxis(dir: DirectionId): AxisId {
-        return dir % 2;
+        return dir % Constants.N_AXIS;
     }
 
     export function sameAxis(lhs: DirectionId, rhs: DirectionId): boolean {
-        return (lhs % 2) == (rhs % 2);
+        return (lhs % Constants.N_AXIS) == (rhs % Constants.N_AXIS);
     }
 
     export function move(pos: Point, dir: DirectionId, delta: number = 1): Point {
@@ -37,25 +37,33 @@ export module Util {
     }
 
     export function cw(dir: DirectionId): DirectionId {
-        return (dir + 1) % 4;
+        return (dir + 1) % Constants.N_DIRECTIONS;
     }
 
     export function flip(dir: DirectionId): DirectionId {
-        return (dir + 2) % 4;
+        return (dir + 2) % Constants.N_DIRECTIONS;
     }
 
     export function ccw(dir: DirectionId): DirectionId {
-        return (dir + 3) % 4;
+        return (dir + 3) % Constants.N_DIRECTIONS;
+    }
+
+    export function rotate(dir: DirectionId, base: DirectionId): DirectionId {
+        return (dir + base) % Constants.N_DIRECTIONS;
+    }
+
+    export function unrotate(dir: DirectionId, base: DirectionId): DirectionId {
+        return (dir - base + Constants.N_DIRECTIONS) % Constants.N_DIRECTIONS;
     }
 
     export function getInputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
         const pos: Point = getGridPos(palette, x, y);
-        return move(pos, dir, -palette.tileWidth / 2 - 10);
+        return move(pos, dir, -palette.tileWidth / 2 - Constants.GRID_LEFT_HALF);
     }
 
     export function getOutputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
         const pos: Point = getGridPos(palette, x, y);
-        return move(pos, dir, -palette.tileWidth / 2 + 10);
+        return move(pos, dir, -palette.tileWidth / 2 + Constants.GRID_LEFT_HALF);
     }
 
     export function getGridPos(palette: Palette, x: number, y: number): Point {
@@ -125,6 +133,16 @@ export module Util {
     }
 
     /**
+     * When given the direction of an action `tile`, and one _incoming_ flow direction,
+     * Returns the other two flow directions _also_ in _incoming_ flow convention.
+     */
+    export function outputDirs(tile: DirectionId, flow: DirectionId): [DirectionId, DirectionId] {
+        const left = outputDir(tile, flow, null!);
+        const right = outputDir(left, left, flow);
+        return [right, left];
+    }
+
+    /**
      * When `tile` is the direction property of a curve tile, and `inc` is an _incoming_ flow direction,
      * Returns the _outgoing_ flow direction, if it connects, otherwise `-1`.
      */
@@ -138,6 +156,40 @@ export module Util {
             return { dir: ccw(inc), cw: false };
         }
         return { dir: -1, cw: false };
+    }
+
+    export function buildPalettes(core: AssetBundle<Texture>, textures: boolean = true): PaletteMap<Texture> {
+        return [{
+            width: 3,
+            tileWidth: 120,
+            pressureWidth: 5,
+            pipeWidth: 4,
+            insideWidth: 18,
+            insideTop: 51,
+            portWidth: 27,
+            grid: core.grid_3x3,
+            textures: textures ? buildPalette('pipe_120', core.pipe_120) : null!,
+        }, {
+            width: 4,
+            tileWidth: 90,
+            pressureWidth: 4,
+            pipeWidth: 4,
+            insideWidth: 12,
+            insideTop: 39,
+            portWidth: 20,
+            grid: core.grid_4x4,
+            textures: textures ? buildPalette('pipe_90', core.pipe_90) : null!,
+        }, {
+            width: 5,
+            tileWidth: 72,
+            pressureWidth: 3,
+            pipeWidth: 5,
+            insideWidth: 10,
+            insideTop: 31,
+            portWidth: 16,
+            grid: core.grid_5x5,
+            textures: textures ? buildPalette('pipe_72', core.pipe_72) : null!,
+        }];
     }
 
     export function buildPalette<T extends PipeAssetId>(id: T, core: PipeSpritesheet<T, Texture>): PaletteTextures<Texture> {
