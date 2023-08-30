@@ -106,6 +106,7 @@ export const enum Constants {
     HELD_TILE_GRID_ID = GridId._5x5,
 
     COLOR_WHITE = 0xffffff,
+    COLOR_BLACK = 0x000000,
     COLOR_GREEN = 0x00b000,
 
     TICKS_PER_SIMULATOR_STEP = 40,
@@ -116,6 +117,11 @@ export const enum Constants {
     POINTER_HOLD_MS = 400,
 
     MAX_PRESSURE = 4,
+
+    ANIM_FADE_TO_BLACK_TICKS = 54,
+    ANIM_FADE_TO_BLACK_HALF = ANIM_FADE_TO_BLACK_TICKS / 2,
+
+    ANIM_EASE_IN_OUT_TICKS = 55,
 
     N_TILES = TileId.last + 1,
     N_COLORS = ColorId.last + 1,

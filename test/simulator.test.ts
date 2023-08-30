@@ -1,8 +1,8 @@
-import { ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "../src/constants";
-import { Leak } from "../src/leak";
-import { IncomingFlow, Simulator } from "../src/simulator";
-import { Tile } from "../src/tile";
-import { Util } from "../src/util";
+import { ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "../src/game/constants";
+import { IncomingFlow, Simulator } from "../src/game/simulator";
+import { Leak } from "../src/game/leak";
+import { Tile } from "../src/game/tile";
+import { Util } from "../src/game/util";
 
 
 test('simulator id=0 -> leak from input', () => {

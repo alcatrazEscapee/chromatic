@@ -38,18 +38,21 @@ type AssetUrl<K extends AssetId> =
     K extends CoreAssetId ? `art/${K}.png` :
     never
 
-type AssetType<K extends AssetId, Texture> =
-    K extends PuzzlesAssetId ? NetworkData :
-    K extends PipeAssetId ? PipeSpritesheet<K, Texture> :
-    K extends CoreAssetId ? Texture :
+// N.B. The '_T' generics here are for types that we would have to otherwise import.
+// As this file is not a module, and for the convenience of typing, we are avoiding making it as such, we use these generics
+// in place of the actual type, at point of instantiation. 
+type AssetType<K extends AssetId, _NetworkData, _Texture> =
+    K extends PuzzlesAssetId ? _NetworkData :
+    K extends PipeAssetId ? PipeSpritesheet<K, _Texture> :
+    K extends CoreAssetId ? _Texture :
     never;
 
 type AssetManifest = { [key in AssetId]: AssetUrl<key> };
-type AssetBundle<Texture> = { [key in AssetId]: AssetType<key, Texture> };
+type AssetBundle<_NetworkData, _Texture> = { [key in AssetId]: AssetType<key, _NetworkData, _Texture> };
 
 
-interface PipeSpritesheet<T extends PipeAssetId, Texture> {
-    readonly textures: { [key in PipeSpriteId<T>]: Texture }
+interface PipeSpritesheet<T extends PipeAssetId, _Texture> {
+    readonly textures: { [key in PipeSpriteId<T>]: _Texture }
 };
 
 type PipeSpriteId<T extends PipeAssetId> = 

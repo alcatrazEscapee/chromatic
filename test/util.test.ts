@@ -1,5 +1,5 @@
-import { Util } from '../src/util';
-import { DirectionId, AxisId, ColorId } from '../src/constants';
+import { DirectionId, AxisId, ColorId } from '../src/game/constants';
+import { Util } from '../src/game/util';
 
 
 test('isIn() includes top left', () => expect(Util.isIn(0, 0, 0, 0, 4)).toBe(true));
