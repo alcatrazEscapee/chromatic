@@ -166,7 +166,7 @@ class Panel {
             const button = new PIXI.Container();
             const back = new PIXI.Sprite(menu.core.ui_btn_pipe_empty); // todo: sprite
 
-            const label = new PIXI.Text(String(i + page * 16), {
+            const label = new PIXI.Text(String(i + page * 16 + 1), {
                 fontFamily: 'Arial',
                 fontSize: 16,
                 fill: Constants.COLOR_WHITE,

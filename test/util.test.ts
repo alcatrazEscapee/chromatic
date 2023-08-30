@@ -2,6 +2,23 @@ import { DirectionId, AxisId, ColorId } from '../src/game/constants';
 import { Util } from '../src/game/util';
 
 
+test('lerp 0.0 to [6, 10]', () => expect(Util.lerp(0.0, 6, 10)).toBe(6));
+test('lerp 0.5 to [6, 10]', () => expect(Util.lerp(0.5, 6, 10)).toBe(8));
+test('lerp 1.0 to [6, 10]', () => expect(Util.lerp(1.0, 6, 10)).toBe(10));
+
+test('lerpInv 6 to [6, 10]', () => expect(Util.lerpInv(6, 6, 10)).toBe(0.0));
+test('lerpInv 8 to [8, 10]', () => expect(Util.lerpInv(8, 6, 10)).toBe(0.5));
+test('lerpInv 10 to [6, 10]', () => expect(Util.lerpInv(10, 6, 10)).toBe(1.0));
+
+test('clamp 1 to [3, 5]', () => expect(Util.clamp(1, 3, 5)).toBe(3));
+test('clamp 4 to [3, 5]', () => expect(Util.clamp(4, 3, 5)).toBe(4));
+test('clamp 8 to [3, 5]', () => expect(Util.clamp(8, 3, 5)).toBe(5));
+
+test('unitClosestDir of (1, 0), w=2', () => expect(Util.unitClosestDir({ x: 1, y: 0 }, 2)).toBe(DirectionId.UP));
+test('unitClosestDir of (0, 1), w=2', () => expect(Util.unitClosestDir({ x: 0, y: 1 }, 2)).toBe(DirectionId.LEFT));
+test('unitClosestDir of (2, 1), w=2', () => expect(Util.unitClosestDir({ x: 2, y: 1 }, 2)).toBe(DirectionId.RIGHT));
+test('unitClosestDir of (1, 2), w=2', () => expect(Util.unitClosestDir({ x: 1, y: 2 }, 2)).toBe(DirectionId.DOWN));
+
 test('isIn() includes top left', () => expect(Util.isIn(0, 0, 0, 0, 4)).toBe(true));
 test('isIn() includes bottom right', () => expect(Util.isIn(3, 3, 0, 0, 4)).toBe(true));
 test('isIn() excludes outside bottom right', () => expect(Util.isIn(3, 3, 0, 0, 3)).toBe(false));

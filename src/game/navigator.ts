@@ -125,39 +125,35 @@ export module Navigator {
      * 
      * todo: accept a direction, representing which part of the tile got updated, and only recurse that branch
      */
-    export function updateFrom(map: Map, pos: Point, tile: Tile): void {
+    export function updateFrom(map: Map, pos: Point, tile: Tile, key: DirectionId | AxisId): void {
         map.updateTile(pos);
+
+        const property = tile.property(key);
 
         switch (tile.tileId) {
             case TileId.STRAIGHT:
-                {
-                    const property = tile.property(DirectionId.INTERNAL);
-
-                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
-                    recursiveUpdate(map, toPosition(pos, Util.flip(tile.dir)), property);
-                }
+                recursiveUpdate(map, toPosition(pos, tile.dir), property);
+                recursiveUpdate(map, toPosition(pos, Util.flip(tile.dir)), property);
                 break;
             case TileId.CURVE:
-                {
-                    const property = tile.property(DirectionId.INTERNAL);
-
-                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
-                    recursiveUpdate(map, toPosition(pos, Util.cw(tile.dir)), property);
-                }
+                recursiveUpdate(map, toPosition(pos, tile.dir), property);
+                recursiveUpdate(map, toPosition(pos, Util.cw(tile.dir)), property);
                 break;
             case TileId.CROSS:
                 {
-                    const property = tile.property(AxisId.HORIZONTAL); // todo: use parameter
+                    // Key is an axis ID, either horizontal or vertical
+                    const baseDir = key === AxisId.HORIZONTAL ? tile.dir : Util.cw(tile.dir); // So choose which side to update
 
-                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
-                    recursiveUpdate(map, toPosition(pos, Util.flip(tile.dir)), property);
+                    recursiveUpdate(map, toPosition(pos, baseDir), property);
+                    recursiveUpdate(map, toPosition(pos, Util.flip(baseDir)), property);
                 }
                 break;
             default:
                 {
-                    const property = tile.property(DirectionId.LEFT); // todo: use parameter
+                    // Key is a direction, excluding DOWN
+                    const outDir = Util.rotate(key as DirectionId, tile.dir); // In rotated coordinates
 
-                    recursiveUpdate(map, toPosition(pos, tile.dir), property);
+                    recursiveUpdate(map, toPosition(pos, outDir), property);
                 }
                 break;
         }
@@ -166,14 +162,14 @@ export module Navigator {
 
     function recursiveUpdate(map: Map, pos: Position | null, copyFrom: StrictReadonly<TileProperties>): void {
         while (pos !== null) {
-            const property = access(map, pos, true);
-            if (property === null) {
-                return;
-            }
-
-            resolveFrom(property, copyFrom);
-            map.updateTile(pos);
             pos = traverse(map, pos);
+
+            const property = access(map, pos, true);
+            
+            if (pos !== null && property !== null) {
+                resolveFrom(property, copyFrom);
+                map.updateTile(pos);
+            }
         }
     }
 

@@ -5,9 +5,6 @@ import { Util } from "./util.js";
 import { AxisId, ColorId, DirectionId, TileId } from "./constants.js";
 
 
-type Key = 0 | 1 | 2 | 3;
-
-
 export type TileProperties = { color: ColorId | null, pressure: PressureId };
 
 export class Tile {
@@ -68,7 +65,7 @@ export class Tile {
      * - Cross is indexed by `AxisId`, but the axis will be flipped depending on `this.dir`
      * - Actions are indexed by `DirectionId`, with the unused direction always being `ccw(this.dir)`
      */
-    public addFlow(key: Key, flow: Flow): void {
+    public addFlow(key: DirectionId | AxisId, flow: Flow): void {
         if (this.flows[key]) throw new Error(`Duplicate flow at index ${key}`);
         
         this.flows[key] = flow;
@@ -83,7 +80,7 @@ export class Tile {
         (this as Mutable<Tile>).flows = [null, null, null, null];
     }
 
-    public hasFlow(key: Key): boolean {
+    public hasFlow(key: DirectionId | AxisId): boolean {
         return this.flows[key] !== null;
     }
 
@@ -102,7 +99,7 @@ export class Tile {
         this.root.destroy({ children: true });
     }
 
-    public canAccept(key: Key, inc: { color: ColorId, pressure: PressureId }): boolean {
+    public canAccept(key: DirectionId | AxisId, inc: { color: ColorId, pressure: PressureId }): boolean {
         const property = this.property(key);
         return (property.color === null || property.color === inc.color) && property.pressure === inc.pressure;
     }
@@ -113,7 +110,7 @@ export class Tile {
      * - Cross is indexed by `AxisId`
      * - Actions are indexed by `DirectionId`, without `DirectionId.DOWN`
      */
-    public property(key: Key): TileProperties {
+    public property(key: DirectionId | AxisId): TileProperties {
         let property = this.properties[key];
         if (property === null) {
             property = { color: null, pressure: 1 };
