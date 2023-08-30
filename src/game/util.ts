@@ -36,6 +36,27 @@ export module Util {
         return t < min ? min : (t > max ? max : t);
     }
 
+    /**
+     * Given a position pos within the square [0, width) x [0, width), finds the nearest edge to that position.
+     * Returns the edge, as a direction ID, in _outgoing_ convention.
+     * 
+     * Effectively splits the unit square into four triangles:
+     * ```
+     *      UP
+     *     \ /
+     * LEFT X RIGHT  +-> +x
+     *     / \       |
+     *     DOWN      v +y
+     * ```
+     * 
+     * N.B. this function uses quadrant IV semantics for x/y directions
+     */
+    export function unitClosestDir(pos: Point, width: number): DirectionId {
+        return pos.y > pos.x // Above the line '/'
+            ? (pos.y > width - pos.x ? DirectionId.DOWN : DirectionId.LEFT) // Above the line '\'
+            : (pos.y > width - pos.x ? DirectionId.RIGHT : DirectionId.UP);
+    }
+
     /** Returns true if the position (x, y) is within the square bounded by [x0, x0 + size), [y0, y0 + size) */
     export function isIn(x: number, y: number, x0: number, y0: number, size: number): boolean {
         return x >= x0 && y >= y0 && x < x0 + size && y < y0 + size;

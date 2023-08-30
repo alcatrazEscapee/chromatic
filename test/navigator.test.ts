@@ -149,6 +149,30 @@ test('updateFrom() apply color to STRAIGHT -> CROSS (rotated) -> STRAIGHT', () =
     expect(map.at(2, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
 });
 
+test('updateFrom() apply color to (+) LEFT', () => {
+    const map = mapOf(empty(), [
+        [0, 0, TileId.MIX, DirectionId.LEFT],
+    ]);
+
+    map.color(0, 0, DirectionId.LEFT, ColorId.YELLOW);
+
+    expect(map.at(0, 0, DirectionId.LEFT).color).toBe(ColorId.YELLOW);
+    expect(map.at(0, 0, DirectionId.UP).color).toBe(null);
+    expect(map.at(0, 0, DirectionId.RIGHT).color).toBe(null);
+});
+
+test('updateFrom() apply color to (+) UP', () => {
+    const map = mapOf(empty(), [
+        [0, 0, TileId.MIX, DirectionId.LEFT],
+    ]);
+
+    map.color(0, 0, DirectionId.UP, ColorId.YELLOW);
+
+    expect(map.at(0, 0, DirectionId.LEFT).color).toBe(null);
+    expect(map.at(0, 0, DirectionId.UP).color).toBe(ColorId.YELLOW);
+    expect(map.at(0, 0, DirectionId.RIGHT).color).toBe(null);
+});
+
 
 function empty(): Omit<NetworkPuzzle, 'id'> {
     return { size: GridId._5x5, inputs: [], outputs: [] };
@@ -157,8 +181,8 @@ function empty(): Omit<NetworkPuzzle, 'id'> {
 type MapOf = Navigator.Map & {
     width: number;
     
-    at(x: number, y: number, key: 0 | 1 | 2 | 3): TileProperties;
-    color(x: number, y: number, key: 0 | 1 | 2 | 3, color: ColorId): void;
+    at(x: number, y: number, key: DirectionId | AxisId): TileProperties;
+    color(x: number, y: number, key: DirectionId | AxisId, color: ColorId): void;
 }
 
 function mapOf(puzzle: Omit<NetworkPuzzle, 'id'>, tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): MapOf {
@@ -169,12 +193,12 @@ function mapOf(puzzle: Omit<NetworkPuzzle, 'id'>, tiles: [number, number, Exclud
         tiles: Util.nulls(width * width),
         puzzle: puzzle as NetworkPuzzle,
 
-        at(x: number, y: number, key: 0 | 1 | 2 | 3): TileProperties {
+        at(x: number, y: number, key: DirectionId | AxisId): TileProperties {
             return map.tiles[x + y * width]!.property(key);
         },
-        color(x: number, y: number, key: 0 | 1 | 2 | 3, color: ColorId): void {
+        color(x: number, y: number, key: DirectionId | AxisId, color: ColorId): void {
             map.tiles[x + y * width]!.property(key).color = color;
-            Navigator.updateFrom(map, { x, y }, map.tiles[x + y * width]!);
+            Navigator.updateFrom(map, { x, y }, map.tiles[x + y * width]!, key);
         },
 
         updateTile(): void {}

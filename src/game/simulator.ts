@@ -150,7 +150,6 @@ class Impl implements Simulator.Kind {
                         }
                     }
                     if (win) {
-                        console.log('Victory!');
                         // todo: do something here?
                     }
                 }

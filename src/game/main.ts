@@ -1,6 +1,6 @@
-import type { Texture, Application, Container, FederatedPointerEvent, Sprite, Graphics } from 'pixi.js';
+import type { Texture, Application, Container, FederatedPointerEvent, Sprite, Graphics, DisplayObject } from 'pixi.js';
 
-import { ColorId, Constants, GridId, NetworkData, NetworkPuzzle, TileId } from './constants.js';
+import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkData, NetworkPuzzle, TileId } from './constants.js';
 import { Util } from './util.js';
 import { Tile } from './tile.js';
 import { Simulator } from './simulator.js';
@@ -12,8 +12,7 @@ const enum StateId {
     MAIN_TILE,
     MAIN_CONFIGURE,
     DRAGGING_TILE,
-    DRAGGING_COLOR,
-    DRAGGING_PRESSURE,
+    DRAGGING_LABEL,
     SIMULATION,
     VICTORY,
     MENU,
@@ -49,7 +48,7 @@ export class Game {
     grid: GridId = GridId.default;
 
     heldTile: { root: Sprite, tileId: TileId } | null = null;
-    heldColor: { root: Graphics, colorId: ColorId } | null = null;
+    heldLabel: { root: DisplayObject, colorId: ColorId | null, pressureId: -1 | 1 | null } | null = null;
 
     // The last recorded screenX / screenY of the mouse, from mouse move event
     screenX: number = 0;
@@ -107,6 +106,20 @@ export class Game {
 
             this.colorButtonsContainer.addChild(btn);
         }
+
+        const btnPressureUp = new PIXI.Sprite(core.pipe_72.textures.pipe_72_up);
+        const btnPressureDown = new PIXI.Sprite(core.pipe_72.textures.pipe_72_down);
+
+        btnPressureUp.position.set(22 + 5 * 40 - 13, 460 + 0 * 40 - 13);
+        btnPressureUp.eventMode = 'static';
+        btnPressureUp.on('pointerdown', event => this.grabPressure(event, 1));
+        
+        btnPressureDown.position.set(22 + 5 * 40 - 13, 460 + 2 * 40 - 13);
+        btnPressureDown.eventMode = 'static';
+        btnPressureDown.on('pointerdown', event => this.grabPressure(event, -1));
+
+        this.colorButtonsContainer.addChild(btnPressureUp);
+        this.colorButtonsContainer.addChild(btnPressureDown);
 
         this.btnPlay = new PIXI.Sprite(this.core.ui_btn_play);
         this.btnPlay.position.set(330, 438);
@@ -284,10 +297,24 @@ export class Game {
             root.drawCircle(0, 0, 12);
             root.position.set(event.screenX, event.screenY);
 
-            this.heldColor = { root, colorId };
-            this.state = StateId.DRAGGING_COLOR;
+            this.heldLabel = { root, colorId, pressureId: null };
+            this.state = StateId.DRAGGING_LABEL;
 
-            this.topContainer.addChild(this.heldColor.root);
+            this.topContainer.addChild(this.heldLabel.root);
+        }
+    }
+
+    private grabPressure(event: FederatedPointerEvent, pressureId: -1 | 1): void {
+        if (this.state === StateId.MAIN_CONFIGURE) {
+            const textureSrc = this.core.pipe_72.textures;
+            const root = new PIXI.Sprite(pressureId === -1 ? textureSrc.pipe_72_down : textureSrc.pipe_72_up);
+            
+            root.position.set(event.screenX, event.screenY);
+
+            this.heldLabel = { root, colorId: null, pressureId };
+            this.state = StateId.DRAGGING_LABEL;
+
+            this.topContainer.addChild(this.heldLabel.root);
         }
     }
 
@@ -297,7 +324,7 @@ export class Game {
 
         // Update the position of the held object(s)
         this.heldTile?.root.position.set(event.screenX, event.screenY);
-        this.heldColor?.root.position.set(event.screenX, event.screenY);
+        this.heldLabel?.root.position.set(event.screenX, event.screenY);
     }
 
     private onPointerDown(_: FederatedPointerEvent): void {
@@ -339,29 +366,56 @@ export class Game {
             this.bypassNextTap = true; // Don't rotate the tile immediately
 
             heldTile.root.destroy();
-        } else if (this.state === StateId.DRAGGING_COLOR) {
-            const heldColor = this.heldColor!;
+        } else if (this.state === StateId.DRAGGING_LABEL) {
+            const heldLabel = this.heldLabel!;
 
             if (this.isInGrid(event)) {
                 const pos = this.projectToGrid(event);
                 const tile = this.tiles[pos.index]!;
 
                 if (tile !== null) {
-                    // todo: target individual sections of multipart tiles
-                    const key = 0;
+                    let key: DirectionId | AxisId | null = null;
 
-                    tile.property(key).color = heldColor.colorId;
-                    
-                    // Applies the update to not only this tile, but all connecting tiles
-                    Navigator.updateFrom(this, pos, tile);
+                    const targetDir = Util.unitClosestDir({ x: pos.hitX, y: pos.hitY }, 1);
+                    switch (tile.tileId) {
+                        case TileId.STRAIGHT:
+                        case TileId.CURVE:
+                            key = DirectionId.INTERNAL; // Single part tiles
+                            break;
+                        case TileId.CROSS:
+                            // property indexed by AxisId, in original rotation, so need to un-rotate first
+                            key = Util.dirToAxis(Util.unrotate(targetDir, tile.dir));
+                            break;
+                        default:
+                            // property indexed by direction, in original rotation, so we need to un-rotate
+                            key = Util.unrotate(targetDir, tile.dir);
+                            if (key === DirectionId.DOWN){
+                                key = null; // There is no down direction, so don't color this one.
+                            }
+                            break;
+                    }
+
+                    if (key !== null) {
+                        const property = tile.property(key);
+
+                        if (heldLabel.colorId !== null) {
+                            property.color = heldLabel.colorId;
+                        }
+                        if (heldLabel.pressureId !== null) {
+                            property.pressure = Util.clamp(property.pressure + heldLabel.pressureId, 1, 4) as PressureId;
+                        }
+                        
+                        // Applies the update to not only this tile, but all connecting tiles
+                        Navigator.updateFrom(this, pos, tile, key);
+                    }
                 }
             }
 
-            this.heldColor = null;
+            this.heldLabel = null;
             this.state = StateId.MAIN_CONFIGURE;
             this.bypassNextTap = true;
 
-            heldColor.root.destroy();
+            heldLabel.root.destroy();
         }
     }
 
@@ -447,12 +501,19 @@ export class Game {
     }
 
     /** If a point is `isInGrid()`, then this returns the tile X, Y coordinates for that point. */
-    private projectToGrid(event: { screenX: number, screenY: number }): Point & { index: number } {
+    private projectToGrid(event: { screenX: number, screenY: number }): Point & { index: number, hitX: number, hitY: number } {
         const palette = this.palettes[this.grid];
-        const x: number = Math.floor((event.screenX - Constants.GRID_LEFT) / palette.tileWidth);
-        const y: number = Math.floor((event.screenY - Constants.GRID_TOP) / palette.tileWidth);
+        const dx: number = (event.screenX - Constants.GRID_LEFT) / palette.tileWidth;
+        const dy: number = (event.screenY - Constants.GRID_TOP) / palette.tileWidth;
+        
+        const x = Math.floor(dx);
+        const y = Math.floor(dy);
+
+        const hitX: number = dx - x;
+        const hitY: number = dy - y;
+        
         const index: number = x + palette.width * y;
         
-        return { x, y, index };
+        return { x, y, index, hitX, hitY };
     }
 }
