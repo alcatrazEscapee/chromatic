@@ -41,7 +41,7 @@ $(WEB)/touch : data-compressed.json $(JS_OUT) $(JS_MAP) $(PIPE_OUT)
 	@cp data-compressed.json $(WEB)/lib/puzzles.json
 	@touch $(WEB)/touch
 
-$(JS_OUT) $(JS_MAP) &: $(TS_SRC) $(TS_D_SRC) package-lock.json
+$(JS_OUT) $(JS_MAP) &: $(TS_SRC) $(TS_D_SRC) package-lock.json tsconfig.json
 	@printf "Compiling tsc...\n"
 	@npx tsc
 

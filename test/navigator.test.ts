@@ -1,7 +1,7 @@
-import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../src/constants';
-import { Navigator } from '../src/navigator';
-import { Tile, TileProperties } from '../src/tile';
-import { Util } from '../src/util';
+import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../src/game/constants';
+import { Tile, TileProperties } from '../src/game/tile';
+import { Navigator } from '../src/game/navigator';
+import { Util } from '../src/game/util';
 
 
 test('updateTile() inherit pressure EDGE -> STRAIGHT', () => {

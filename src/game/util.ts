@@ -1,10 +1,11 @@
 import type { Container, Texture } from "pixi.js";
 
-import { AxisId, ColorId, Constants, DirectionId } from "./constants.js";
+import { AxisId, ColorId, Constants, DirectionId, NetworkData } from "./constants.js";
 
 
 export module Util {
-    export const COLORS: Readonly<{[_ in ColorId]: string}> = [
+    export const RAINBOW: ReadonlyArray<string> = ['#f00', '#f60', '#ff0', '#090', '#066', '#00f', '#909'];
+    export const COLORS: Readonly<{[_ in ColorId]: string}> & ReadonlyArray<string> = [
         '#f00', '#00f', '#ff0',
         '#f60', '#909', '#090',
         '#630',
@@ -12,6 +13,28 @@ export module Util {
         '#c60', '#fc3',
         '#303', '#903'
     ];
+
+    export const ZERO: Readonly<Point> = Object.freeze({ x: 0, y: 0 });
+
+    export function clampMap(t: number, fromMin: number, fromMax: number, toMin: number, toMax: number): number {
+        return clampLerp(lerpInv(t, fromMin, fromMax), toMin, toMax);
+    }
+
+    export function clampLerp(t: number, min: number, max: number): number {
+        return lerp(clamp(t, 0, 1), min, max);
+    }
+
+    export function lerp(t: number, min: number, max: number): number {
+        return min + t * (max - min);
+    }
+
+    export function lerpInv(lerp: number, min: number, max: number): number {
+        return (lerp - min) / (max - min);
+    }
+
+    export function clamp(t: number, min: number, max: number): number {
+        return t < min ? min : (t > max ? max : t);
+    }
 
     /** Returns true if the position (x, y) is within the square bounded by [x0, x0 + size), [y0, y0 + size) */
     export function isIn(x: number, y: number, x0: number, y0: number, size: number): boolean {
@@ -162,7 +185,7 @@ export module Util {
         return { dir: -1, cw: false };
     }
 
-    export function buildPalettes(core: AssetBundle<Texture>, textures: boolean = true): PaletteMap<Texture> {
+    export function buildPalettes(core: AssetBundle<NetworkData, Texture>, textures: boolean = true): PaletteMap<Texture> {
         return [{
             width: 3,
             tileWidth: 120,
