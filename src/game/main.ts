@@ -57,7 +57,7 @@ export class Game {
     // If `true`, the next tap on the stage will by ignored
     bypassNextTap: boolean = false;
 
-    constructor(app: Application, root: Container, core: AssetBundle<NetworkData, Texture>) {
+    constructor(root: Container, core: AssetBundle<NetworkData, Texture>) {
         
         this.root = root;
         this.core = core;
@@ -157,14 +157,6 @@ export class Game {
         root.addChild(this.tilesContainer);
         root.addChild(this.edgesContainer);
         root.addChild(this.topContainer);
-
-        const stage = app.stage;
-
-        stage.eventMode = 'static';
-        stage.on('pointertap', event => this.onPointerTap(event));
-        stage.on('pointerdown', event => this.onPointerDown(event));
-        stage.on('pointerup', event => this.onPointerUp(event));
-        stage.on('pointermove', event => this.onPointerMove(event));
     }
 
     /**
@@ -318,7 +310,7 @@ export class Game {
         }
     }
 
-    private onPointerMove(event: FederatedPointerEvent): void {
+    public onPointerMove(event: FederatedPointerEvent): void {
         this.screenX = event.screenX;
         this.screenY = event.screenY;
 
@@ -327,11 +319,9 @@ export class Game {
         this.heldLabel?.root.position.set(event.screenX, event.screenY);
     }
 
-    private onPointerDown(_: FederatedPointerEvent): void {
-        
-    }
+    public onPointerDown(_: FederatedPointerEvent): void {}
 
-    private onPointerUp(event: FederatedPointerEvent): void {
+    public onPointerUp(event: FederatedPointerEvent): void {
         if (this.state === StateId.DRAGGING_TILE) {
             const heldTile = this.heldTile!;
 
@@ -419,7 +409,7 @@ export class Game {
         }
     }
 
-    private onPointerTap(event: FederatedPointerEvent): void {
+    public onPointerTap(event: FederatedPointerEvent): void {
         if (this.bypassNextTap) {
             this.bypassNextTap = false;
             return;

@@ -3,6 +3,13 @@
  */
 declare const PIXI: typeof import('pixi.js');
 
+declare const FontFaceObserver: typeof import('fontfaceobserver');
+
+const enum Fonts {
+    ERAS_BOLD_ITC = 'Eras Bold ITC',
+    ARIAL = 'Arial',
+}
+
 /**
  * Implements a stricter - albeit unwieldy - version of `Readonly<T>` that actually prevents assignment to `T`.
  * This requires use of `!` on reads to eliminate the `undefined` type.
@@ -24,7 +31,11 @@ type AssetPipeAction = 'mix' | 'unmix' | 'up' | 'down'
 
 type PuzzlesAssetId = 'puzzles'
 type PipeAssetId = `pipe_${AssetPipeSize}`
-type CoreAssetId = 'ui_background'
+type CoreAssetId = 'menu_background'
+    | 'menu_panel'
+    | 'menu_star'
+    | 'menu_btn_left'
+    | 'ui_background'
     | 'ui_btn_play'
     | 'ui_btn_stop'
     | `ui_btn_pipe_${AssetPipeIcon}`

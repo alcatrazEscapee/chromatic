@@ -121,7 +121,7 @@ export const enum Constants {
     ANIM_FADE_TO_BLACK_TICKS = 54,
     ANIM_FADE_TO_BLACK_HALF = ANIM_FADE_TO_BLACK_TICKS / 2,
 
-    ANIM_EASE_IN_OUT_TICKS = 55,
+    ANIM_EASE_IN_OUT_TICKS = 45,
 
     N_TILES = TileId.last + 1,
     N_COLORS = ColorId.last + 1,

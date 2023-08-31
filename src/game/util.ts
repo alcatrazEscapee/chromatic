@@ -57,6 +57,35 @@ export module Util {
             : (pos.y > width - pos.x ? DirectionId.RIGHT : DirectionId.UP);
     }
 
+    /**
+     * Given a start and end position of a cursor, along with timestamps (in ms), interprets it as a swipe.
+     * The heuristics we use for a swipe are:
+     * - Must be above a target velocity
+     * - Must be within an angle of the target cardinal angle
+     * - Must be a certain minimum distance
+     * 
+     * N.B. This returns directions in Quadrant I semantics
+     */
+    export function interpretAsSwipe(start: Point & { instant: number }, end: Point & { instant: number }): DirectionId | -1 {
+        const distanceSq = pow2(start.x - end.x) + pow2(start.y - end.y);
+        const velocity = end.instant > start.instant ? distanceSq / (end.instant - start.instant) : 0;
+
+        // ~ 0 / 360 = left = 0
+        // ~ 90 = up = 1
+        // ~ 180 = right = 2
+        // ~ 270 = down = 3
+        const angle = Math.atan2((end.y - start.y), (end.x - start.x)) * 360 / (2 * Math.PI) + 180;
+        const direction = Math.round(angle / 90) % 4;
+        const delta = Math.min(Math.abs(angle - (direction * 90)), Math.abs(angle - (360 + direction * 90)));
+        
+        if (distanceSq >= 20_000 && velocity >= 100 && delta <= 15) {
+            return direction as DirectionId;
+        }
+        return -1;
+    }
+
+    function pow2(x: number): number { return x * x; }
+
     /** Returns true if the position (x, y) is within the square bounded by [x0, x0 + size), [y0, y0 + size) */
     export function isIn(x: number, y: number, x0: number, y0: number, size: number): boolean {
         return x >= x0 && y >= y0 && x < x0 + size && y < y0 + size;
@@ -221,7 +250,7 @@ export module Util {
             width: 4,
             tileWidth: 90,
             pressureWidth: 4,
-            pipeWidth: 4,
+            pipeWidth: 3,
             insideWidth: 12,
             insideTop: 39,
             portWidth: 20,
@@ -231,7 +260,7 @@ export module Util {
             width: 5,
             tileWidth: 72,
             pressureWidth: 3,
-            pipeWidth: 5,
+            pipeWidth: 3,
             insideWidth: 10,
             insideTop: 31,
             portWidth: 16,
@@ -269,7 +298,7 @@ export module Util {
         ]
     }
 
-    function buildPalettePipePressure<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', pressure: 1 | 2 | 3 | 4, core: PipeSpritesheet<T, Texture>): PalettePipeTextures<Texture> {
+    function buildPalettePipePressure<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', pressure: PressureId, core: PipeSpritesheet<T, Texture>): PalettePipeTextures<Texture> {
         return {
             pipe: core.textures[`${id}_${key}_${pressure}`],
             overlay: {
@@ -285,15 +314,13 @@ export module Util {
         }
     }
 
-    export function insideTop(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
+    /** See {@link Palette.insideTop} */
+    export function insideTop(palette: Palette, pressure: PressureId): number {
         return palette.insideTop - (pressure - 1) * palette.pressureWidth;
     }
 
-    export function outsideTop(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
-        return palette.insideTop - (pressure - 1) * palette.pressureWidth - palette.pipeWidth;
-    }
-
-    export function insideWidth(palette: Palette, pressure: 1 | 2 | 3 | 4): number {
+    /** See {@link Palette.insideWidth}. */
+    export function insideWidth(palette: Palette, pressure: PressureId): number {
         return palette.insideWidth + 2 * (pressure - 1) * palette.pressureWidth;
     }
 }

@@ -7,7 +7,7 @@ test('lerp 0.5 to [6, 10]', () => expect(Util.lerp(0.5, 6, 10)).toBe(8));
 test('lerp 1.0 to [6, 10]', () => expect(Util.lerp(1.0, 6, 10)).toBe(10));
 
 test('lerpInv 6 to [6, 10]', () => expect(Util.lerpInv(6, 6, 10)).toBe(0.0));
-test('lerpInv 8 to [8, 10]', () => expect(Util.lerpInv(8, 6, 10)).toBe(0.5));
+test('lerpInv 8 to [6, 10]', () => expect(Util.lerpInv(8, 6, 10)).toBe(0.5));
 test('lerpInv 10 to [6, 10]', () => expect(Util.lerpInv(10, 6, 10)).toBe(1.0));
 
 test('clamp 1 to [3, 5]', () => expect(Util.clamp(1, 3, 5)).toBe(3));
