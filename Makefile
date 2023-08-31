@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := build
 
 PIXI     := pixi-7.2.4
+FFO      := fontfaceobserver-2.1.0
 WEB      := ../Website/public/chromatic/
 
 TS_SRC   := $(shell find src -name '*.ts' -not -name '*.d.ts')
@@ -25,6 +26,9 @@ test :
 .PHONY : clean
 clean :
 	@rm -rf out
+	@rm -rf $(WEB)/art
+	@rm -rf $(WEB)/lib
+	@rm -rf $(WEB)/src
 
 .PHONY : overlay
 overlay :
@@ -34,7 +38,8 @@ $(WEB)/touch : data-compressed.json $(JS_OUT) $(JS_MAP) $(PIPE_OUT)
 	@printf "Copying files...\n"
 	@rm -rf $(WEB)/lib
 	@mkdir -p $(WEB)/lib
-	@cp lib/$(PIXI).js $(WEB)/lib/$(PIXI).js
+	@cp lib/$(PIXI).min.js $(WEB)/lib/$(PIXI).js
+	@cp lib/$(FFO).min.js $(WEB)/lib/$(FFO).js
 	@cp -r out/. $(WEB)/lib/.
 	@cp -r src $(WEB)/
 	@cp -r art $(WEB)/.

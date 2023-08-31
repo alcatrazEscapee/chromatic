@@ -13,6 +13,9 @@ declare global {
 
 async function main() {
 
+    // Font
+    const font: FontFaceObserver = new FontFaceObserver(Fonts.ERAS_BOLD_ITC);
+
     // Settings
     PIXI.BaseTexture.defaultOptions.scaleMode = PIXI.SCALE_MODES.NEAREST;
     PIXI.settings.RESOLUTION = devicePixelRatio;
@@ -44,8 +47,12 @@ async function main() {
         pipe_90: 'art/sheets/pipe_90@1x.png.json',
         pipe_120: 'art/sheets/pipe_120@1x.png.json',
 
-        ui_background: 'art/ui_background.png',
+        menu_background: 'art/menu_background.png',
+        menu_panel: 'art/menu_panel.png',
+        menu_star: 'art/menu_star.png',
+        menu_btn_left: 'art/menu_btn_left.png',
 
+        ui_background: 'art/ui_background.png',
         ui_btn_play: 'art/ui_btn_play.png',
         ui_btn_stop: 'art/ui_btn_stop.png',
 
@@ -68,7 +75,10 @@ async function main() {
 
     PIXI.Assets.addBundle('core', manifest);
 
-    const core: AssetBundle<NetworkData, Texture> = await PIXI.Assets.loadBundle('core', updateProgress);
+    const loader = PIXI.Assets.loadBundle('core', updateProgress) as Promise<AssetBundle<NetworkData, Texture>>;
+    const fontLoader = font.load();
+
+    const [core, _] = await Promise.all([loader, fontLoader]);
 
     app.stage.removeChild(bar, progress);
     bar.destroy();

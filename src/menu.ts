@@ -1,10 +1,11 @@
-import type { Application, Container, Text, Texture } from "pixi.js";
+import type { Application, Container, FederatedPointerEvent, Sprite, Text, Texture } from "pixi.js";
 import type { NetworkData } from "./game/constants.js";
 
 import { Game } from "./game/main.js";
 import { Animations } from "./animation.js";
-import { Constants } from "./game/constants.js";
+import { Constants, DirectionId } from "./game/constants.js";
 import { Util } from "./game/util.js";
+
 
 
 export class Menu {
@@ -18,12 +19,19 @@ export class Menu {
     readonly titleContainer: Container;
 
     readonly game: Game;
-    readonly maxPageExclusive: number;
+    readonly maxPageInclusive: number;
 
-    panel: Panel | null;
+    readonly btnLeft: Sprite;
+    readonly btnRight: Sprite;
+    pageText: Text | null = null;
+
+    panel: Container | null;
+    page: number;
 
     delta: number;
     active: boolean;
+
+    swipeStart: (Point & { instant: number }) | null = null;
 
     constructor(app: Application, core: AssetBundle<NetworkData, Texture>) {
 
@@ -35,17 +43,21 @@ export class Menu {
         this.overlayContainer = new PIXI.Container();
         this.titleContainer = new PIXI.Container();
 
-        this.game = new Game(app, this.gameContainer, core);
-        this.maxPageExclusive = Math.ceil(core.puzzles.puzzles.length / 16);
+        this.menuContainer.addChild(new PIXI.Sprite(core.menu_background)); // Needs to be before createPanel()
 
-        this.panel = new Panel(this, 0);
+        this.game = new Game(this.gameContainer, core);
+        this.maxPageInclusive = Math.ceil(core.puzzles.puzzles.length / 16) - 1;
+
+        this.page = 0;
+        this.panel = this.createPanel(0);
 
         const title = 'CHROMATIC';
-        
-        let x = 20;
+        const leftX = 24;
+        let x = leftX;
         for (let i = 0; i < title.length; i++) {
             const letter = new PIXI.Text(title[i], {
-                fontFamily: 'Arial',
+                fontFamily: Fonts.ARIAL,
+                fontWeight: 'bold',
                 fontSize: 44,
                 fill: Constants.COLOR_WHITE,
             });
@@ -54,16 +66,78 @@ export class Menu {
             this.titleContainer.addChild(letter);
         }
 
+        if (leftX !== Constants.STAGE_WIDTH - (x - 10)) throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
+
+        this.btnLeft = new PIXI.Sprite(core.menu_btn_left);
+        this.btnRight = new PIXI.Sprite(core.menu_btn_left);
+
+        this.btnLeft.position.set(10, 523);
+        this.btnLeft.eventMode = 'static';
+        this.btnLeft.on('pointertap', () => this.switchPage(-1));
+
+        this.btnRight.position.set(365 + 25, 523 + 40);
+        this.btnRight.angle += 180;
+        this.btnRight.eventMode = 'static';
+        this.btnRight.on('pointertap', () => this.switchPage(1));
+
         this.menuContainer.addChild(this.titleContainer);
+        this.menuContainer.addChild(this.btnLeft);
+        this.menuContainer.addChild(this.btnRight);
+
+        this.pageText = null;
+
+        this.updatePage();
 
         this.delta = 0;
         this.active = true;
 
-        this.enterMenu();
-        this.app.stage.addChild(this.overlayContainer); // Top level, so all other children need to be added under this
+        const stage = app.stage;
+
+        this.enterMenu(); // Adds the menu container to root
+        stage.addChild(this.overlayContainer); // Top level, so all other children need to be added under this
+
+        stage.eventMode = 'static';
+        stage.on('pointertap', event => this.onPointerTap(event));
+        stage.on('pointerdown', event => this.onPointerDown(event));
+        stage.on('pointerup', event => this.onPointerUp(event));
+        stage.on('pointermove', event => this.onPointerMove(event));
     }
 
-    load(puzzleId: number): void {
+
+    private onPointerTap(event: FederatedPointerEvent): void {
+        this.game.onPointerTap(event);
+    }
+
+    private onPointerDown(event: FederatedPointerEvent): void {
+        this.game.onPointerDown(event);
+        this.swipeStart = { x: event.screenX, y: event.screenY, instant: event.timeStamp };
+    }
+
+    private onPointerUp(event: FederatedPointerEvent): void {
+        this.game.onPointerUp(event);
+
+        // Detect swipes
+        if (this.swipeStart !== null) {
+            const swipeEnd = { x: event.screenX, y: event.screenY, instant: event.timeStamp };
+            const swipe = Util.interpretAsSwipe(this.swipeStart, swipeEnd);
+
+            // N.B. convention is grab puzzles + move; so a left swipe = move content left = next page (right)
+            if (swipe === DirectionId.RIGHT) {
+                this.switchPage(-1);
+            } else if (swipe === DirectionId.LEFT) {
+                this.switchPage(1);
+            }
+
+            this.swipeStart = null;
+        }
+    }
+
+    private onPointerMove(event: FederatedPointerEvent): void {
+        this.game.onPointerMove(event);
+    }
+
+
+    private load(puzzleId: number): void {
         this.active = false;
 
         Animations.fadeToBlack(this.overlayContainer, () => {
@@ -74,7 +148,7 @@ export class Menu {
         });
     }
 
-    unload(): void {
+    private unload(): void {
         this.game.preTeardown();
         Animations.fadeToBlack(this.overlayContainer, () => {
             this.leaveGame();
@@ -84,7 +158,7 @@ export class Menu {
         });
     }
 
-    tick(delta: number): void {
+    private tick(delta: number): void {
         this.delta += delta;
 
         // Tick title rainbow colors
@@ -94,37 +168,90 @@ export class Menu {
         }
     }
 
-    selectPuzzle(puzzle: number): void {
+    private selectPuzzle(puzzle: number): void {
         if (this.active) {
             this.load(puzzle);
         }
     }
 
-    switchPage(sign: -1 | 1): void {
+    private switchPage(sign: -1 | 1): void {
         if (!this.active || this.panel === null) {
             return; // Inactive (animating)
         }
 
-        if ((sign === -1 && this.panel.page === 0) || (sign === 1 && this.panel.page === this.maxPageExclusive)) {
+        if ((sign === -1 && this.page === 0) || (sign === 1 && this.page === this.maxPageInclusive)) {
             return; // No more puzzles to the left / right
         }
 
         const oldPanel = this.panel;
-        const newPanel = new Panel(this, oldPanel.page + sign);
+        const newPanel = this.createPanel(this.page + sign);
 
         this.active = false;
         this.panel = null;
+        this.page += sign;
 
-        newPanel.root.position.set(-sign * Constants.STAGE_WIDTH, 0);
+        newPanel.position.set(-sign * Constants.STAGE_WIDTH, 0);
 
-        Animations.easeInOut(oldPanel.root, Util.ZERO, { x: -sign * Constants.STAGE_WIDTH, y: 0 }, () => {
-            oldPanel.root.destroy();
+        Animations.easeInOut(oldPanel, Util.ZERO, { x: -sign * Constants.STAGE_WIDTH, y: 0 }, () => {
+            oldPanel.destroy();
         });
 
-        Animations.easeInOut(newPanel.root, { x: sign * Constants.STAGE_WIDTH, y: 0 }, Util.ZERO, () => {
+        Animations.easeInOut(newPanel, { x: sign * Constants.STAGE_WIDTH, y: 0 }, Util.ZERO, () => {
+            this.updatePage();
             this.panel = newPanel;
             this.active = true;
         });
+    }
+
+    private createPanel(page: number): Container {
+        const panel = new PIXI.Container();
+
+        const max = Math.min(16, this.core.puzzles.puzzles.length - (16 * page));
+        for (let i = 0; i < max; i++) {
+            const puzzleId: number = i + page * 16;
+            const button = new PIXI.Container();
+            const back = new PIXI.Sprite(this.core.menu_panel);
+
+            const label = new PIXI.Text(String(i + page * 16 + 1), {
+                fontFamily: Fonts.ERAS_BOLD_ITC,
+                fontSize: 16,
+                fill: Constants.COLOR_WHITE,
+            });
+
+            label.position.set(5, 5);
+
+            button.addChild(back);
+            button.addChild(label);
+
+            button.eventMode = 'static';
+            button.position.set(26 + (i % 4) * 90, 117 + Math.floor(i / 4) * 90);
+            button.on('pointertap', () => this.selectPuzzle(puzzleId));
+
+            panel.addChild(button);
+        }
+
+        this.menuContainer.addChild(panel);
+        return panel;
+    }
+
+    /** Updates that need to run after changing the page is complete */
+    private updatePage(): void {
+        this.btnLeft.visible = this.page > 0;
+        this.btnRight.visible = this.page < this.maxPageInclusive;
+
+        if (this.pageText) {
+            this.pageText.destroy();
+            this.pageText = null;
+        }
+
+        this.pageText = new PIXI.Text(`${1 + this.page} / ${1 + this.maxPageInclusive}`, {
+            fontFamily: Fonts.ERAS_BOLD_ITC,
+            fontSize: 20,
+            fill: Constants.COLOR_WHITE,
+        });
+        this.pageText.position.set(45, 521 + 8);
+        this.menuContainer.addChild(this.pageText);
+        
     }
 
     // Transitions
@@ -147,43 +274,5 @@ export class Menu {
     private leaveGame(): void {
         this.game.teardown();
         this.app.stage.removeChild(this.gameContainer);
-    }
-}
-
-
-class Panel {
-
-    readonly root: Container;
-    readonly page: number;
-
-    constructor(menu: Menu, page: number) {
-        this.root = new PIXI.Container();
-        this.page = page;
-
-        const max = Math.min(16, menu.core.puzzles.puzzles.length - (16 * page));
-        for (let i = 0; i < max; i++) {
-            const puzzleId: number = i + page * 16;
-            const button = new PIXI.Container();
-            const back = new PIXI.Sprite(menu.core.ui_btn_pipe_empty); // todo: sprite
-
-            const label = new PIXI.Text(String(i + page * 16 + 1), {
-                fontFamily: 'Arial',
-                fontSize: 16,
-                fill: Constants.COLOR_WHITE,
-            });
-
-            label.position.set(5, 5);
-
-            button.addChild(back);
-            button.addChild(label);
-
-            button.eventMode = 'static';
-            button.position.set(26 + (i % 4) * 90, 117 + Math.floor(i / 4) * 90);
-            button.on('pointertap', () => menu.selectPuzzle(puzzleId));
-
-            this.root.addChild(button);
-        }
-
-        menu.menuContainer.addChild(this.root);
     }
 }

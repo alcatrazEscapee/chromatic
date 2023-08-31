@@ -165,11 +165,11 @@ export class Tile {
                     const vertical = new PIXI.Sprite(textureV.pipe);
                     const mask = new PIXI.Graphics();
     
-                    const widthH = Util.outsideTop(palette, propertyV.pressure);
-                    const widthV = Util.outsideTop(palette, propertyH.pressure);
+                    const cornerX = Util.insideTop(palette, propertyV.pressure) - palette.pipeWidth;
+                    const cornerY = Util.insideTop(palette, propertyH.pressure) - palette.pipeWidth;
     
                     mask.beginFill('#000000');
-                    mask.drawRect(widthH, widthV, palette.tileWidth - 2 * widthH, palette.tileWidth - 2 * widthV);
+                    mask.drawRect(cornerX, cornerY, palette.tileWidth - 2 * cornerX, palette.tileWidth - 2 * cornerY);
                     mask.pivot.set(palette.tileWidth / 2, palette.tileWidth / 2)
     
                     horizontal.anchor.set(0.5);

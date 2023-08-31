@@ -183,7 +183,7 @@ class PairFlow extends BaseFlow {
 
 export class CrossUnderFlow extends PairFlow {
     constructor(palette: Palette, color: ColorId, pressure: PressureId, dir: DirectionId, straightPressure: PressureId) {
-        super(palette, color, pressure, dir, Util.outsideTop(palette, straightPressure));
+        super(palette, color, pressure, dir, Util.insideTop(palette, straightPressure) - palette.pipeWidth);
     }
 }
 
