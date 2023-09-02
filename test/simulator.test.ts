@@ -1,4 +1,4 @@
-import { ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "../src/game/constants";
+import { ColorId, DirectionId, NetworkPuzzle, TileId } from "../src/gen/constants";
 import { IncomingFlow, Simulator } from "../src/game/simulator";
 import { Leak } from "../src/game/leak";
 import { Tile } from "../src/game/tile";
@@ -88,7 +88,7 @@ function mapOf(puzzle: NetworkPuzzle | number): MapOf {
         puzzle = (global as any).PUZZLES[puzzle] as NetworkPuzzle;
     }
 
-    const width = puzzle.size + Constants.GRID_ID_TO_WIDTH;
+    const width = puzzle.size + 3;
     const palette = Util.buildPalettes({} as any, false)[puzzle.size];
     const map: MapOf & { _tiles: (Tile | null)[] } = {
         puzzle: puzzle,
@@ -113,7 +113,7 @@ function mapOf(puzzle: NetworkPuzzle | number): MapOf {
             if (label?.pressure !== undefined) property.pressure = label.pressure;
         },
         run(n: number): void {
-            for (let i = 0; i < n; i++) map.sim.tick(Constants.TICKS_PER_SIMULATOR_STEP, palette, map._tiles);
+            for (let i = 0; i < n; i++) map.sim.tick(40, palette, map._tiles);
         },
         victory(): boolean {
             for (const out of map.sim.outputs)

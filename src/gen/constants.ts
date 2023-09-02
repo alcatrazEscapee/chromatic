@@ -1,3 +1,5 @@
+import type { Texture } from "pixi.js";
+
 type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, PressureId];
 
 type NetworkFlowAtInput<N, R>
@@ -27,6 +29,8 @@ export type NetworkPuzzle = { id: number } & (
 export interface NetworkData {
     puzzles: NetworkPuzzle[]
 };
+
+export type AssetBundle = _AssetBundle<NetworkData, Texture>;
 
 
 export const enum TileId {
@@ -89,42 +93,4 @@ export const enum AxisId {
     VERTICAL = 1,
 
     last = 1
-}
-
-
-export const enum Constants {
-    STAGE_WIDTH = 400,
-    STAGE_HEIGHT = 600,
-
-    GRID_LEFT = 20,
-    GRID_TOP = 20,
-    GRID_SIZE = 360,
-
-    GRID_LEFT_HALF = GRID_LEFT / 2,
-
-    GRID_ID_TO_WIDTH = 3,
-    HELD_TILE_GRID_ID = GridId._5x5,
-
-    COLOR_WHITE = 0xffffff,
-    COLOR_BLACK = 0x000000,
-    COLOR_GREEN = 0x00b000,
-
-    TICKS_PER_SIMULATOR_STEP = 40,
-    TICKS_PER_LEAK_BLOB = 3,
-
-    MAX_BLOBS_PER_LEAK = 40,
-
-    POINTER_HOLD_MS = 400,
-
-    MAX_PRESSURE = 4,
-
-    ANIM_FADE_TO_BLACK_TICKS = 54,
-    ANIM_FADE_TO_BLACK_HALF = ANIM_FADE_TO_BLACK_TICKS / 2,
-
-    ANIM_EASE_IN_OUT_TICKS = 45,
-
-    N_TILES = TileId.last + 1,
-    N_COLORS = ColorId.last + 1,
-    N_AXIS = AxisId.last + 1,
-    N_DIRECTIONS = DirectionId.last + 1,
 }

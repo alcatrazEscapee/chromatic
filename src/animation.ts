@@ -1,6 +1,5 @@
 import type { Container, Graphics } from "pixi.js";
 
-import { Constants } from "./game/constants.js";
 import { Util } from "./game/util.js";
 
 

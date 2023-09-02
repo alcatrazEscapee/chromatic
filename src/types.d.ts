@@ -5,10 +5,50 @@ declare const PIXI: typeof import('pixi.js');
 
 declare const FontFaceObserver: typeof import('fontfaceobserver');
 
+
+const enum Constants {
+    STAGE_WIDTH = 400,
+    STAGE_HEIGHT = 600,
+
+    GRID_LEFT = 20,
+    GRID_TOP = 20,
+    GRID_SIZE = 360,
+
+    GRID_LEFT_HALF = GRID_LEFT / 2,
+
+    GRID_ID_TO_WIDTH = 3,
+
+    COLOR_WHITE = 0xffffff,
+    COLOR_BLACK = 0x000000,
+    COLOR_GREEN = 0x00b000,
+
+    TICKS_PER_SIMULATOR_STEP = 40,
+    TICKS_PER_LEAK_BLOB = 3,
+
+    MAX_BLOBS_PER_LEAK = 40,
+
+    POINTER_HOLD_MS = 400,
+
+    MAX_PRESSURE = 4,
+
+    ANIM_FADE_TO_BLACK_TICKS = 54,
+    ANIM_FADE_TO_BLACK_HALF = ANIM_FADE_TO_BLACK_TICKS / 2,
+
+    ANIM_EASE_IN_OUT_TICKS = 45,
+
+    BITSET_SHIFT = 5,
+    BITSET_MASK = (1 << BITSET_SHIFT) - 1,
+}
+
+const enum Strings {
+    LOCAL_STORAGE_KEY = 'chromatic-save-data',
+}
+
 const enum Fonts {
     ERAS_BOLD_ITC = 'Eras Bold ITC',
     ARIAL = 'Arial',
 }
+
 
 /**
  * Implements a stricter - albeit unwieldy - version of `Readonly<T>` that actually prevents assignment to `T`.
@@ -19,8 +59,11 @@ const enum Fonts {
 type StrictReadonly<T> = { [k in keyof T]: T[k] | undefined };
 
 type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
+type Tagged<Key extends string, T> = T & { __tag__: Key };
+
 type Array4<T> = [T, T, T, T];
-type Point = { x: number, y: number };
+type Point = { readonly x: number, readonly y: number };
+type BitSet = Tagged<'BitSet', number[]>;
 
 type PressureId = 1 | 2 | 3 | 4;
 
@@ -59,7 +102,7 @@ type AssetType<K extends AssetId, _NetworkData, _Texture> =
     never;
 
 type AssetManifest = { [key in AssetId]: AssetUrl<key> };
-type AssetBundle<_NetworkData, _Texture> = { [key in AssetId]: AssetType<key, _NetworkData, _Texture> };
+type _AssetBundle<_NetworkData, _Texture> = { [key in AssetId]: AssetType<key, _NetworkData, _Texture> };
 
 
 interface PipeSpritesheet<T extends PipeAssetId, _Texture> {
@@ -124,3 +167,19 @@ interface TexturePalette<T> extends Palette {
     grid: T,
     textures: PaletteTextures<T>
 }
+
+type SaveDataVersion = 1;
+
+type UnknownSaveData = null 
+    | VersionedSaveData<0, {}>
+    | VersionedSaveData<1, V1SaveData>
+    // ...
+    ;
+
+interface V1SaveData {
+    page: number;
+    stars: BitSet;
+}
+
+type LocalSaveData = VersionedSaveData<SaveDataVersion> & UnknownSaveData;
+type VersionedSaveData<Version extends number, T = {}> = { version: Version } & T;

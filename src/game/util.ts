@@ -1,6 +1,6 @@
 import type { Container, Texture } from "pixi.js";
 
-import { AxisId, ColorId, Constants, DirectionId, NetworkData } from "./constants.js";
+import { AssetBundle, AxisId, ColorId, DirectionId } from "../gen/constants.js";
 
 
 export module Util {
@@ -91,15 +91,20 @@ export module Util {
         return x >= x0 && y >= y0 && x < x0 + size && y < y0 + size;
     }
 
+    const enum N {
+        Axis = AxisId.last + 1,
+        Direction = DirectionId.last + 1,
+    }
+
     export function dirToAxis(dir: DirectionId): AxisId {
-        return dir % Constants.N_AXIS;
+        return dir % N.Axis;
     }
 
     export function sameAxis(lhs: DirectionId, rhs: DirectionId): boolean {
-        return (lhs % Constants.N_AXIS) == (rhs % Constants.N_AXIS);
+        return (lhs % N.Axis) == (rhs % N.Axis);
     }
 
-    export function move(pos: Point, dir: DirectionId, delta: number = 1): Point {
+    export function move(pos: Mutable<Point>, dir: DirectionId, delta: number = 1): Point {
         switch (dir) {
             case DirectionId.LEFT:  pos.x -= delta; break;
             case DirectionId.UP:    pos.y -= delta; break;
@@ -110,23 +115,23 @@ export module Util {
     }
 
     export function cw(dir: DirectionId): DirectionId {
-        return (dir + 1) % Constants.N_DIRECTIONS;
+        return (dir + 1) % N.Direction;
     }
 
     export function flip(dir: DirectionId): DirectionId {
-        return (dir + 2) % Constants.N_DIRECTIONS;
+        return (dir + 2) % N.Direction;
     }
 
     export function ccw(dir: DirectionId): DirectionId {
-        return (dir + 3) % Constants.N_DIRECTIONS;
+        return (dir + 3) % N.Direction;
     }
 
     export function rotate(dir: DirectionId, base: DirectionId): DirectionId {
-        return (dir + base) % Constants.N_DIRECTIONS;
+        return (dir + base) % N.Direction;
     }
 
     export function unrotate(dir: DirectionId, base: DirectionId): DirectionId {
-        return (dir - base + Constants.N_DIRECTIONS) % Constants.N_DIRECTIONS;
+        return (dir - base + N.Direction) % N.Direction;
     }
 
     export function getInputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
@@ -153,6 +158,33 @@ export module Util {
     export function nulls<T>(n: number): (T | null)[] {
         return new Array(n).fill(null);
     }
+
+
+    /** Create a new bitset. The underlying object is just a `number[]`, but it is tagged to prevent interconversion. */
+    export function bitCreate(): BitSet {
+        return [] as unknown as BitSet;
+    }
+
+    /** Set the bit at index `index` to `true`. */
+    export function bitSet(bitset: BitSet, index: number): void {
+        const wordIndex: number = index >> Constants.BITSET_SHIFT;
+        const bitIndex: number = index & Constants.BITSET_MASK;
+
+        while (wordIndex >= bitset.length) {
+            bitset.push(0);
+        }
+
+        bitset[wordIndex]! |= (1 << bitIndex);
+    }
+
+    /** Get the value of the bit at `index`. If the index is out of range, it is assumed to be false. */
+    export function bitGet(bitset: BitSet, index: number): boolean {
+        const wordIndex: number = index >> Constants.BITSET_SHIFT;
+        const bitIndex: number = index & Constants.BITSET_MASK;
+
+        return wordIndex < bitset.length ? ((bitset[wordIndex]! >> bitIndex) & 0b1) == 0b1 : false;
+    }
+
 
     const MIXES: [ColorId, ColorId, ColorId][] = [
         [ColorId.RED, ColorId.BLUE, ColorId.PURPLE],
@@ -235,7 +267,7 @@ export module Util {
         return { dir: -1, cw: false };
     }
 
-    export function buildPalettes(core: AssetBundle<NetworkData, Texture>, textures: boolean = true): PaletteMap<Texture> {
+    export function buildPalettes(core: AssetBundle, textures: boolean = true): PaletteMap<Texture> {
         return [{
             width: 3,
             tileWidth: 120,
