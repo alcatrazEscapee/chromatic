@@ -1,8 +1,8 @@
 import type { Container, Texture } from "pixi.js";
 
+import { AxisId, ColorId, DirectionId, TileId } from "../gen/constants.js";
 import { Flow } from "./flow.js";
 import { Util } from "./util.js";
-import { AxisId, ColorId, DirectionId, TileId } from "./constants.js";
 
 
 export type TileProperties = { color: ColorId | null, pressure: PressureId };

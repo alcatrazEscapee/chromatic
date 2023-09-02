@@ -1,4 +1,4 @@
-import { DirectionId, AxisId, ColorId } from '../src/game/constants';
+import { DirectionId, AxisId, ColorId } from '../src/gen/constants';
 import { Util } from '../src/game/util';
 
 
@@ -53,6 +53,30 @@ test('unrotate() of LEFT by base LEFT', () => expect(Util.unrotate(DirectionId.L
 test('unrotate() of UP by base LEFT', () => expect(Util.unrotate(DirectionId.UP, DirectionId.LEFT)).toBe(DirectionId.UP));
 test('unrotate() of UP by base UP', () => expect(Util.unrotate(DirectionId.UP, DirectionId.UP)).toBe(DirectionId.LEFT));
 test('unrotate() of LEFT by base UP', () => expect(Util.unrotate(DirectionId.LEFT, DirectionId.UP)).toBe(DirectionId.DOWN));
+
+for (let i = 0; i < 70; i++) {
+    test(`bitset set ${i}`, () => {
+        const bitset = Util.bitCreate();
+
+        Util.bitSet(bitset, i);
+
+        for (let j = 0; j < 80; j++) {
+            expect(Util.bitGet(bitset, j)).toBe(i === j);
+        }
+    });
+
+    test(`bitset set up to ${i}`, () => {
+        const bitset = Util.bitCreate();
+
+        for (let j = 0; j < i; j++) {
+            Util.bitSet(bitset, j);
+        }
+
+        for (let j = 0; j < 80; j++) {
+            expect(Util.bitGet(bitset, j)).toBe(j < i);
+        }
+    });
+}
 
 test('mix RED + BLUE', () => expect(Util.mix(ColorId.RED, ColorId.BLUE)).toBe(ColorId.PURPLE));
 test('mix BLUE + RED', () => expect(Util.mix(ColorId.BLUE, ColorId.RED)).toBe(ColorId.PURPLE));

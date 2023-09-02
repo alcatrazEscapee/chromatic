@@ -1,9 +1,8 @@
 import type { Container } from "pixi.js";
-
 import type { Tile } from "./tile.js";
 import type { Flow } from "./flow.js";
 
-import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "./constants.js";
+import { AxisId, ColorId, DirectionId, NetworkPuzzle, TileId } from "../gen/constants.js";
 import { EdgeFlow, StraightFlow, CrossUnderFlow, CurveFlow, PartialFlow } from "./flow.js";
 import { Util } from "./util.js";
 import { Leak } from "./leak.js";

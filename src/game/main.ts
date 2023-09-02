@@ -1,6 +1,6 @@
-import type { Texture, Application, Container, FederatedPointerEvent, Sprite, Graphics, DisplayObject } from 'pixi.js';
+import type { Texture, Container, FederatedPointerEvent, Sprite, DisplayObject } from 'pixi.js';
 
-import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkData, NetworkPuzzle, TileId } from './constants.js';
+import { AssetBundle, AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId } from '../gen/constants.js';
 import { Util } from './util.js';
 import { Tile } from './tile.js';
 import { Simulator } from './simulator.js';
@@ -22,7 +22,7 @@ const enum StateId {
 export class Game {
 
     readonly root: Container;
-    readonly core: AssetBundle<NetworkData, Texture>;
+    readonly core: AssetBundle;
     readonly tiles: (Tile | null)[];
 
     // UI Layer (background display)
@@ -57,7 +57,7 @@ export class Game {
     // If `true`, the next tap on the stage will by ignored
     bypassNextTap: boolean = false;
 
-    constructor(root: Container, core: AssetBundle<NetworkData, Texture>) {
+    constructor(root: Container, core: AssetBundle) {
         
         this.root = root;
         this.core = core;

@@ -1,4 +1,4 @@
-import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../src/game/constants';
+import { AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId } from '../src/gen/constants';
 import { Tile, TileProperties } from '../src/game/tile';
 import { Navigator } from '../src/game/navigator';
 import { Util } from '../src/game/util';
@@ -186,7 +186,7 @@ type MapOf = Navigator.Map & {
 }
 
 function mapOf(puzzle: Omit<NetworkPuzzle, 'id'>, tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): MapOf {
-    const width: number = puzzle.size + Constants.GRID_ID_TO_WIDTH;
+    const width: number = puzzle.size + 3;
     const map: MapOf = {
         width,
         grid: puzzle.size,

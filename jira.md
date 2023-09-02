@@ -4,11 +4,6 @@
 
 - Render 'X' on completed puzzles
 
-### Save
-
-- Save completed puzzles to local storage
-- Add console utils for clearing / setting local storage
-
 ### Game
 
 - Add Filters

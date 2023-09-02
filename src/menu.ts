@@ -1,9 +1,9 @@
-import type { Application, Container, FederatedPointerEvent, Sprite, Text, Texture } from "pixi.js";
-import type { NetworkData } from "./game/constants.js";
+import type { Application, Container, FederatedPointerEvent, Sprite, Text } from "pixi.js";
+import type { AssetBundle } from "./gen/constants.js";
 
 import { Game } from "./game/main.js";
 import { Animations } from "./animation.js";
-import { Constants, DirectionId } from "./game/constants.js";
+import { DirectionId } from "./gen/constants.js";
 import { Util } from "./game/util.js";
 
 
@@ -11,7 +11,7 @@ import { Util } from "./game/util.js";
 export class Menu {
 
     readonly app: Application;
-    readonly core: AssetBundle<NetworkData, Texture>;
+    readonly core: AssetBundle;
 
     readonly menuContainer: Container;
     readonly gameContainer: Container;
@@ -23,6 +23,7 @@ export class Menu {
 
     readonly btnLeft: Sprite;
     readonly btnRight: Sprite;
+    
     pageText: Text | null = null;
 
     panel: Container | null;
@@ -31,9 +32,11 @@ export class Menu {
     delta: number;
     active: boolean;
 
-    swipeStart: (Point & { instant: number }) | null = null;
+    swipeStart: (Point & { readonly instant: number }) | null = null;
 
-    constructor(app: Application, core: AssetBundle<NetworkData, Texture>) {
+    saveData: LocalSaveData;
+
+    constructor(app: Application, core: AssetBundle) {
 
         this.app = app;
         this.core = core;
@@ -49,7 +52,26 @@ export class Menu {
         this.maxPageInclusive = Math.ceil(core.puzzles.puzzles.length / 16) - 1;
 
         this.page = 0;
-        this.panel = this.createPanel(0);
+
+        this.saveData = {
+            version: 1,
+            page: 0,
+            stars: Util.bitCreate(),
+        };
+
+        try {
+            const json: string | null = localStorage.getItem(Strings.LOCAL_STORAGE_KEY);
+            const data: LocalSaveData | null = json === null ? null : JSON.parse(json);
+
+            if (data?.version === 1) {
+                this.saveData = data;
+                this.page = this.saveData.page;
+            }
+        } catch (e) {
+            console.warn(`Error loading save data: ${e}`);
+        }
+
+        this.panel = this.createPanel(this.page);
 
         const title = 'CHROMATIC';
         const leftX = 24;
@@ -66,7 +88,9 @@ export class Menu {
             this.titleContainer.addChild(letter);
         }
 
-        if (leftX !== Constants.STAGE_WIDTH - (x - 10)) throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
+        if (window.debugMode && leftX !== Constants.STAGE_WIDTH - (x - 10)) {
+            throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
+        }
 
         this.btnLeft = new PIXI.Sprite(core.menu_btn_left);
         this.btnRight = new PIXI.Sprite(core.menu_btn_left);
@@ -189,6 +213,8 @@ export class Menu {
         this.active = false;
         this.panel = null;
         this.page += sign;
+        this.saveData.page = this.page;
+        this.save(); // Update the saved main menu page
 
         newPanel.position.set(-sign * Constants.STAGE_WIDTH, 0);
 
@@ -251,7 +277,26 @@ export class Menu {
         });
         this.pageText.position.set(45, 521 + 8);
         this.menuContainer.addChild(this.pageText);
-        
+    }
+
+    private save(): void {
+        try {
+            localStorage.setItem(Strings.LOCAL_STORAGE_KEY, JSON.stringify(this.saveData));
+        } catch (e) {
+            if (window.debugMode) {
+                throw e;
+            }
+        }
+    }
+
+    public clearSave(): void {
+        try {
+            localStorage.setItem(Strings.LOCAL_STORAGE_KEY, '{version: 0}');
+        } catch (e) {
+            if (window.debugMode) {
+                throw e;
+            }
+        }
     }
 
     // Transitions

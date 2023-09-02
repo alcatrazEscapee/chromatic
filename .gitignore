@@ -18,7 +18,9 @@
 !/scripts/**/*.py
 
 !/data.json
-!/data-compressed.json
-!/data-rewrite.json
 
 !/jira.md
+
+# Generated files
+src/gen/debug.ts
+art/sheets/*

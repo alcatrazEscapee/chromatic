@@ -1,12 +1,12 @@
-import type { Texture } from "pixi.js";
+import type { AssetBundle } from "./gen/constants.js";
 
-import { Constants, NetworkData } from "./game/constants.js";
 import { Menu } from "./menu.js";
 
 
 declare global {
     interface Window {
         game: Menu;
+        debugMode: 0 | 1;
     }
 }
 
@@ -75,7 +75,7 @@ async function main() {
 
     PIXI.Assets.addBundle('core', manifest);
 
-    const loader = PIXI.Assets.loadBundle('core', updateProgress) as Promise<AssetBundle<NetworkData, Texture>>;
+    const loader = PIXI.Assets.loadBundle('core', updateProgress) as Promise<AssetBundle>;
     const fontLoader = font.load();
 
     const [core, _] = await Promise.all([loader, fontLoader]);
@@ -88,3 +88,4 @@ async function main() {
 }
 
 window.onload = () => main();
+window.debugMode = DebugMode.ENABLED;
