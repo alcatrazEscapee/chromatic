@@ -88,7 +88,7 @@ export class Menu {
             this.titleContainer.addChild(letter);
         }
 
-        if (window.debugMode && leftX !== Constants.STAGE_WIDTH - (x - 10)) {
+        if (DebugMode.ENABLED && leftX !== Constants.STAGE_WIDTH - (x - 10)) {
             throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
         }
 
@@ -283,7 +283,7 @@ export class Menu {
         try {
             localStorage.setItem(Strings.LOCAL_STORAGE_KEY, JSON.stringify(this.saveData));
         } catch (e) {
-            if (window.debugMode) {
+            if (DebugMode.ENABLED) {
                 throw e;
             }
         }
@@ -293,7 +293,7 @@ export class Menu {
         try {
             localStorage.setItem(Strings.LOCAL_STORAGE_KEY, '{version: 0}');
         } catch (e) {
-            if (window.debugMode) {
+            if (DebugMode.ENABLED) {
                 throw e;
             }
         }

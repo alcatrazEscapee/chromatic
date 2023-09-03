@@ -6,12 +6,13 @@ import { Menu } from "./menu.js";
 declare global {
     interface Window {
         game: Menu;
-        debugMode: 0 | 1;
     }
 }
 
 
 async function main() {
+
+    const start: number = DebugMode.ENABLED ? performance.now() : 0;
 
     // Font
     const font: FontFaceObserver = new FontFaceObserver(Fonts.ERAS_BOLD_ITC);
@@ -85,7 +86,8 @@ async function main() {
     progress.destroy();
 
     window.game = new Menu(app, core);
+
+    if (DebugMode.ENABLED) console.log(`Finished loading in ${performance.now() - start} ms`);
 }
 
 window.onload = () => main();
-window.debugMode = DebugMode.ENABLED;

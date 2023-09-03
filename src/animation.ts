@@ -5,6 +5,10 @@ import { Util } from "./game/util.js";
 
 export module Animations {
 
+    export function fadeIn(root: Container, onComplete: () => void) {
+        new FadeIn();
+    }
+
     export function fadeToBlack(root: Container, onHalf: () => void, onComplete: () => void) {
         new FadeToBlack(root, onHalf, onComplete);
     }
@@ -12,6 +16,11 @@ export module Animations {
     export function easeInOut(root: Container, start: Point, end: Point, onComplete: () => void): void {
         new EaseInOut(root, start, end, onComplete);
     }
+}
+
+
+class FadeIn {
+
 }
 
 

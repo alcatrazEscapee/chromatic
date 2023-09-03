@@ -1,5 +1,6 @@
 import type { Texture } from "pixi.js";
 
+
 type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, PressureId];
 
 type NetworkFlowAtInput<N, R>
@@ -14,10 +15,14 @@ type NetworkFlowAtOutput<N, R>
     | NetworkFlowAt<R, -1, DirectionId.UP>
     | NetworkFlowAt<N, R, DirectionId.RIGHT>;
 
+type NetworkFilterAt<X, Y> = [X, Y, DirectionId.UP | DirectionId.LEFT, ColorId];
+type NetworkFilters<R> = NetworkFilterAt<R, R>;
+
 interface NetworkPuzzleSized<Grid, N, N1, R> {
     size: Grid,
     inputs: NetworkFlowAtInput<N, R>[],
     outputs: NetworkFlowAtOutput<N1, R>[],
+    filters?: NetworkFilters<R>[],
 }
 
 export type NetworkPuzzle = { id: number } & (
