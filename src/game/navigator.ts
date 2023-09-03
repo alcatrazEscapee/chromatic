@@ -194,7 +194,7 @@ export module Navigator {
         }
 
         // Adjust the direction based on what we find, and possibly return null if the tile does not connect
-        const tile = map.tiles[move.x + width * move.y]!;
+        const tile = map.tiles[move.x + width * move.y];
         
         if (tile === null) {
             return null; // No tile here, cannot connect
@@ -262,7 +262,7 @@ export module Navigator {
         }
 
         const width = map.grid + Constants.GRID_ID_TO_WIDTH;
-        const tile = map.tiles[pos.x + width * pos.y]!;
+        const tile = map.tiles[pos.x + width * pos.y];
         
         if (tile === null) {
             return null; // No tile here, cannot connect

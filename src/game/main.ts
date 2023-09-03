@@ -81,7 +81,7 @@ export class Game {
         const tileButtonTextures = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
         for (let i = 0; i <= TileId.last; i++) {
             const tileId: TileId = i;
-            const texture: Texture = tileButtonTextures[i]!;
+            const texture: Texture = tileButtonTextures[i];
             const btn = new PIXI.Sprite(texture);
 
             btn.position.set(10 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66);
@@ -330,7 +330,7 @@ export class Game {
                 const pos = this.projectToGrid(event);
 
                 // Replace the previous tile, if it exists
-                const prevTile = this.tiles[pos.index]!;
+                const prevTile = this.tiles[pos.index];
                 if (prevTile !== null) {
                     this.tiles[pos.index] = null;
                     prevTile.destroy();
@@ -417,7 +417,7 @@ export class Game {
 
         if ((this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) && this.isInGrid(event)) {
             const pos = this.projectToGrid(event);
-            const tile: Tile | null = this.tiles[pos.index]!;
+            const tile: Tile | null = this.tiles[pos.index];
 
             if (tile !== null) {
                 tile.rotate();

@@ -70,7 +70,7 @@ export class Leak {
                 this.blobs.push(blob);
             } else {
                 // Replace the oldest blob instead
-                const oldBlob = this.blobs[this.oldest]!;
+                const oldBlob = this.blobs[this.oldest];
 
                 oldBlob.obj.destroy();
 

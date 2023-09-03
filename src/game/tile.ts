@@ -116,7 +116,7 @@ export class Tile {
             property = { color: null, pressure: 1 };
             this.properties[key] = property;
         }
-        return property!;
+        return property;
     }
 
     public update(palette: TexturePalette<Texture>): void {
@@ -132,7 +132,7 @@ export class Tile {
             case TileId.STRAIGHT:
                 {
                     const property: TileProperties = this.property(DirectionId.INTERNAL);
-                    const texture: PalettePipeTextures<Texture> = textures.straight[property.pressure - 1]!;
+                    const texture: PalettePipeTextures<Texture> = textures.straight[property.pressure - 1];
                     const straight = new PIXI.Sprite(texture.pipe);
     
                     straight.anchor.set(0.5);
@@ -144,7 +144,7 @@ export class Tile {
             case TileId.CURVE:
                 {
                     const property: TileProperties = this.property(DirectionId.INTERNAL);
-                    const texture: PalettePipeTextures<Texture> = textures.curve[property.pressure - 1]!;
+                    const texture: PalettePipeTextures<Texture> = textures.curve[property.pressure - 1];
                     const curve = new PIXI.Sprite(texture.pipe);
                 
                     curve.anchor.set(0.5);
@@ -158,8 +158,8 @@ export class Tile {
                     const propertyH: TileProperties = this.property(AxisId.HORIZONTAL);
                     const propertyV: TileProperties = this.property(AxisId.VERTICAL);
 
-                    const textureH: PalettePipeTextures<Texture> = textures.straight[propertyH.pressure - 1]!;
-                    const textureV: PalettePipeTextures<Texture> = textures.straight[propertyV.pressure - 1]!;
+                    const textureH: PalettePipeTextures<Texture> = textures.straight[propertyH.pressure - 1];
+                    const textureV: PalettePipeTextures<Texture> = textures.straight[propertyV.pressure - 1];
 
                     const horizontal = new PIXI.Sprite(textureH.pipe);
                     const vertical = new PIXI.Sprite(textureV.pipe);
@@ -192,9 +192,9 @@ export class Tile {
                     const propertyTop: TileProperties = this.property(DirectionId.UP);
                     const propertyRight: TileProperties = this.property(DirectionId.RIGHT);
 
-                    const textureLeft: PalettePipeTextures<Texture> = textures.port[propertyLeft.pressure - 1]!;
-                    const textureTop: PalettePipeTextures<Texture> = textures.port[propertyTop.pressure - 1]!;
-                    const textureRight: PalettePipeTextures<Texture> = textures.port[propertyRight.pressure - 1]!;
+                    const textureLeft: PalettePipeTextures<Texture> = textures.port[propertyLeft.pressure - 1];
+                    const textureTop: PalettePipeTextures<Texture> = textures.port[propertyTop.pressure - 1];
+                    const textureRight: PalettePipeTextures<Texture> = textures.port[propertyRight.pressure - 1];
 
                     const left = new PIXI.Sprite(textureLeft.pipe);
                     const top = new PIXI.Sprite(textureTop.pipe);
