@@ -173,6 +173,23 @@ test('updateFrom() apply color to (+) UP', () => {
     expect(map.at(0, 0, DirectionId.RIGHT).color).toBe(null);
 });
 
+test('updateFrom() apply color does not cross filter', () => {
+    const map = mapOf({
+        size: GridId._3x3,
+        inputs: [],
+        outputs: [],
+        filters: [[0, 0, DirectionId.LEFT, ColorId.BROWN]]
+    }, [
+        [0, 0, TileId.STRAIGHT, DirectionId.LEFT],
+        [1, 0, TileId.STRAIGHT, DirectionId.LEFT],
+    ]);
+
+    map.color(0, 0, DirectionId.INTERNAL, ColorId.RED);
+
+    expect(map.at(0, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
+    expect(map.at(1, 0, DirectionId.INTERNAL).color).toBe(null);
+});
+
 
 function empty(): Omit<NetworkPuzzle, 'id'> {
     return { size: GridId._5x5, inputs: [], outputs: [] };

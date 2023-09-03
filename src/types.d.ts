@@ -163,7 +163,7 @@ type PaletteTextures<T> = {
     [key in 'edge' | 'action']: Array4<T>
 };
 
-interface TexturePalette<T> extends Palette {
+interface _TexturePalette<T> extends Palette {
     grid: T,
     textures: PaletteTextures<T>
 }

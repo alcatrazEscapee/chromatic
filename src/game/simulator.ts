@@ -26,10 +26,18 @@ interface Satisfiable {
 // - That means we can define `public readonly` properties on `Impl`, which are necessary for the `Mutable<T>` array-clear hack
 // - But, since these properties are not exported, they are not exposed externally anywhere.
 export module Simulator {
+
+    export interface Callback {
+        readonly puzzle: NetworkPuzzle | null,
+        readonly tiles: (Tile | null)[],
+
+        onVictory(): void;
+    }
+
     export interface Kind {
         reset(): void;
-        init(palette: Palette, puzzle: NetworkPuzzle): void;
-        tick(delta: number, palette: Palette, tiles: (Tile | null)[]): void;
+        init(palette: Palette, callback: Callback): void;
+        tick(delta: number, palette: Palette, callback: Callback): void;
     }
 
     export function create(flowContainer: Container): Kind {
@@ -80,20 +88,19 @@ class Impl implements Simulator.Kind {
         mut.leaks = [];
     }
 
-    init(palette: Palette, puzzle: NetworkPuzzle): void {
-
+    init(palette: Palette, callback: Simulator.Callback): void {
         // We start flows for the edges, but those don't take a full step to complete
         // So, we start at a full step, minus just the time for those to complete
         this.delta = Constants.TICKS_PER_SIMULATOR_STEP * (1 - 20 / palette.tileWidth);
 
-        for (const [x, y, dir, color, pressure] of puzzle.inputs) {
+        for (const [x, y, dir, color, pressure] of callback.puzzle!.inputs) {
             this.queue.push({ x, y, dir, color, pressure });
 
             // Additionally, create and start input flows
             this.addEdgeFlow(palette, x, y, dir, color, pressure, true);
         }
 
-        for (const [x, y, dir, color, pressure] of puzzle.outputs) {
+        for (const [x, y, dir, color, pressure] of callback.puzzle!.outputs) {
             this.outputs.push({ x, y, dir, color, pressure, satisfied: false });
         }
 
@@ -102,7 +109,7 @@ class Impl implements Simulator.Kind {
         }
     }
 
-    tick(delta: number, palette: Palette, tiles: (Tile | null)[]) {
+    tick(delta: number, palette: Palette, callback: Simulator.Callback) {
 
         this.delta += delta;
         if (this.delta < Constants.TICKS_PER_SIMULATOR_STEP) {
@@ -115,161 +122,192 @@ class Impl implements Simulator.Kind {
         (this as Mutable<Impl>).queue = [];
 
         for (const inc of incoming) {
-            // Handle the incoming flow
-            // 1. Check if the incoming flow is valid for the tile. If not,
-            //    -> create a leak, and animate it.
-            // 2. If the flow is valid for the tile, compute the correct flow animation
-            //    -> Then enqueue a new flow for the outgoing
-            //    -> If the flow produces a invalid result (i.e. via action, or conflict), then also create a leak
 
-            if (!Util.isIn(inc.x, inc.y, 0, 0, palette.width)) {
-                // Check if we're satisfying any outputs
-                // If the output matches, create an output flow here
-                // Otherwise, we need to create an error
-                let found = false;
-                for (const out of this.outputs) {
-                    if (out.x == inc.x && out.y == inc.y && out.color == inc.color && out.pressure == inc.pressure && !out.satisfied) {
-                        out.satisfied = true;
-                        found = true;
-
-                        this.addEdgeFlow(palette, inc.x, inc.y, inc.dir, inc.color, inc.pressure, false);
-                        break;
-                    }
-                }
-                if (!found) {
-                    // No matching output found, so leak
-                    this.addLeakFrom(palette, inc);
-                } else {
-                    // Check if all are satisfied
-                    let win = true;
-                    for (const out of this.outputs) {
-                        if (!out.satisfied) {
-                            win = false;
-                            break;
-                        }
-                    }
-                    if (win) {
-                        // todo: do something here?
-                    }
-                }
+            // Try output first
+            if (this.tickOutputs(palette, inc, callback)) {
                 continue;
             }
             
+            // Otherwise, find the current tile
             const index = inc.x + palette.width * inc.y;
-            const tile = tiles[index];
+            const tile = callback.tiles[index];
             if (tile === null) {
                 // No tile = create a leak from the incoming source -> this location.
                 this.addLeakFrom(palette, inc);
                 continue;
             }
 
-            switch (tile.tileId) {
-                case TileId.STRAIGHT:
-                    // Straight pipes have a single flow capacity, and so use the `INTERNAL` direction
-                    if (!Util.sameAxis(tile.dir, inc.dir) || // Tile does not connect to the provided direction
-                        tile.hasFlow(DirectionId.INTERNAL) || // Or already has a flow
-                        !tile.canAccept(DirectionId.INTERNAL, inc) // Or cannot accept due to labels
-                    ) {
-                        this.addLeakFrom(palette, inc);
-                        continue;
-                    }
-                    tile.addFlow(DirectionId.INTERNAL, new StraightFlow(palette, inc.color, inc.pressure, inc.dir));
-                    this.enqueue(inc, inc.dir, inc.color, inc.pressure);
+            this.tickFilter(inc, callback); // Apply filters (may mutate the color of `inc`)
+            this.tickFlow(palette, inc, tile, index); // And then tick the flow through this tile
+        }
+    }
+
+    /**
+     * Checks if the incoming flow satisfies any outputs, handles it if so, and returns `true`
+     */
+    private tickOutputs(palette: Palette, inc: IncomingFlow, callback: Simulator.Callback): boolean {
+        if (!Util.isIn(inc.x, inc.y, 0, 0, palette.width)) {
+            // Check if we're satisfying any outputs
+            // If the output matches, create an output flow here
+            // Otherwise, we need to create an error
+            let found = false;
+            for (const out of this.outputs) {
+                if (out.x == inc.x && out.y == inc.y && out.color == inc.color && out.pressure == inc.pressure && !out.satisfied) {
+                    out.satisfied = true;
+                    found = true;
+
+                    this.addEdgeFlow(palette, inc.x, inc.y, inc.dir, inc.color, inc.pressure, false);
                     break;
-                case TileId.CURVE:
-                    // Curve tiles have a single flow capacity, and also use `INTERNAL` direction
-                    // Default curve tile is dir = LEFT, with but is able to accept DOWN and RIGHT
-                    const { dir: outDir, cw: outCw }  = Util.outputCurve(tile.dir, inc.dir);
-
-                    if (tile.hasFlow(DirectionId.INTERNAL) || // Tile does not connect
-                        !tile.canAccept(DirectionId.INTERNAL, inc) || // Or cannot accept due to labels
-                        outDir === -1 // Tile does not connect
-                    ) {
-                        // Tile already has a flow, which is always incompatible
-                        this.addLeakFrom(palette, inc);
-                        continue;
-                    }
-
-                    tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.pressure, inc.dir, outCw));
-                    this.enqueue(inc, outDir, inc.color, inc.pressure);
-                    break;
-                case TileId.CROSS:
-                    // Cross can support two flows - a straight, and a cross-under, so they use `AxisId` to differentiate them
-                    // The flow is keyed using the axis of the incoming flow
-                    // The type of flow (either straight, or cross-under) is set by checking axis == tileAxis
-
-                    const axis: AxisId = Util.dirToAxis(inc.dir);
-                    const tileAxis = Util.dirToAxis(tile.dir);
-
-                    if (tile.hasFlow(axis) || // Already has flow in this axis
-                        !tile.canAccept(axis === tileAxis ? AxisId.HORIZONTAL : AxisId.VERTICAL, inc) // Or cannot accept in this axis
-                    ) {
-                        // There is already a flow in this axis
-                        this.addLeakFrom(palette, inc);
-                        continue;
-                    }
-
-                    // Check the pressure of the straight part of the pipe, which is needed when drawing a cross flow
-                    const straightPressure = tile.property(AxisId.HORIZONTAL).pressure;
-
-                    tile.addFlow(axis, axis == tileAxis ? 
-                        new StraightFlow(palette, inc.color, inc.pressure, inc.dir) :
-                        new CrossUnderFlow(palette, inc.color, inc.pressure, inc.dir, straightPressure));
-                    this.enqueue(inc, inc.dir, inc.color, inc.pressure);
-                    break;
-                
-                // All actions have a default orientation of < ^ >, with default direction LEFT
-                // So cw(tile.dir) is the omitted direction on all actions.
-                //
-                // Otherwise, we index the flows by the direction **of the incoming or outgoing flow**
-                // So, we create an incoming independent of the rotation.
-                //
-                // We need to handle additive (+, ^) slightly differently from subtractive (-, v) here.
-                // In general, we follow the following steps:
-                //
-                // 1. Check if we're at the cw(dir) side, if so, create a leak
-                // 2. Check the number of flows on the incoming tile
-                //    -> == 3 (or == 2 for subtractive), means the tile is already populated, so leak the incoming flow
-                //    -> == 2 (additive only), perform the additive action (and add an outgoing flow)
-                //    -> == 1 (additive only), buffer the incoming flow
-                //    -> == 1 (subtractive only), perform the subtractive action (and add two outgoing flows)
-                //
-                // N.B. Since each input only connects to the action one-way, if we know we have < 3 flows, we know there will only
-                // be incoming flows to the action, therefor we don't need to check for overlapping flows.
-                default:
-                    if (Util.cw(tile.dir) == inc.dir) {
-                        this.addLeakFrom(palette, inc);
-                        continue;
-                    }
-
-                    const additive: boolean = tile.tileId === TileId.MIX || tile.tileId === TileId.UP;
-                    const total = tile.totalFlows();
-                    if (total >= (additive ? 3 : 2)) {
-                        this.addLeakFrom(palette, inc);
-                        continue;
-                    }
-
-                    // Create a flow into the action tile
-                    tile.addFlow(inc.dir, new PartialFlow(palette, inc.color, inc.pressure, inc.dir, true));
-                    
-                    if (additive && total === 0) {
-                        // No previous flows, so store this one in a buffer, and exit
-                        this.buffers[index] = inc;
-                        continue;
-                    }
-
-                    // Handle the action operation, either additive (with two inputs), or subtractive (with one)
-                    if (additive) {
-                        const other: IncomingFlow | null = this.buffers[index];
-
-                        if (other === null) throw new Error(`Flow at ${inc.x}, ${inc.y} is not buffered`);
-
-                        this.tickAdditive(palette, tile, inc, other);
-                    } else {
-                        this.tickSubtractive(palette, tile, inc);
-                    }
-                    break;
+                }
             }
+            if (!found) {
+                // No matching output found, so leak
+                this.addLeakFrom(palette, inc);
+            } else {
+                // Check if all are satisfied
+                let win = true;
+                for (const out of this.outputs) {
+                    if (!out.satisfied) {
+                        win = false;
+                        break;
+                    }
+                }
+                if (win) {
+                    callback.onVictory();
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Applies any existing filters to the incoming flow.
+     */
+    private tickFilter(inc: Mutable<IncomingFlow>, callback: Simulator.Callback): void {
+        const color = Util.filter(callback.puzzle!, inc);
+        if (color !== -1) {
+            inc.color = color;
+        }
+    }
+
+    /**
+     * Ticks the flow movement through the current pipe.
+     */
+    private tickFlow(palette: Palette, inc: IncomingFlow, tile: Tile, index: number): void {
+        // Handle the incoming flow
+        // 1. Check if the incoming flow is valid for the tile. If not,
+        //    -> create a leak, and animate it.
+        // 2. If the flow is valid for the tile, compute the correct flow animation
+        //    -> Then enqueue a new flow for the outgoing
+        //    -> If the flow produces a invalid result (i.e. via action, or conflict), then also create a leak
+    
+        switch (tile.tileId) {
+            case TileId.STRAIGHT:
+                // Straight pipes have a single flow capacity, and so use the `INTERNAL` direction
+                if (!Util.sameAxis(tile.dir, inc.dir) || // Tile does not connect to the provided direction
+                    tile.hasFlow(DirectionId.INTERNAL) || // Or already has a flow
+                    !tile.canAccept(DirectionId.INTERNAL, inc) // Or cannot accept due to labels
+                ) {
+                    this.addLeakFrom(palette, inc);
+                    return;
+                }
+                tile.addFlow(DirectionId.INTERNAL, new StraightFlow(palette, inc.color, inc.pressure, inc.dir));
+                this.enqueue(inc, inc.dir, inc.color, inc.pressure);
+                break;
+            case TileId.CURVE:
+                // Curve tiles have a single flow capacity, and also use `INTERNAL` direction
+                // Default curve tile is dir = LEFT, with but is able to accept DOWN and RIGHT
+                const { dir: outDir, cw: outCw }  = Util.outputCurve(tile.dir, inc.dir);
+
+                if (tile.hasFlow(DirectionId.INTERNAL) || // Tile does not connect
+                    !tile.canAccept(DirectionId.INTERNAL, inc) || // Or cannot accept due to labels
+                    outDir === -1 // Tile does not connect
+                ) {
+                    // Tile already has a flow, which is always incompatible
+                    this.addLeakFrom(palette, inc);
+                    return;
+                }
+
+                tile.addFlow(DirectionId.INTERNAL, new CurveFlow(palette, inc.color, inc.pressure, inc.dir, outCw));
+                this.enqueue(inc, outDir, inc.color, inc.pressure);
+                break;
+            case TileId.CROSS:
+                // Cross can support two flows - a straight, and a cross-under, so they use `AxisId` to differentiate them
+                // The flow is keyed using the axis of the incoming flow
+                // The type of flow (either straight, or cross-under) is set by checking axis == tileAxis
+
+                const axis: AxisId = Util.dirToAxis(inc.dir);
+                const tileAxis = Util.dirToAxis(tile.dir);
+
+                if (tile.hasFlow(axis) || // Already has flow in this axis
+                    !tile.canAccept(axis === tileAxis ? AxisId.HORIZONTAL : AxisId.VERTICAL, inc) // Or cannot accept in this axis
+                ) {
+                    // There is already a flow in this axis
+                    this.addLeakFrom(palette, inc);
+                    return;
+                }
+
+                // Check the pressure of the straight part of the pipe, which is needed when drawing a cross flow
+                const straightPressure = tile.property(AxisId.HORIZONTAL).pressure;
+
+                tile.addFlow(axis, axis == tileAxis ? 
+                    new StraightFlow(palette, inc.color, inc.pressure, inc.dir) :
+                    new CrossUnderFlow(palette, inc.color, inc.pressure, inc.dir, straightPressure));
+                this.enqueue(inc, inc.dir, inc.color, inc.pressure);
+                break;
+            
+            // All actions have a default orientation of < ^ >, with default direction LEFT
+            // So cw(tile.dir) is the omitted direction on all actions.
+            //
+            // Otherwise, we index the flows by the direction **of the incoming or outgoing flow**
+            // So, we create an incoming independent of the rotation.
+            //
+            // We need to handle additive (+, ^) slightly differently from subtractive (-, v) here.
+            // In general, we follow the following steps:
+            //
+            // 1. Check if we're at the cw(dir) side, if so, create a leak
+            // 2. Check the number of flows on the incoming tile
+            //    -> == 3 (or == 2 for subtractive), means the tile is already populated, so leak the incoming flow
+            //    -> == 2 (additive only), perform the additive action (and add an outgoing flow)
+            //    -> == 1 (additive only), buffer the incoming flow
+            //    -> == 1 (subtractive only), perform the subtractive action (and add two outgoing flows)
+            //
+            // N.B. Since each input only connects to the action one-way, if we know we have < 3 flows, we know there will only
+            // be incoming flows to the action, therefor we don't need to check for overlapping flows.
+            default:
+                if (Util.cw(tile.dir) == inc.dir) {
+                    this.addLeakFrom(palette, inc);
+                    return;
+                }
+
+                const additive: boolean = tile.tileId === TileId.MIX || tile.tileId === TileId.UP;
+                const total = tile.totalFlows();
+                if (total >= (additive ? 3 : 2)) {
+                    this.addLeakFrom(palette, inc);
+                    return;
+                }
+
+                // Create a flow into the action tile
+                tile.addFlow(inc.dir, new PartialFlow(palette, inc.color, inc.pressure, inc.dir, true));
+                
+                if (additive && total === 0) {
+                    // No previous flows, so store this one in a buffer, and exit
+                    this.buffers[index] = inc;
+                    return;
+                }
+
+                // Handle the action operation, either additive (with two inputs), or subtractive (with one)
+                if (additive) {
+                    const other: IncomingFlow | null = this.buffers[index];
+
+                    if (other === null) throw new Error(`Flow at ${inc.x}, ${inc.y} is not buffered`);
+
+                    this.tickAdditive(palette, tile, inc, other);
+                } else {
+                    this.tickSubtractive(palette, tile, inc);
+                }
+                break;
         }
     }
 

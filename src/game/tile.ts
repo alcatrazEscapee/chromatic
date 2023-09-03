@@ -1,6 +1,6 @@
 import type { Container, Texture } from "pixi.js";
 
-import { AxisId, ColorId, DirectionId, TileId } from "../gen/constants.js";
+import { AxisId, ColorId, DirectionId, TileId, type TexturePalette } from "../gen/constants.js";
 import { Flow } from "./flow.js";
 import { Util } from "./util.js";
 
@@ -119,7 +119,7 @@ export class Tile {
         return property;
     }
 
-    public update(palette: TexturePalette<Texture>): void {
+    public update(palette: TexturePalette): void {
         const textures: PaletteTextures<Texture> = palette.textures;
 
         // Clear any existing children

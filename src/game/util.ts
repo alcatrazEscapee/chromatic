@@ -1,17 +1,39 @@
-import type { Container, Texture } from "pixi.js";
+import type { ColorSource, Container, Texture } from "pixi.js";
 
-import { AssetBundle, AxisId, ColorId, DirectionId } from "../gen/constants.js";
+import { AssetBundle, AxisId, ColorId, DirectionId, NetworkPuzzle } from "../gen/constants.js";
+
 
 
 export module Util {
-    export const RAINBOW: ReadonlyArray<string> = ['#f00', '#f60', '#ff0', '#090', '#066', '#00f', '#909'];
-    export const COLORS: Readonly<{[_ in ColorId]: string}> & ReadonlyArray<string> = [
-        '#f00', '#00f', '#ff0',
-        '#f60', '#909', '#090',
-        '#630',
-        '#6f0', '#066',
-        '#c60', '#fc3',
-        '#303', '#903'
+
+    /** Exported for testing only */
+    export const enum Colors {
+        RED = 0xff0000,
+        YELLOW = 0xffff00,
+        BLUE = 0x0000ff,
+    
+        ORANGE = 0xff6600,
+        PURPLE = 0x990099,
+        GREEN = 0x009900,
+    
+        BROWN = 0x663300,
+    
+        LIME = 0x66ff00,
+        CYAN = 0x006666,
+        AMBER = 0xcc6600,
+        GOLD = 0xffcc33,
+        VIOLET = 0x330033,
+        MAGENTA = 0x990033,
+    }
+
+    export const RAINBOW: ReadonlyArray<ColorSource> = [Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.CYAN, Colors.BLUE, Colors.PURPLE];
+    export const COLORS: Readonly<{[_ in ColorId]: ColorSource}> & ReadonlyArray<ColorSource> = [
+        Colors.RED, Colors.BLUE, Colors.YELLOW,
+        Colors.ORANGE, Colors.PURPLE, Colors.GREEN,
+        Colors.BROWN,
+        Colors.LIME, Colors.CYAN,
+        Colors.AMBER, Colors.GOLD,
+        Colors.VIOLET, Colors.MAGENTA,
     ];
 
     export const ZERO: Readonly<Point> = Object.freeze({ x: 0, y: 0 });
@@ -221,6 +243,22 @@ export module Util {
             }
             if (r == left && m == mix) {
                 return l;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * Given a puzzle's set of filters, and a flow (x, y, and incoming direction), this computes a color, if filtered, otherwise returns -1.
+     */
+    export function filter(filters: Pick<NetworkPuzzle, 'filters'>, flow: { x: number, y: number, dir: DirectionId }): ColorId | -1 {
+        for (const [x, y, dir, color] of filters?.filters ?? []) {
+            // Filters will be either in UP or LEFT directions, so we need to check both this, and the flipped version
+            const { x: xAdj, y: yAdj } = Util.move({ x, y }, dir, -1);
+            if ((x === flow.x && y === flow.y && dir === flow.dir) ||
+                (xAdj === flow.x && yAdj == flow.y && dir === Util.flip(flow.dir))
+            ) {
+                return color;
             }
         }
         return -1;
