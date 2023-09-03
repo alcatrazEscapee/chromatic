@@ -7,13 +7,12 @@
 ### Game
 
 - Add Filters
-    - Data rewrite needs to include filters in output
     - Graphics for filters in puzzle
-    - Filter support in simulator
-    - Break label placement (color only) in navigator
 - Add tap on pipe input/output to pop up modal tooltips
 - When victory happens, raise a modal with 'Victory', 'Next' button, 'Close' button and 'Menu' button
 - Add button to return to main menu from main game
+- Click and drag on existing pipes to move them, which functions as a replace + drag pipe
+    - Click and drag also keeps labels?
 
 ### Graphics
 

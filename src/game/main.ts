@@ -1,6 +1,6 @@
 import type { Texture, Container, FederatedPointerEvent, Sprite, DisplayObject } from 'pixi.js';
 
-import { AssetBundle, AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId } from '../gen/constants.js';
+import { AssetBundle, AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId, type TexturePalette } from '../gen/constants.js';
 import { Util } from './util.js';
 import { Tile } from './tile.js';
 import { Simulator } from './simulator.js';
@@ -165,7 +165,7 @@ export class Game {
     public init(puzzle: NetworkPuzzle): void {
         this.grid = puzzle.size;
 
-        const palette: TexturePalette<Texture> = this.palettes[this.grid];
+        const palette: TexturePalette = this.palettes[this.grid];
 
         const grid = new PIXI.Sprite(palette.grid);
         grid.position.set(Constants.GRID_LEFT, Constants.GRID_TOP);
@@ -264,6 +264,10 @@ export class Game {
 
         this.puzzle = null;
         this.state = StateId.UNLOADED;
+    }
+
+    public onVictory(): void {
+
     }
 
     private grabTile(event: FederatedPointerEvent, tileId: TileId, texture: Texture): void {
@@ -433,7 +437,7 @@ export class Game {
             this.btnStop.alpha = 1.0;
 
             this.state = StateId.SIMULATION;
-            this.simulator.init(this.palettes[this.grid], this.puzzle!);
+            this.simulator.init(this.palettes[this.grid], this);
             PIXI.Ticker.shared.add(this.onSimulatorTick, this);
         }
     }
@@ -482,7 +486,7 @@ export class Game {
     }
 
     private onSimulatorTick(delta: number): void {
-        this.simulator.tick(delta, this.palettes[this.grid], this.tiles);
+        this.simulator.tick(delta, this.palettes[this.grid], this);
     }
 
     /** Returns true if the given position is within the grid */

@@ -162,6 +162,16 @@ export module Navigator {
 
     function recursiveUpdate(map: Map, pos: Position | null, copyFrom: StrictReadonly<TileProperties>): void {
         while (pos !== null) {
+            // If we crossed a filter, then we need to not propagate color
+            // `dir` is in an outgoing convention, but we need to test in an incoming convention, on the _next_ tile.
+            if (pos !== null) {
+                const adj = { x: pos.x, y: pos.y, dir: pos.dir };
+                Util.move(adj, pos.dir);
+                if (Util.filter(map.puzzle!, adj) !== -1) {
+                    copyFrom = { pressure: copyFrom.pressure, color: null };
+                }
+            }
+
             pos = traverse(map, pos);
 
             const property = access(map, pos, true);
@@ -290,7 +300,9 @@ export module Navigator {
     }
 
     function resolveFrom(self: TileProperties, other: StrictReadonly<TileProperties>): void {
-        self.color = other.color!;
+        if (other.color !== null) {
+            self.color = other.color!;
+        }
         self.pressure = other.pressure!;
     }
 

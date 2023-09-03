@@ -3,84 +3,100 @@ import { IncomingFlow, Simulator } from "../src/game/simulator";
 import { Leak } from "../src/game/leak";
 import { Tile } from "../src/game/tile";
 import { Util } from "../src/game/util";
+import { Navigator } from "../src/game/navigator";
 
 
 test('simulator id=0 -> leak from input', () => {
     const map = mapOf(0);
 
-    map.run(1);
-
-    expect(map.victory()).toBe(false);
+    expect(map.run()).toBe(1);
+    expect(map.victory).toBe(false);
     expect(map.sim.leaks).toStrictEqual([new Leak([ColorId.BLUE], {x: 1, y: 0}, 120)]);
 });
 
 test('simulator id=0 -> leak from straight', () => {
     const map = mapOf(0);
 
-    map.tile(0, 1, TileId.STRAIGHT);
-    map.run(2);
+    map.place1(0, 1, TileId.STRAIGHT);
 
-    expect(map.victory()).toBe(false);
+    expect(map.run()).toBe(2);
+    expect(map.victory).toBe(false);
     expect(map.sim.leaks).toStrictEqual([new Leak([ColorId.BLUE], {x: 1, y: 0}, 120)]);
 });
 
 test('simulator id=0 -> leak into straight perpendicular', () => {
     const map = mapOf(0);
 
-    map.tiles([
+    map.place([
         [0, 1, TileId.STRAIGHT, DirectionId.LEFT],
         [1, 1, TileId.CURVE, DirectionId.LEFT],
         [1, 0, TileId.CURVE, DirectionId.DOWN],
         [0, 0, TileId.CURVE, DirectionId.RIGHT],
     ]);
-    map.run(5);
 
-    expect(map.victory()).toBe(false);
+    expect(map.run()).toBe(5);
+    expect(map.victory).toBe(false);
     expect(map.sim.leaks).toStrictEqual([new Leak([ColorId.BLUE], {x: 0, y: 1}, 120)]);
 });
 
 test('simulator id=0 -> straight path wrong label', () => {
     const map = mapOf(0);
 
-    map.tiles([
+    map.place([
         [0, 1, TileId.STRAIGHT, DirectionId.LEFT],
         [1, 1, TileId.STRAIGHT, DirectionId.LEFT],
         [2, 1, TileId.STRAIGHT, DirectionId.LEFT],
     ])
     map.label(1, 1, DirectionId.INTERNAL, { color: ColorId.RED });
-    map.run(4);
 
-    expect(map.victory()).toBe(false);
+    expect(map.run()).toBe(1);
+    expect(map.victory).toBe(false);
     expect(map.sim.leaks).toStrictEqual([new Leak([ColorId.BLUE], {x: 1, y: 0}, 120)]);
 });
 
 test('simulator id=0 -> straight path victory', () => {
     const map = mapOf(0);
 
-    map.tiles([
+    map.place([
         [0, 1, TileId.STRAIGHT, DirectionId.LEFT],
         [1, 1, TileId.STRAIGHT, DirectionId.LEFT],
         [2, 1, TileId.STRAIGHT, DirectionId.LEFT],
     ])
-    map.run(4);
 
-    expect(map.victory()).toBe(true);
+    expect(map.run()).toBe(4);
+    expect(map.victory).toBe(true);
+});
+
+test('simulator id=80 -> victory, filter works', () => {
+    const map = mapOf(80);
+
+    map.place([
+        [0, 0, TileId.CURVE, DirectionId.RIGHT],
+        [1, 0, TileId.UNMIX, DirectionId.DOWN],
+        [0, 1, TileId.CURVE, DirectionId.UP],
+        [1, 1, TileId.MIX, DirectionId.DOWN],
+        [1, 2, TileId.STRAIGHT, DirectionId.UP],
+    ]);
+    map.label(0, 0, DirectionId.INTERNAL, { color: ColorId.RED });
+
+    expect(map.run()).toBe(6);
+    expect(map.victory).toBe(true);
 });
 
 
 
-interface MapOf {
-    puzzle: NetworkPuzzle,
-    sim: Simulator.Kind & {
+interface MapOf extends Simulator.Callback, Navigator.Map {
+    readonly puzzle: NetworkPuzzle,
+    readonly sim: Simulator.Kind & {
         leaks: Leak[],
         outputs: (IncomingFlow & { satisfied: boolean })[],
     },
+    readonly victory: boolean,
 
-    tiles(tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): void;
-    tile(x: number, y: number, tileId: Exclude<TileId, TileId.EMPTY>, rot?: DirectionId): void;
+    place(tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): void;
+    place1(x: number, y: number, tileId: Exclude<TileId, TileId.EMPTY>, rot?: DirectionId): void
     label(x: number, y: number, key: DirectionId, label?: { color?: ColorId | null, pressure?: 1 | 2 | 3 | 4 }): void;
-    run(n: number): void;
-    victory(): boolean;
+    run(): number;
 }
 
 function mapOf(puzzle: NetworkPuzzle | number): MapOf {
@@ -90,39 +106,46 @@ function mapOf(puzzle: NetworkPuzzle | number): MapOf {
 
     const width = puzzle.size + 3;
     const palette = Util.buildPalettes({} as any, false)[puzzle.size];
-    const map: MapOf & { _tiles: (Tile | null)[] } = {
+    const map: MapOf = {
+        grid: puzzle.size,
         puzzle: puzzle,
         sim: Simulator.create(new (global as any).PIXI.Container()) as any,
+        victory: false,
+        tiles: Util.nulls(width * width),
 
-        _tiles: Util.nulls(width * width),
-
-        tiles(tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): void {
+        place(tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): void {
             for (const [x, y, tileId, rot] of tiles) {
-                map.tile(x, y, tileId, rot);
+                map.place1(x, y, tileId, rot);
             }
         },
-        tile(x: number, y: number, tileId: Exclude<TileId, TileId.EMPTY>, rot: DirectionId = DirectionId.LEFT): void {
-            map._tiles[x + y * width] = new Tile(tileId);
+        place1(x: number, y: number, tileId: Exclude<TileId, TileId.EMPTY>, rot: DirectionId = DirectionId.LEFT): void {
+            map.tiles[x + y * width] = new Tile(tileId);
             for (let i = 0; i < rot; i++) {
-                map._tiles[x + y * width]?.rotate();
+                map.tiles[x + y * width]?.rotate();
             }
         },
         label(x: number, y: number, key: DirectionId, label?: { color?: ColorId | null, pressure?: 1 | 2 | 3 | 4 }) {
-            const property = map._tiles[x + width * y]!.property(key);
+            const tile = map.tiles[x + width * y]!;
+            const property = tile.property(key);
+            
             if (label?.color !== undefined) property.color = label.color;
             if (label?.pressure !== undefined) property.pressure = label.pressure;
+            
+            Navigator.updateFrom(map, { x, y }, tile, key);
         },
-        run(n: number): void {
-            for (let i = 0; i < n; i++) map.sim.tick(40, palette, map._tiles);
+        run(): number {
+            let n: number = 0;
+            for (; (map.sim as any).queue.length > 0; n++) {
+                map.sim.tick(40, palette, map);
+            }
+            return n;
         },
-        victory(): boolean {
-            for (const out of map.sim.outputs)
-                if (!out.satisfied)
-                    return false;
-            return true;
-        }
+        onVictory(): void {
+            (map as any).victory = true;
+        },
+        updateTile(): void {},
     };
 
-    map.sim.init(palette, puzzle);
+    map.sim.init(palette, map);
     return map;
 }

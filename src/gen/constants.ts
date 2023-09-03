@@ -36,6 +36,7 @@ export interface NetworkData {
 };
 
 export type AssetBundle = _AssetBundle<NetworkData, Texture>;
+export type TexturePalette = _TexturePalette<Texture>;
 
 
 export const enum TileId {
