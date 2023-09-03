@@ -38,6 +38,8 @@ WEB_JSON    := $(WEB)/lib/puzzles.json
 
 DEBUG =
 
+FORCE :
+
 # Build (debug mode)
 # Includes .js.map, copies the /src/ directory for debugger use
 # Sets `DebugMode.ENABLED = 1`
@@ -75,7 +77,7 @@ clean-release :
 
 
 .PHONY : test
-test :
+test : $(DATA_OUT) FORCE
 	@npx jest
 
 
