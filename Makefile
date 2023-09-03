@@ -5,6 +5,11 @@ FFO         := fontfaceobserver-2.1.0
 WEB         := ../Website/public/chromatic/
 GEN         := src/gen
 GEN_DEBUG   := $(GEN)/debug.ts
+GEN_CONSTS  := $(GEN)/constants.ts
+
+PY_DATA     := scripts/data.py
+PY_OVERLAY  := scripts/overlay.py
+PY_SPRITES  := scripts/spritesheet.py
 
 TS_REAL_SRC := $(shell find src -name '*.ts' -not -name '*.d.ts' -not -wholename 'src/gen/\*')
 TS_MAIN_SRC := $(shell find src -name '*.ts' -not -name '*.d.ts')
@@ -21,6 +26,9 @@ PNG_OVER    := $(shell find art-work/pipe -name '*overlay*.png')
 
 PIPE_IN     := 72 90 120
 PIPE_OUT    := $(PIPE_IN:%=art/sheets/pipe_%.png) $(PIPE_IN:%=art/sheets/pipe_%@1x.png.json)
+
+DATA_IN     := $(shell find data -name '\*.json')
+DATA_OUT    := out/puzzles.json
 
 WEB_JS      := $(JS_REAL_OUT:out/%.js=$(WEB)/lib/%.js) $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(FFO).js
 WEB_JS_MAP  := $(JS_MAP_OUT:out/%.js.map=$(WEB)/lib/%.js.map) 
@@ -70,10 +78,6 @@ clean-release :
 test :
 	@npx jest
 
-.PHONY : overlay
-overlay :
-	@python scripts/overlay.py --scan
-
 
 # Writes gen/debug.ts
 # Uses `grep` to not overwrite if not source changed, to prevent needing to recompile TS on each build
@@ -89,8 +93,8 @@ $(WEB_ART) : $(PIPE_OUT)
 	@rm -rf $(WEB_ART)
 	@cp -r art $(WEB)
 
-$(WEB_JSON) : data-compressed.json
-	@cp data-compressed.json $(WEB_JSON)
+$(WEB_JSON) : $(DATA_OUT)
+	@cp $(DATA_OUT) $(WEB_JSON)
 
 $(WEB)/lib/%.js : ./lib/%.min.js
 	@mkdir -p $(@D)
@@ -109,20 +113,27 @@ $(JS_MAIN_OUT) $(JS_MAP_OUT) &: $(TS_SRC) package-lock.json tsconfig.json
 	@printf "Compiling tsc...\n"
 	@npx tsc
 
-$(PIPE_OUT) &: scripts/spritesheet.py $(PNG_IN)
+$(PIPE_OUT) &: $(PNG_IN) $(PY_SPRITES)
 	@printf "Packing sprites...\n"
 	@mkdir -p art/sheets
-	@python scripts/spritesheet.py --src art-work/pipe/72 --dest art/sheets/ --key pipe_72
-	@python scripts/spritesheet.py --src art-work/pipe/90 --dest art/sheets/ --key pipe_90
-	@python scripts/spritesheet.py --src art-work/pipe/120 --dest art/sheets/ --key pipe_120
+	@python $(PY_SPRITES) --src art-work/pipe/72 --dest art/sheets/ --key pipe_72
+	@python $(PY_SPRITES) --src art-work/pipe/90 --dest art/sheets/ --key pipe_90
+	@python $(PY_SPRITES) --src art-work/pipe/120 --dest art/sheets/ --key pipe_120
 
+
+# make overlay := prints out scan results
+#
 # Possible options
 # --overlay72=5 --overlay90=2 --overlay120=8
 # --overlay72=11 --overlay90=11 --overlay120=16
-$(PNG_OVER) &: scripts/overlay.py
-	@printf "Generating overlays...\n"
-	@python scripts/overlay.py --overlay72=11 --overlay90=11 --overlay120=16
+.PHONY : overlay
+overlay :
+	@python $(PY_OVERLAY) --scan
 
-data-compressed.json data-rewrite.json &: scripts/rewrite.py data.json
+$(PNG_OVER) &: $(PY_OVERLAY)
+	@printf "Generating overlays...\n"
+	@python $(PY_OVERLAY) --overlay72=11 --overlay90=11 --overlay120=16
+
+$(DATA_OUT) : $(DATA_IN) $(GEN_CONSTS) $(PY_DATA)
 	@printf "Writing puzzles.json..."
-	@python scripts/rewrite.py
+	@python $(PY_DATA)

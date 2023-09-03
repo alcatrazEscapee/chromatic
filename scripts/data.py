@@ -1,3 +1,4 @@
+import os
 import re
 import json
 
@@ -45,7 +46,7 @@ def export_data():
             ],
         }
 
-        if pz_data['filters']:
+        if 'filters' in pz_data and pz_data['filters']:
             pz['filters'] = [
                 [inp['x'], inp['y'], ENUMS[inp['dir']], ENUMS[inp['color']]]
                 for inp in pz_data['filters']
@@ -53,6 +54,7 @@ def export_data():
 
         output['puzzles'][index] = pz
     
+    os.makedirs('out', exist_ok=True)
     with open('./out/puzzles.json', 'w', encoding='utf-8') as f:
         json.dump(output, f)
 
