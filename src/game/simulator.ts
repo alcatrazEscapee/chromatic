@@ -140,7 +140,7 @@ class Impl implements Simulator.Kind {
                     // No matching output found, so leak
                     this.addLeakFrom(palette, inc);
                 } else {
-                    // Check if all are satisfied!
+                    // Check if all are satisfied
                     let win = true;
                     for (const out of this.outputs) {
                         if (!out.satisfied) {
@@ -156,7 +156,7 @@ class Impl implements Simulator.Kind {
             }
             
             const index = inc.x + palette.width * inc.y;
-            const tile = tiles[index]!;
+            const tile = tiles[index];
             if (tile === null) {
                 // No tile = create a leak from the incoming source -> this location.
                 this.addLeakFrom(palette, inc);
@@ -260,7 +260,9 @@ class Impl implements Simulator.Kind {
 
                     // Handle the action operation, either additive (with two inputs), or subtractive (with one)
                     if (additive) {
-                        const other: IncomingFlow = this.buffers[index]!;
+                        const other: IncomingFlow | null = this.buffers[index];
+
+                        if (other === null) throw new Error(`Flow at ${inc.x}, ${inc.y} is not buffered`);
 
                         this.tickAdditive(palette, tile, inc, other);
                     } else {

@@ -187,7 +187,7 @@ export class Menu {
 
         // Tick title rainbow colors
         for (let i = 0; i < this.titleContainer.children.length; i++) {
-            const color = Util.RAINBOW[Math.floor((this.delta / 8 + i) % Util.RAINBOW.length)]!;
+            const color = Util.RAINBOW[Math.floor((this.delta / 8 + i) % Util.RAINBOW.length)];
             (this.titleContainer.children[i] as Text).tint = color;
         }
     }
@@ -313,7 +313,7 @@ export class Menu {
 
     private enterGame(puzzleId: number): void {
         this.app.stage.addChildAt(this.gameContainer, 0);
-        this.game.init(this.core.puzzles.puzzles[puzzleId]!);
+        this.game.init(this.core.puzzles.puzzles[puzzleId]);
     }
 
     private leaveGame(): void {

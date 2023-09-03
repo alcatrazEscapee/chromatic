@@ -152,7 +152,7 @@ export module Util {
     }
 
     export function choose<T>(array: T[]): T {
-        return array[Math.floor(Math.random() * array.length)]!;
+        return array[Math.floor(Math.random() * array.length)];
     }
 
     export function nulls<T>(n: number): (T | null)[] {
@@ -174,7 +174,7 @@ export module Util {
             bitset.push(0);
         }
 
-        bitset[wordIndex]! |= (1 << bitIndex);
+        bitset[wordIndex] |= (1 << bitIndex);
     }
 
     /** Get the value of the bit at `index`. If the index is out of range, it is assumed to be false. */
@@ -182,7 +182,7 @@ export module Util {
         const wordIndex: number = index >> Constants.BITSET_SHIFT;
         const bitIndex: number = index & Constants.BITSET_MASK;
 
-        return wordIndex < bitset.length ? ((bitset[wordIndex]! >> bitIndex) & 0b1) == 0b1 : false;
+        return wordIndex < bitset.length ? ((bitset[wordIndex] >> bitIndex) & 0b1) == 0b1 : false;
     }
 
 
