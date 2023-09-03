@@ -253,7 +253,7 @@ export class Game {
     public teardown(): void {
 
         if (this.state === StateId.SIMULATION) {
-            this.onStop(null!);
+            this.onStop(null);
         }
 
         Util.clear(this.tilesContainer);
@@ -438,7 +438,7 @@ export class Game {
         }
     }
 
-    private onStop(_: FederatedPointerEvent): void {
+    private onStop(_: FederatedPointerEvent | null): void {
         if (this.state === StateId.SIMULATION) {
             this.btnPlay.alpha = 1.0;
             this.btnStop.alpha = 0.5;

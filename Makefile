@@ -4,12 +4,13 @@ PIXI        := pixi-7.2.4
 FFO         := fontfaceobserver-2.1.0
 WEB         := ../Website/public/chromatic/
 GEN         := src/gen
+GEN_DEBUG   := $(GEN)/debug.ts
 
 TS_REAL_SRC := $(shell find src -name '*.ts' -not -name '*.d.ts' -not -wholename 'src/gen/\*')
 TS_MAIN_SRC := $(shell find src -name '*.ts' -not -name '*.d.ts')
 TS_TYPE_SRC := $(shell find src -name '*.d.ts')
 
-TS_SRC      := $(TS_MAIN_SRC) $(TS_REAL_SRC) package-lock.json tsconfig.json
+TS_SRC      := $(TS_MAIN_SRC) $(TS_REAL_SRC) $(GEN_DEBUG) package-lock.json tsconfig.json
 
 JS_REAL_OUT := $(TS_REAL_SRC:src/%.ts=out/%.js)
 JS_MAIN_OUT := $(TS_MAIN_SRC:src/%.ts=out/%.js)
@@ -27,47 +28,59 @@ WEB_TS      := $(WEB)/src
 WEB_ART	    := $(WEB)/art
 WEB_JSON    := $(WEB)/lib/puzzles.json
 
+DEBUG =
 
 # Build (debug mode)
 # Includes .js.map, copies the /src/ directory for debugger use
-# Enables `window.debugMode`
+# Sets `DebugMode.ENABLED = 1`
 .PHONY : build
-build : msg-debug $(WEB_ART) $(WEB_JS) $(WEB_JSON) $(WEB_JS_MAP) $(WEB_TS)
+build : build-debug $(GEN_DEBUG) $(WEB_ART) $(WEB_JS) $(WEB_JSON) $(WEB_JS_MAP) $(WEB_TS)
 
 # Build (release mode)
 # Depends on `clean`
 # Does not include any .js.map or /src/
-# Disables `window.debugMode`
+# Sets `DebugMode.ENABLED = 0`
 .PHONY : release
-release : clean msg-release $(WEB_ART) $(WEB_JS) $(WEB_JSON)
+release : clean-release build-release $(GEN_DEBUG) $(WEB_ART) $(WEB_JS) $(WEB_JSON)
 
-.PHONY : msg-debug
-msg-debug :
+.PHONY : build-debug
+build-debug :
 	@printf "Building... (debug mode)\n"
-	@printf "const enum DebugMode { ENABLED = 1 }\n" > $(GEN)/debug.ts
+	$(eval DEBUG = 1)
 
-.PHONY : msg-release
-msg-release :
+.PHONY : build-release
+build-release :
 	@printf "Building... (release mode)\n"
-	@printf "const enum DebugMode { ENABLED = 0 }\n" > $(GEN)/debug.ts
+	$(eval DEBUG = 0)
+
+.PHONY : clean
+clean : clean-release
+	@rm -rf out
+	@rm -rf art/sheets
+
+.PHONY : clean-release
+clean-release :
+	@printf "Clean...\n"
+	@rm -rf $(WEB_ART)
+	@rm -rf $(WEB)/lib
+	@rm -rf $(WEB)/src
+
 
 .PHONY : test
 test :
 	@npx jest
 
-.PHONY : clean
-clean :
-	@printf "Clean...\n"
-	@rm -rf out
-	@rm -rf art/sheets
-	@rm -rf $(WEB_ART)
-	@rm -rf $(WEB)/lib
-	@rm -rf $(WEB)/src
-
 .PHONY : overlay
 overlay :
 	@python scripts/overlay.py --scan
 
+
+# Writes gen/debug.ts
+# Uses `grep` to not overwrite if not source changed, to prevent needing to recompile TS on each build
+$(GEN_DEBUG) : 
+	@if ! grep $(DEBUG) $(GEN_DEBUG) -q -s ; then \
+		printf "const enum DebugMode { ENABLED = $(DEBUG) }\n" > $(GEN_DEBUG) ; \
+	fi
 
 $(WEB_TS) : $(TS_SRC)
 	@cp -r src $(WEB)/

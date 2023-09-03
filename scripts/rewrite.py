@@ -39,6 +39,11 @@ UP = 'up'
 RIGHT = 'right'
 DOWN = 'down'
 
+DIR_NAME_FILTER = {
+    'V': UP,
+    'H': LEFT
+}
+
 DIR_NAME_INVERSE = {
     LEFT: RIGHT,
     RIGHT: LEFT,
@@ -103,6 +108,10 @@ def convert_pos_to_output(size, pos):
     out['dir'] = DIR_NAME_INVERSE[out['dir']]
     return out
 
+def convert_pos_to_filter(size, pos):
+    # Converts a pos to a filter
+    # Positions are internal, here
+    return { 'x': int(pos) % size, 'y': int(pos) // size }
 
 
 
@@ -149,11 +158,12 @@ for pz_data in data['puzzle']:
         } for p in pout_data],
     }
     if pf_data:
+        for p in pf_data:
+            assert int(p['p1']) < int(p['p2'])
         pz['filters'] = [{
-            'pos1': int(p['p1']),  # todo: figure out how these were done
-            'pos2': int(p['p2']),
             'color': COLOR_OLD_TO_NAME[p['col']],
-            'direction': p['dir'],
+            'dir': DIR_NAME_FILTER[p['dir']],
+            **convert_pos_to_filter(size, p['p1']),
         } for p in pf_data]
     
     rewrite['puzzles'].append(pz)

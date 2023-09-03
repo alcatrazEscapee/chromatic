@@ -13,6 +13,7 @@
     - Break label placement (color only) in navigator
 - Add tap on pipe input/output to pop up modal tooltips
 - When victory happens, raise a modal with 'Victory', 'Next' button, 'Close' button and 'Menu' button
+- Add button to return to main menu from main game
 
 ### Graphics
 
@@ -27,4 +28,6 @@
 
 ### Bugs
 
-- NONE
+- Use `bunny.cursor = 'pointer';` to make all buttons that involve drag actually have cursors
+    - Also use this in main menu when swiping?
+- Use `pointerupoutside` event to break dragging operations
