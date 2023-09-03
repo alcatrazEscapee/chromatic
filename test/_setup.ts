@@ -31,4 +31,4 @@ class Point {
 };
 
 // Load puzzles
-(global as any).PUZZLES = JSON.parse(fs.readFileSync('./data-compressed.json', 'utf8')).puzzles;
+(global as any).PUZZLES = JSON.parse(fs.readFileSync('./out/puzzles.json', 'utf8')).puzzles;
