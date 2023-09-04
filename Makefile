@@ -4,8 +4,13 @@ PIXI        := pixi-7.2.4
 FFO         := fontfaceobserver-2.1.0
 WEB         := ../Website/public/chromatic/
 GEN         := src/gen
+TEX			:= art/textures
+PIPE		:= art/pipe
 GEN_DEBUG   := $(GEN)/debug.ts
 GEN_CONSTS  := $(GEN)/constants.ts
+
+SIZES       := 72 90 120
+PRESSURE    := 1 2 3 4
 
 PY_DATA     := scripts/data.py
 PY_OVERLAY  := scripts/overlay.py
@@ -21,16 +26,20 @@ JS_REAL_OUT := $(TS_REAL_SRC:src/%.ts=out/%.js)
 JS_MAIN_OUT := $(TS_MAIN_SRC:src/%.ts=out/%.js)
 JS_MAP_OUT  := $(TS_MAIN_SRC:src/%.ts=out/%.js.map)
 
-PNG_IN      := $(shell find art-work/pipe -name '*.png')
-PNG_OVER    := $(shell find art-work/pipe -name '*overlay*.png')
+PIPE_1	    := $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $(PRESSURE:%=straight_%) mix unmix up down
 
-PIPE_IN     := 72 90 120
-PIPE_OUT    := $(PIPE_IN:%=art/sheets/pipe_%.png) $(PIPE_IN:%=art/sheets/pipe_%@1x.png.json)
+PIPE_IN     := $(PIPE_1:%=$(PIPE)/72/%.png) $(PIPE_1:%=$(PIPE)/90/%.png) $(PIPE_1:%=$(PIPE)/120/%.png)
+PIPE_OUT    := $(SIZES:%=out/sheets/pipe_%.png) $(SIZES:%=out/sheets/pipe_%@1x.png.json)
 
 DATA_IN     := $(shell find data -name '\*.json')
 DATA_OUT    := out/puzzles.json
 
-ART_IN      := $(shell find art -name '*.png') 
+ART_IN      := $(shell find $(TEX) -name '*.png')
+
+OVERLAY_1   := $(PRESSURES:%=_%_overlay_h.png) $(PRESSURES:%=_%_overlay_v.png)
+OVERLAY_2   := $(OVERLAY_1:%=curve%) $(OVERLAY_1:%=port%) $(OVERLAY_1:%=straight%)
+
+OVERLAY_OUT := $(PIPE_IN:%=$(TEX)/overlay_%.png) $(OVERLAY_2:%=$(PIPE)/72/%) $(OVERLAY_2:%=$(PIPE)/90/%) $(OVERLAY_2:%=$(PIPE)/120/%)
 
 WEB_JS      := $(JS_REAL_OUT:out/%.js=$(WEB)/lib/%.js) $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(FFO).js
 WEB_JS_MAP  := $(JS_MAP_OUT:out/%.js.map=$(WEB)/lib/%.js.map) 
@@ -41,6 +50,7 @@ WEB_JSON    := $(WEB)/lib/puzzles.json
 DEBUG =
 
 FORCE :
+
 
 # Build (debug mode)
 # Includes .js.map, copies the /src/ directory for debugger use
@@ -68,7 +78,7 @@ build-release :
 .PHONY : clean
 clean : clean-release
 	@rm -rf out
-	@rm -rf art/sheets
+	@find art/pipe -name '*_overlay_*.png' -delete
 
 .PHONY : clean-release
 clean-release :
@@ -93,10 +103,11 @@ $(GEN_DEBUG) :
 $(WEB_TS) : $(TS_SRC)
 	@cp -r src $(WEB)/
 
-$(WEB_ART) : $(ART_IN)
+$(WEB_ART) : $(ART_IN) $(PIPE_OUT)
 	@printf "Copying art...\n"
 	@rm -rf $(WEB_ART)
-	@cp -r art $(WEB)
+	@cp -r $(TEX)/. $(WEB_ART)
+	@cp -r out/sheets $(WEB_ART)
 
 $(WEB_JSON) : $(DATA_OUT)
 	@cp $(DATA_OUT) $(WEB_JSON)
@@ -118,12 +129,12 @@ $(JS_MAIN_OUT) $(JS_MAP_OUT) &: $(TS_SRC) package-lock.json tsconfig.json
 	@printf "Compiling tsc...\n"
 	@npx tsc
 
-$(PIPE_OUT) &: $(PNG_IN) $(PY_SPRITES)
+$(PIPE_OUT) &: $(PIPE_IN) $(OVERLAY_OUT) $(PY_SPRITES)
 	@printf "Packing sprites...\n"
-	@mkdir -p art/sheets
-	@python $(PY_SPRITES) --src art-work/pipe/72 --dest art/sheets/ --key pipe_72
-	@python $(PY_SPRITES) --src art-work/pipe/90 --dest art/sheets/ --key pipe_90
-	@python $(PY_SPRITES) --src art-work/pipe/120 --dest art/sheets/ --key pipe_120
+	@mkdir -p out/sheets
+	@python $(PY_SPRITES) --src $(PIPE)/72 --dest out/sheets/ --key pipe_72
+	@python $(PY_SPRITES) --src $(PIPE)/90 --dest out/sheets/ --key pipe_90
+	@python $(PY_SPRITES) --src $(PIPE)/120 --dest out/sheets/ --key pipe_120
 
 
 # make overlay := prints out scan results
@@ -135,7 +146,7 @@ $(PIPE_OUT) &: $(PNG_IN) $(PY_SPRITES)
 overlay :
 	@python $(PY_OVERLAY) --scan
 
-$(PNG_OVER) &: $(PY_OVERLAY)
+$(OVERLAY_OUT) &: $(PY_OVERLAY)
 	@printf "Generating overlays...\n"
 	@python $(PY_OVERLAY) --overlay72=11 --overlay90=11 --overlay120=16
 
