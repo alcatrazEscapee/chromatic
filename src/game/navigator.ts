@@ -73,12 +73,9 @@ export module Navigator {
     function updateInBothDirections(map: Map, pos: Point, property: TileProperties, leftDir: DirectionId, rightDir: DirectionId): void {
         const posLeft = toPosition(pos, leftDir);
         const posRight = toPosition(pos, rightDir);
-        
-        const left = traverse(map, posLeft);
-        const right = traverse(map, posRight);
 
-        const leftProperty = access(map, left, false);
-        const rightProperty = access(map, right, false);
+        const leftProperty = accessInDirection(map, posLeft);
+        const rightProperty = accessInDirection(map, posRight);
 
         // Resolve conflicts, if both are present
         if (leftProperty !== null && rightProperty !== null) {
@@ -95,6 +92,28 @@ export module Navigator {
         if (rightProperty !== null && (property.color !== rightProperty.color || property.pressure !== rightProperty.pressure)) {
             recursiveUpdate(map, posRight, property);
         }
+    }
+
+    /**
+     * Queries a position and property from the next tile from the provided position and direction.
+     * If the query crosses a filter, this will return a `null` color.
+     * 
+     * @param start The current position.
+     * @param dir A direction, in _outgoing_ convention, from the current position.
+     */
+    function accessInDirection(map: Map, pos: Position): StrictReadonly<TileProperties> | null {
+        const adj: Position | null = traverse(map, pos);
+        
+        if (adj === null) {
+            return null;
+        }
+
+        let property: StrictReadonly<TileProperties> | null = access(map, adj, false);
+        if (property !== null && Util.filter(map.puzzle!, { x: adj.x, y: adj.y, dir: pos.dir }) !== -1) {
+            property = { pressure: property.pressure, color: null };
+        }
+
+        return property;
     }
 
     function updateAction(map: Map, pos: Point, tile: Tile): void {
@@ -122,8 +141,6 @@ export module Navigator {
      * 
      * Unlike `updateTile()`, this treats the current tile as the source of truth about the color (and pressure),
      * and propagates this to adjacent tiles.
-     * 
-     * todo: accept a direction, representing which part of the tile got updated, and only recurse that branch
      */
     export function updateFrom(map: Map, pos: Point, tile: Tile, key: DirectionId | AxisId): void {
         map.updateTile(pos);
@@ -164,19 +181,17 @@ export module Navigator {
         while (pos !== null) {
             // If we crossed a filter, then we need to not propagate color
             // `dir` is in an outgoing convention, but we need to test in an incoming convention, on the _next_ tile.
-            if (pos !== null) {
-                const adj = { x: pos.x, y: pos.y, dir: pos.dir };
-                Util.move(adj, pos.dir);
-                if (Util.filter(map.puzzle!, adj) !== -1) {
-                    copyFrom = { pressure: copyFrom.pressure, color: null };
-                }
+            const adj = Util.move({ x: pos.x, y: pos.y, dir: pos.dir }, pos.dir);
+            if (Util.filter(map.puzzle!, adj) !== -1) {
+                copyFrom = { pressure: copyFrom.pressure, color: null };
             }
 
             pos = traverse(map, pos);
+            
+            if (pos === null) break;
 
             const property = access(map, pos, true);
-            
-            if (pos !== null && property !== null) {
+            if (property !== null) {
                 resolveFrom(property, copyFrom);
                 map.updateTile(pos);
             }
