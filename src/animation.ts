@@ -1,6 +1,7 @@
 import type { Container, Graphics } from "pixi.js";
 
-import { Util } from "./game/util.js";
+import { Util } from "./game/util";
+import { Constants } from "./gen/constants";
 
 type Event = () => void;
 

@@ -3,7 +3,6 @@
     "src/**/*.ts"
   ],
   "compilerOptions": {
-    "outDir": "./out",
     "sourceRoot": "/chromatic/src",
     "target": "ES2022",
     "sourceMap": true,
@@ -11,6 +10,8 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "removeComments": true,
+    "isolatedModules": true,
+    "noEmit": true,
 
     // TypeScript compiler options
     "allowUnreachableCode": false,

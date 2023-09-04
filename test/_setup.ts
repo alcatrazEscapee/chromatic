@@ -1,7 +1,7 @@
 import type { Leak } from '../src/game/leak';
 import type { AxisId, ColorId, NetworkPuzzle, TexturePalette, TileId } from '../src/gen/constants';
 
-import { DirectionId, GridId } from '../src/gen/constants';
+import { Constants, DirectionId, GridId } from '../src/gen/constants';
 import { Tile, TileProperties } from '../src/game/tile';
 import { IncomingFlow, Simulator } from '../src/game/simulator';
 import { Navigator } from '../src/game/navigator';
@@ -79,7 +79,7 @@ class Impl implements Simulator.Callback, Navigator.Map {
     run(): number {
         let n: number = 0;
         for (; (this.sim as any).queue.length > 0; n++) {
-            this.sim.tick(40, this.palette, this);
+            this.sim.tick(Constants.TICKS_PER_SIMULATOR_STEP, this.palette, this);
         }
         return n;
     }

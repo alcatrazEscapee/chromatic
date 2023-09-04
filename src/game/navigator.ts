@@ -1,7 +1,14 @@
 import type { Tile, TileProperties } from "./tile.js";
 
-import { AxisId, DirectionId, GridId, NetworkPuzzle, TileId } from "../gen/constants.js";
-import { Util } from "./util.js";
+import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from "../gen/constants";
+import { Util } from "./util";
+
+
+const enum PositionType {
+    VALID,
+    EDGE, // Pointing to an edge position
+    PORT,
+}
 
 
 export module Navigator {
@@ -19,12 +26,6 @@ export module Navigator {
         readonly y: number,
         readonly dir: DirectionId,
         readonly ty: PositionType,
-    }
-
-    const enum PositionType {
-        VALID,
-        EDGE, // Pointing to an edge position
-        PORT,
     }
 
     /**

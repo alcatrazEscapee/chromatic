@@ -1,20 +1,20 @@
 import { DirectionId, AxisId, ColorId } from '../src/gen/constants';
-import { Util } from '../src/game/util';
+import { Colors, Util } from '../src/game/util';
 
 
-test('test Colors.RED', () => expect(Util.COLORS[ColorId.RED]).toBe(Util.Colors.RED));
-test('test Colors.BLUE', () => expect(Util.COLORS[ColorId.BLUE]).toBe(Util.Colors.BLUE));
-test('test Colors.YELLOW', () => expect(Util.COLORS[ColorId.YELLOW]).toBe(Util.Colors.YELLOW));
-test('test Colors.ORANGE', () => expect(Util.COLORS[ColorId.ORANGE]).toBe(Util.Colors.ORANGE));
-test('test Colors.PURPLE', () => expect(Util.COLORS[ColorId.PURPLE]).toBe(Util.Colors.PURPLE));
-test('test Colors.GREEN', () => expect(Util.COLORS[ColorId.GREEN]).toBe(Util.Colors.GREEN));
-test('test Colors.BROWN', () => expect(Util.COLORS[ColorId.BROWN]).toBe(Util.Colors.BROWN));
-test('test Colors.LIME', () => expect(Util.COLORS[ColorId.LIME]).toBe(Util.Colors.LIME));
-test('test Colors.CYAN', () => expect(Util.COLORS[ColorId.CYAN]).toBe(Util.Colors.CYAN));
-test('test Colors.AMBER', () => expect(Util.COLORS[ColorId.AMBER]).toBe(Util.Colors.AMBER));
-test('test Colors.GOLD', () => expect(Util.COLORS[ColorId.GOLD]).toBe(Util.Colors.GOLD));
-test('test Colors.MAGENTA', () => expect(Util.COLORS[ColorId.MAGENTA]).toBe(Util.Colors.MAGENTA));
-test('test Colors.VIOLET', () => expect(Util.COLORS[ColorId.VIOLET]).toBe(Util.Colors.VIOLET));
+test('test Colors.RED', () => expect(Util.COLORS[ColorId.RED]).toBe(Colors.RED));
+test('test Colors.BLUE', () => expect(Util.COLORS[ColorId.BLUE]).toBe(Colors.BLUE));
+test('test Colors.YELLOW', () => expect(Util.COLORS[ColorId.YELLOW]).toBe(Colors.YELLOW));
+test('test Colors.ORANGE', () => expect(Util.COLORS[ColorId.ORANGE]).toBe(Colors.ORANGE));
+test('test Colors.PURPLE', () => expect(Util.COLORS[ColorId.PURPLE]).toBe(Colors.PURPLE));
+test('test Colors.GREEN', () => expect(Util.COLORS[ColorId.GREEN]).toBe(Colors.GREEN));
+test('test Colors.BROWN', () => expect(Util.COLORS[ColorId.BROWN]).toBe(Colors.BROWN));
+test('test Colors.LIME', () => expect(Util.COLORS[ColorId.LIME]).toBe(Colors.LIME));
+test('test Colors.CYAN', () => expect(Util.COLORS[ColorId.CYAN]).toBe(Colors.CYAN));
+test('test Colors.AMBER', () => expect(Util.COLORS[ColorId.AMBER]).toBe(Colors.AMBER));
+test('test Colors.GOLD', () => expect(Util.COLORS[ColorId.GOLD]).toBe(Colors.GOLD));
+test('test Colors.MAGENTA', () => expect(Util.COLORS[ColorId.MAGENTA]).toBe(Colors.MAGENTA));
+test('test Colors.VIOLET', () => expect(Util.COLORS[ColorId.VIOLET]).toBe(Colors.VIOLET));
 
 
 test('lerp 0.0 to [6, 10]', () => expect(Util.lerp(0.0, 6, 10)).toBe(6));

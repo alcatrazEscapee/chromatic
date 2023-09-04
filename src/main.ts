@@ -1,6 +1,6 @@
-import type { AssetBundle } from "./gen/constants.js";
-
-import { Menu } from "./menu.js";
+import { Fonts, type AssetBundle, Constants } from "./gen/constants";
+import { DebugMode } from "./gen/debug";
+import { Menu } from "./menu";
 
 
 declare global {

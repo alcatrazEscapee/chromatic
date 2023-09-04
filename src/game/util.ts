@@ -1,30 +1,30 @@
 import type { ColorSource, Container, Texture } from "pixi.js";
 
-import { AssetBundle, AxisId, ColorId, DirectionId, NetworkPuzzle } from "../gen/constants.js";
+import { AssetBundle, AxisId, ColorId, Constants, DirectionId, NetworkPuzzle } from "../gen/constants";
 
+
+/** Exported for testing only */
+export const enum Colors {
+    RED = 0xff0000,
+    YELLOW = 0xffff00,
+    BLUE = 0x0000ff,
+
+    ORANGE = 0xff6600,
+    PURPLE = 0x990099,
+    GREEN = 0x009900,
+
+    BROWN = 0x663300,
+
+    LIME = 0x66ff00,
+    CYAN = 0x006666,
+    AMBER = 0xcc6600,
+    GOLD = 0xffcc33,
+    VIOLET = 0x330033,
+    MAGENTA = 0x990033,
+}
 
 
 export module Util {
-
-    /** Exported for testing only */
-    export const enum Colors {
-        RED = 0xff0000,
-        YELLOW = 0xffff00,
-        BLUE = 0x0000ff,
-    
-        ORANGE = 0xff6600,
-        PURPLE = 0x990099,
-        GREEN = 0x009900,
-    
-        BROWN = 0x663300,
-    
-        LIME = 0x66ff00,
-        CYAN = 0x006666,
-        AMBER = 0xcc6600,
-        GOLD = 0xffcc33,
-        VIOLET = 0x330033,
-        MAGENTA = 0x990033,
-    }
 
     export const RAINBOW: ReadonlyArray<ColorSource> = [Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.CYAN, Colors.BLUE, Colors.PURPLE];
     export const COLORS: Readonly<{[_ in ColorId]: ColorSource}> & ReadonlyArray<ColorSource> = [
@@ -113,17 +113,12 @@ export module Util {
         return x >= x0 && y >= y0 && x < x0 + size && y < y0 + size;
     }
 
-    const enum N {
-        Axis = AxisId.last + 1,
-        Direction = DirectionId.last + 1,
-    }
-
     export function dirToAxis(dir: DirectionId): AxisId {
-        return dir % N.Axis;
+        return dir % Constants.N_AXIS;
     }
 
     export function sameAxis(lhs: DirectionId, rhs: DirectionId): boolean {
-        return (lhs % N.Axis) == (rhs % N.Axis);
+        return (lhs % Constants.N_AXIS) == (rhs % Constants.N_AXIS);
     }
 
     export function move<T extends Mutable<Point>>(pos: T, dir: DirectionId, delta: number = 1): T {
@@ -137,23 +132,23 @@ export module Util {
     }
 
     export function cw(dir: DirectionId): DirectionId {
-        return (dir + 1) % N.Direction;
+        return (dir + 1) % Constants.N_DIRECTION;
     }
 
     export function flip(dir: DirectionId): DirectionId {
-        return (dir + 2) % N.Direction;
+        return (dir + 2) % Constants.N_DIRECTION;
     }
 
     export function ccw(dir: DirectionId): DirectionId {
-        return (dir + 3) % N.Direction;
+        return (dir + 3) % Constants.N_DIRECTION;
     }
 
     export function rotate(dir: DirectionId, base: DirectionId): DirectionId {
-        return (dir + base) % N.Direction;
+        return (dir + base) % Constants.N_DIRECTION;
     }
 
     export function unrotate(dir: DirectionId, base: DirectionId): DirectionId {
-        return (dir - base + N.Direction) % N.Direction;
+        return (dir - base + Constants.N_DIRECTION) % Constants.N_DIRECTION;
     }
 
     export function getInputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {

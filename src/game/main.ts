@@ -1,10 +1,10 @@
 import type { Texture, Container, FederatedPointerEvent, Sprite, DisplayObject } from 'pixi.js';
 
-import { AssetBundle, AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId, type TexturePalette } from '../gen/constants.js';
-import { Util } from './util.js';
-import { Tile } from './tile.js';
-import { Simulator } from './simulator.js';
-import { Navigator } from './navigator.js';
+import { AssetBundle, AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId, type TexturePalette, Constants, Strings } from '../gen/constants';
+import { Util } from './util';
+import { Tile } from './tile';
+import { Simulator } from './simulator';
+import { Navigator } from './navigator';
 
 
 const enum StateId {
