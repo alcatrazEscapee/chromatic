@@ -2,38 +2,72 @@ import type { Container, Graphics } from "pixi.js";
 
 import { Util } from "./game/util.js";
 
+type Event = () => void;
+
 
 export module Animations {
 
-    export function fadeIn(root: Container, onComplete: () => void) {
-        new FadeIn();
+    export function fadeIn(root: Container, onComplete: Event) {
+        new FadeIn(root, onComplete, false);
     }
 
-    export function fadeToBlack(root: Container, onHalf: () => void, onComplete: () => void) {
+    export function fadeOut(root: Container, onComplete: Event) {
+        new FadeIn(root, onComplete, true);
+    }
+
+    export function fadeToBlack(root: Container, onHalf: Event, onComplete: Event) {
         new FadeToBlack(root, onHalf, onComplete);
     }
 
-    export function easeInOut(root: Container, start: Point, end: Point, onComplete: () => void): void {
+    export function easeInOut(root: Container, start: Point, end: Point, onComplete: Event): void {
         new EaseInOut(root, start, end, onComplete);
     }
 }
 
 
 class FadeIn {
+    private readonly onComplete: Event;
+    private readonly root: Container;
+    private readonly invert: boolean;
 
+    private delta: number;
+
+    constructor(root: Container, onComplete: Event, invert: boolean) {
+        this.onComplete = onComplete;
+        this.root = root;
+        this.invert = invert;
+
+        this.root.alpha = this.invert ? 1.0 : 0.0;
+        this.delta = 0;
+
+        PIXI.Ticker.shared.add(this.tick, this);
+    }
+
+    tick(delta: number): void {
+        this.delta += delta;
+        if (this.delta < Constants.ANIM_FADE_IN_TICKS) {
+            const alpha = this.delta / Constants.ANIM_FADE_IN_TICKS;
+            this.root.alpha = this.invert ? 1.0 - alpha : alpha;
+        } else {
+            this.root.alpha = this.invert ? 0.0 : 1.0;
+            this.onComplete();
+
+            PIXI.Ticker.shared.remove(this.tick, this);
+        }
+    }
 }
 
 
 class FadeToBlack {
 
-    private readonly onHalf: () => void;
-    private readonly onComplete: () => void;
+    private readonly onHalf: Event;
+    private readonly onComplete: Event;
     private readonly overlay: Graphics;
     
     private delta: number;
     private half: boolean;
     
-    constructor(root: Container, onHalf: () => void, onComplete: () => void) {
+    constructor(root: Container, onHalf: Event, onComplete: Event) {
         this.onHalf = onHalf;
         this.onComplete = onComplete;
         this.delta = 0;
@@ -77,11 +111,11 @@ class EaseInOut {
     private readonly root: Container;
     private readonly start: Point;
     private readonly end: Point;
-    private readonly onComplete: () => void;
+    private readonly onComplete: Event;
 
     delta: number;
 
-    constructor(root: Container, start: Point, end: Point, onComplete: () => void) {
+    constructor(root: Container, start: Point, end: Point, onComplete: Event) {
         this.root = root;
         this.start = start;
         this.end = end;

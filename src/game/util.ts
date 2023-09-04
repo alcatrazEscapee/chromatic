@@ -207,6 +207,24 @@ export module Util {
         return wordIndex < bitset.length ? ((bitset[wordIndex] >> bitIndex) & 0b1) == 0b1 : false;
     }
 
+    /** Counts the number of true values in the bitset. */
+    export function bitCount(bitset: BitSet): number {
+        let count: number = 0;
+        for (const word of bitset) {
+            count += popcnt(word);
+        }
+        return count;
+    }
+
+    /**
+     * Count the number of set bits in a 32-bit integer.
+     * From {@link https://graphics.stanford.edu/~seander/bithacks.html Bit Twiddling Hacks}.
+    */
+    function popcnt(n: number): number {
+        n = n - ((n >> 1) & 0x55555555)
+        n = (n & 0x33333333) + ((n >> 2) & 0x33333333)
+        return ((n + (n >> 4) & 0xF0F0F0F) * 0x1010101) >> 24
+    }
 
     const MIXES: [ColorId, ColorId, ColorId][] = [
         [ColorId.RED, ColorId.BLUE, ColorId.PURPLE],

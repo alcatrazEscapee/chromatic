@@ -30,6 +30,8 @@ PIPE_OUT    := $(PIPE_IN:%=art/sheets/pipe_%.png) $(PIPE_IN:%=art/sheets/pipe_%@
 DATA_IN     := $(shell find data -name '\*.json')
 DATA_OUT    := out/puzzles.json
 
+ART_IN      := $(shell find art -name '*.png') 
+
 WEB_JS      := $(JS_REAL_OUT:out/%.js=$(WEB)/lib/%.js) $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(FFO).js
 WEB_JS_MAP  := $(JS_MAP_OUT:out/%.js.map=$(WEB)/lib/%.js.map) 
 WEB_TS      := $(WEB)/src
@@ -91,7 +93,8 @@ $(GEN_DEBUG) :
 $(WEB_TS) : $(TS_SRC)
 	@cp -r src $(WEB)/
 
-$(WEB_ART) : $(PIPE_OUT)
+$(WEB_ART) : $(ART_IN)
+	@printf "Copying art...\n"
 	@rm -rf $(WEB_ART)
 	@cp -r art $(WEB)
 

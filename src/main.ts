@@ -52,6 +52,8 @@ async function main() {
         menu_panel: 'art/menu_panel.png',
         menu_star: 'art/menu_star.png',
         menu_btn_left: 'art/menu_btn_left.png',
+        menu_btn_x: 'art/menu_btn_x.png',
+        menu_btn_main: 'art/menu_btn_main.png',
 
         ui_background: 'art/ui_background.png',
         ui_btn_play: 'art/ui_btn_play.png',
