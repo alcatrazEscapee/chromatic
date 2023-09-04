@@ -153,7 +153,7 @@ def make_overlays(N: int, values: list[int]):
         for x, y, src_x, src_y, w, h in squares:
             img.paste(overlay.crop((src_x, src_y, src_x + w, src_y + h)), (x, y, x + w, y + h))
 
-        img.save('./art-work/pipe/%d/%s.png' % (N, name))
+        img.save('./art/pipe/%d/%s.png' % (N, name))
 
 
 def make_overlay(N: int, a: int, Wc: int, Wb: int):
