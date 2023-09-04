@@ -100,3 +100,55 @@ export const enum AxisId {
 
     last = 1
 }
+
+
+export const enum Constants {
+    STAGE_WIDTH = 400,
+    STAGE_HEIGHT = 600,
+
+    GRID_LEFT = 20,
+    GRID_TOP = 20,
+    GRID_SIZE = 360,
+
+    GRID_LEFT_HALF = GRID_LEFT / 2,
+
+    GRID_ID_TO_WIDTH = 3,
+
+    COLOR_WHITE = 0xffffff,
+    COLOR_BLACK = 0x000000,
+    COLOR_GREEN = 0x00b000,
+    COLOR_DARK_GREEN = 0x009000,
+
+    TICKS_PER_SIMULATOR_STEP = 40,
+    TICKS_PER_LEAK_BLOB = 3,
+
+    MAX_BLOBS_PER_LEAK = 40,
+
+    POINTER_HOLD_MS = 400,
+
+    MAX_PRESSURE = 4,
+
+    ANIM_FADE_TO_BLACK_TICKS = 54,
+    ANIM_FADE_TO_BLACK_HALF = ANIM_FADE_TO_BLACK_TICKS / 2,
+
+    ANIM_EASE_IN_OUT_TICKS = 45,
+
+    ANIM_FADE_IN_TICKS = 30,
+
+    BITSET_SHIFT = 5,
+    BITSET_MASK = (1 << BITSET_SHIFT) - 1,
+
+    N_AXIS = AxisId.last + 1,
+    N_DIRECTION = DirectionId.last + 1,
+}
+
+export const enum Strings {
+    /** See {@link https://pixijs.download/v6.1.0/docs/PIXI.InteractionManager.html#cursorStyles PIXI.InteractionManager.cursorStyles} */
+    CURSOR = 'cursor',
+    LOCAL_STORAGE_KEY = 'chromatic-save-data',
+}
+
+export const enum Fonts {
+    ERAS_BOLD_ITC = 'Eras Bold ITC',
+    ARIAL = 'Arial',
+}

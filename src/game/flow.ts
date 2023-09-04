@@ -1,7 +1,7 @@
 import type { Container, Graphics } from "pixi.js";
-import type { ColorId, DirectionId } from "../gen/constants.js";
+import { Constants, type ColorId, type DirectionId } from "../gen/constants";
 
-import { Util } from './util.js';
+import { Util } from './util';
 
 
 export interface Flow {
