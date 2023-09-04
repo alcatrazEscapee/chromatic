@@ -79,13 +79,11 @@ class Impl implements Simulator.Kind {
             leak.destroy();
         }
 
-        const mut = this as Mutable<Impl>;
-
-        mut.queue = [];
-        mut.outputs = [];
-        mut.buffers = [];
-        mut.edges = [];
-        mut.leaks = [];
+        (this as Mutable<Impl>).queue = [];
+        (this as Mutable<Impl>).outputs = [];
+        (this as Mutable<Impl>).buffers = [];
+        (this as Mutable<Impl>).edges = [];
+        (this as Mutable<Impl>).leaks = [];
     }
 
     init(palette: Palette, callback: Simulator.Callback): void {
@@ -104,9 +102,7 @@ class Impl implements Simulator.Kind {
             this.outputs.push({ x, y, dir, color, pressure, satisfied: false });
         }
 
-        for (let i = 0; i < palette.width * palette.width; i++) {
-            this.buffers.push(null);
-        }
+        (this as Mutable<Impl>).buffers = Util.nulls(palette.width * palette.width);
     }
 
     tick(delta: number, palette: Palette, callback: Simulator.Callback) {

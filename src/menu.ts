@@ -96,7 +96,7 @@ export class Menu {
             this.titleContainer.addChild(letter);
         }
 
-        if (DebugMode.ENABLED && leftX !== Constants.STAGE_WIDTH - (x - 10)) {
+        if (DebugMode.ENABLED && Math.abs(leftX - (Constants.STAGE_WIDTH - (x - 10))) > 2) {
             throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
         }
 

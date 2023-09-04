@@ -126,7 +126,7 @@ export module Util {
         return (lhs % N.Axis) == (rhs % N.Axis);
     }
 
-    export function move(pos: Mutable<Point>, dir: DirectionId, delta: number = 1): Point {
+    export function move<T extends Mutable<Point>>(pos: T, dir: DirectionId, delta: number = 1): T {
         switch (dir) {
             case DirectionId.LEFT:  pos.x -= delta; break;
             case DirectionId.UP:    pos.y -= delta; break;
