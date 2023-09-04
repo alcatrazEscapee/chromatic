@@ -10,7 +10,7 @@ GEN_DEBUG   := $(GEN)/debug.ts
 GEN_CONSTS  := $(GEN)/constants.ts
 
 SIZES       := 72 90 120
-PRESSURE    := 1 2 3 4
+PRESSURES   := 1 2 3 4
 
 PY_DATA     := scripts/data.py
 PY_OVERLAY  := scripts/overlay.py
@@ -39,7 +39,7 @@ ART_IN      := $(shell find $(TEX) -name '*.png')
 OVERLAY_1   := $(PRESSURES:%=_%_overlay_h.png) $(PRESSURES:%=_%_overlay_v.png)
 OVERLAY_2   := $(OVERLAY_1:%=curve%) $(OVERLAY_1:%=port%) $(OVERLAY_1:%=straight%)
 
-OVERLAY_OUT := $(PIPE_IN:%=$(TEX)/overlay_%.png) $(OVERLAY_2:%=$(PIPE)/72/%) $(OVERLAY_2:%=$(PIPE)/90/%) $(OVERLAY_2:%=$(PIPE)/120/%)
+OVERLAY_OUT := $(OVERLAY_2:%=$(PIPE)/72/%) $(OVERLAY_2:%=$(PIPE)/90/%) $(OVERLAY_2:%=$(PIPE)/120/%)
 
 WEB_JS      := $(JS_REAL_OUT:out/%.js=$(WEB)/lib/%.js) $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(FFO).js
 WEB_JS_MAP  := $(JS_MAP_OUT:out/%.js.map=$(WEB)/lib/%.js.map) 
