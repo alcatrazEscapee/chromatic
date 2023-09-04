@@ -5,8 +5,13 @@ import { Game } from "./game/main.js";
 import { Animations } from "./animation.js";
 import { DirectionId } from "./gen/constants.js";
 import { Util } from "./game/util.js";
+import { VictoryModal } from "./modal.js";
 
 
+interface Panel {
+    readonly root: Container;
+    readonly stars: (Sprite | null)[]
+}
 
 export class Menu {
 
@@ -20,13 +25,15 @@ export class Menu {
 
     readonly game: Game;
     readonly maxPageInclusive: number;
+    readonly maxPuzzleInclusive: number;
 
     readonly btnLeft: Sprite;
     readonly btnRight: Sprite;
     
     pageText: Text | null = null;
+    starsText: Text | null = null;
 
-    panel: Container | null;
+    panel: Panel | null;
     page: number;
 
     delta: number;
@@ -48,8 +55,9 @@ export class Menu {
 
         this.menuContainer.addChild(new PIXI.Sprite(core.menu_background)); // Needs to be before createPanel()
 
-        this.game = new Game(this.gameContainer, core);
+        this.game = new Game(this, this.gameContainer);
         this.maxPageInclusive = Math.ceil(core.puzzles.puzzles.length / 16) - 1;
+        this.maxPuzzleInclusive = core.puzzles.puzzles.length - 1;
 
         this.page = 0;
 
@@ -111,6 +119,7 @@ export class Menu {
         this.pageText = null;
 
         this.updatePage();
+        this.updateStars();
 
         this.delta = 0;
         this.active = true;
@@ -124,7 +133,26 @@ export class Menu {
         stage.on('pointertap', event => this.onPointerTap(event));
         stage.on('pointerdown', event => this.onPointerDown(event));
         stage.on('pointerup', event => this.onPointerUp(event));
+        stage.on('pointerupoutside', event => this.onPointerUp(event));
         stage.on('pointermove', event => this.onPointerMove(event));
+    }
+
+
+    public onVictory(puzzleId: number): void {
+        Util.bitSet(this.saveData.stars, puzzleId);
+        
+        this.save();
+        this.updateStars();
+
+        // Update the star on the panel, if needed
+        const targetPage = Math.floor(puzzleId / 16);
+
+        if (this.panel !== null && targetPage === this.page) {
+            this.updateStar(this.panel, puzzleId);
+        }
+
+        // Raise victory modal
+        new VictoryModal(this.overlayContainer, this, puzzleId);
     }
 
 
@@ -216,23 +244,25 @@ export class Menu {
         this.saveData.page = this.page;
         this.save(); // Update the saved main menu page
 
-        newPanel.position.set(-sign * Constants.STAGE_WIDTH, 0);
+        newPanel.root.position.set(-sign * Constants.STAGE_WIDTH, 0);
 
-        Animations.easeInOut(oldPanel, Util.ZERO, { x: -sign * Constants.STAGE_WIDTH, y: 0 }, () => {
-            oldPanel.destroy();
+        Animations.easeInOut(oldPanel.root, Util.ZERO, { x: -sign * Constants.STAGE_WIDTH, y: 0 }, () => {
+            oldPanel.root.destroy();
         });
 
-        Animations.easeInOut(newPanel, { x: sign * Constants.STAGE_WIDTH, y: 0 }, Util.ZERO, () => {
+        Animations.easeInOut(newPanel.root, { x: sign * Constants.STAGE_WIDTH, y: 0 }, Util.ZERO, () => {
             this.updatePage();
             this.panel = newPanel;
             this.active = true;
         });
     }
 
-    private createPanel(page: number): Container {
-        const panel = new PIXI.Container();
-
+    private createPanel(page: number): Panel {
+        const root = new PIXI.Container();
+        const stars: (Sprite | null)[] = Util.nulls(16);
         const max = Math.min(16, this.core.puzzles.puzzles.length - (16 * page));
+        const panel: Panel = { root, stars };
+
         for (let i = 0; i < max; i++) {
             const puzzleId: number = i + page * 16;
             const button = new PIXI.Container();
@@ -253,10 +283,22 @@ export class Menu {
             button.position.set(26 + (i % 4) * 90, 117 + Math.floor(i / 4) * 90);
             button.on('pointertap', () => this.selectPuzzle(puzzleId));
 
-            panel.addChild(button);
+            root.addChild(button);
+
+            if (Util.bitGet(this.saveData.stars, puzzleId)) {
+                const star = new PIXI.Sprite(this.core.menu_star);
+
+                star.position.set(21, 31);
+                button.addChild(star);
+                stars[i] = star;
+            }
         }
 
-        this.menuContainer.addChild(panel);
+        for (let i = 0; i < 16; i++) {
+            this.updateStar(panel, i + page * 16);
+        }
+
+        this.menuContainer.addChild(root);
         return panel;
     }
 
@@ -277,6 +319,33 @@ export class Menu {
         });
         this.pageText.position.set(45, 521 + 8);
         this.menuContainer.addChild(this.pageText);
+    }
+
+    private updateStars(): void {
+        if (this.starsText) {
+            this.starsText.destroy();
+            this.starsText = null;
+        }
+
+        this.starsText = new PIXI.Text(String(Util.bitCount(this.saveData.stars)), {
+            fontFamily: Fonts.ERAS_BOLD_ITC,
+            fontSize: 20,
+            fill: Constants.COLOR_WHITE,
+        });
+        this.starsText.position.set(315 - this.starsText.width, 521 + 8);
+        this.menuContainer.addChild(this.starsText);
+    }
+
+    private updateStar(panel: Panel, puzzleId: number): void {
+        const index: number = puzzleId % 16;
+
+        if (Util.bitGet(this.saveData.stars, puzzleId) && panel.stars[index] === null) {
+            const star = new PIXI.Sprite(this.core.menu_star);
+
+            star.position.set(21, 26);
+            (panel.root.children[index] as Sprite).addChild(star);
+            panel.stars[index] = star;
+        }
     }
 
     private save(): void {
@@ -301,23 +370,30 @@ export class Menu {
 
     // Transitions
 
-    private enterMenu(): void {
+    public enterMenu(): void {
         this.app.stage.addChildAt(this.menuContainer, 0);
         PIXI.Ticker.shared.add(this.tick, this);
     }
 
-    private leaveMenu(): void {
+    public leaveMenu(): void {
         this.app.stage.removeChild(this.menuContainer);
         PIXI.Ticker.shared.remove(this.tick, this);
     }
 
-    private enterGame(puzzleId: number): void {
+    public enterGame(puzzleId: number): void {
         this.app.stage.addChildAt(this.gameContainer, 0);
         this.game.init(this.core.puzzles.puzzles[puzzleId]);
     }
 
-    private leaveGame(): void {
+    public leaveGame(): void {
         this.game.teardown();
         this.app.stage.removeChild(this.gameContainer);
+    }
+
+    public nextPuzzle(): void {
+        const puzzleId: number = this.game.puzzle!.id + 1;
+
+        this.game.teardown(); // Teardown the current puzzle
+        this.game.init(this.core.puzzles.puzzles[puzzleId]); // Immediately load the next puzzle
     }
 }

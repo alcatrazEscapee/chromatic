@@ -21,6 +21,7 @@ const enum Constants {
     COLOR_WHITE = 0xffffff,
     COLOR_BLACK = 0x000000,
     COLOR_GREEN = 0x00b000,
+    COLOR_DARK_GREEN = 0x009000,
 
     TICKS_PER_SIMULATOR_STEP = 40,
     TICKS_PER_LEAK_BLOB = 3,
@@ -36,11 +37,15 @@ const enum Constants {
 
     ANIM_EASE_IN_OUT_TICKS = 45,
 
+    ANIM_FADE_IN_TICKS = 30,
+
     BITSET_SHIFT = 5,
     BITSET_MASK = (1 << BITSET_SHIFT) - 1,
 }
 
 const enum Strings {
+    /** See {@link https://pixijs.download/v6.1.0/docs/PIXI.InteractionManager.html#cursorStyles PIXI.InteractionManager.cursorStyles} */
+    CURSOR = 'cursor',
     LOCAL_STORAGE_KEY = 'chromatic-save-data',
 }
 
@@ -78,6 +83,8 @@ type CoreAssetId = 'menu_background'
     | 'menu_panel'
     | 'menu_star'
     | 'menu_btn_left'
+    | 'menu_btn_x'
+    | 'menu_btn_main'
     | 'ui_background'
     | 'ui_btn_play'
     | 'ui_btn_stop'

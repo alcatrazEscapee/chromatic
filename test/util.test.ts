@@ -91,6 +91,16 @@ for (let i = 0; i < 70; i++) {
             expect(Util.bitGet(bitset, j)).toBe(j < i);
         }
     });
+
+    test(`bitset count with ${i} set`, () => {
+        const bitset = Util.bitCreate();
+
+        for (let j = 0; j < i; j++) {
+            Util.bitSet(bitset, j * 3);
+        }
+
+        expect(Util.bitCount(bitset)).toBe(i);
+    });
 }
 
 test('mix RED + BLUE', () => expect(Util.mix(ColorId.RED, ColorId.BLUE)).toBe(ColorId.PURPLE));

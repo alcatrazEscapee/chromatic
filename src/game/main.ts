@@ -18,9 +18,16 @@ const enum StateId {
     MENU,
 }
 
+interface GameCallback {
+    readonly core: AssetBundle;
+
+    onVictory(puzzleId: number): void;
+}
+
 
 export class Game {
 
+    readonly menu: GameCallback;
     readonly root: Container;
     readonly core: AssetBundle;
     readonly tiles: (Tile | null)[];
@@ -45,6 +52,7 @@ export class Game {
     puzzle: NetworkPuzzle | null = null;
     state: StateId = StateId.UNLOADED;
     tabState: StateId.MAIN_CONFIGURE | StateId.MAIN_TILE = StateId.MAIN_TILE;
+    unloadState: StateId = StateId.MAIN_TILE;
     grid: GridId = GridId.default;
 
     heldTile: { root: Sprite, tileId: TileId } | null = null;
@@ -57,10 +65,11 @@ export class Game {
     // If `true`, the next tap on the stage will by ignored
     bypassNextTap: boolean = false;
 
-    constructor(root: Container, core: AssetBundle) {
+    constructor(menu: GameCallback, root: Container) {
         
+        this.menu = menu;
         this.root = root;
-        this.core = core;
+        this.core = menu.core;
         this.tiles = [];
 
         this.gridContainer = new PIXI.Container();
@@ -72,10 +81,10 @@ export class Game {
         this.tileButtonsContainer = new PIXI.Container();
         this.colorButtonsContainer = new PIXI.Container();
 
-        this.palettes = Util.buildPalettes(core);
-
+        this.palettes = Util.buildPalettes(menu.core);
         this.simulator = Simulator.create(this.edgesContainer);
 
+        const core = menu.core;
         const ui = new PIXI.Sprite(this.core.ui_background);
 
         const tileButtonTextures = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
@@ -103,6 +112,7 @@ export class Game {
 
             btn.eventMode = 'static';
             btn.on('pointerdown', event => this.grabColor(event, color));
+            btn.cursor = Strings.CURSOR;
 
             this.colorButtonsContainer.addChild(btn);
         }
@@ -113,10 +123,12 @@ export class Game {
         btnPressureUp.position.set(22 + 5 * 40 - 13, 460 + 0 * 40 - 13);
         btnPressureUp.eventMode = 'static';
         btnPressureUp.on('pointerdown', event => this.grabPressure(event, 1));
+        btnPressureUp.cursor = Strings.CURSOR;
         
         btnPressureDown.position.set(22 + 5 * 40 - 13, 460 + 2 * 40 - 13);
         btnPressureDown.eventMode = 'static';
         btnPressureDown.on('pointerdown', event => this.grabPressure(event, -1));
+        btnPressureDown.cursor = Strings.CURSOR;
 
         this.colorButtonsContainer.addChild(btnPressureUp);
         this.colorButtonsContainer.addChild(btnPressureDown);
@@ -237,13 +249,14 @@ export class Game {
      * Enables interactivity, after the game has finished loading / animating
      */
     public postInit(): void {
-        this.state = this.tabState;
+        this.state = this.unloadState;
     }
 
     /**
      * Disables interactivity, before the animation to teardown starts
      */
     public preTeardown(): void {
+        this.unloadState = this.state;
         this.state = StateId.UNLOADED;
     }
 
@@ -252,8 +265,10 @@ export class Game {
      */
     public teardown(): void {
 
-        if (this.state === StateId.SIMULATION) {
-            this.onStop(null);
+        if (this.unloadState === StateId.SIMULATION) {
+            this.onStop(null, true);
+            this.unloadState = this.tabState; // Since we nuke the simulation, our actual unload state will be switching to the tab state
+
         }
 
         Util.clear(this.tilesContainer);
@@ -267,7 +282,7 @@ export class Game {
     }
 
     public onVictory(): void {
-
+        this.menu.onVictory(this.puzzle!.id);
     }
 
     private grabTile(event: FederatedPointerEvent, tileId: TileId, texture: Texture): void {
@@ -306,6 +321,7 @@ export class Game {
             const root = new PIXI.Sprite(pressureId === -1 ? textureSrc.pipe_72_down : textureSrc.pipe_72_up);
             
             root.position.set(event.screenX, event.screenY);
+            root.anchor.set(0.5);
 
             this.heldLabel = { root, colorId: null, pressureId };
             this.state = StateId.DRAGGING_LABEL;
@@ -442,12 +458,12 @@ export class Game {
         }
     }
 
-    private onStop(_: FederatedPointerEvent | null): void {
-        if (this.state === StateId.SIMULATION) {
+    private onStop(_: FederatedPointerEvent | null, bypass: boolean = false): void {
+        if (this.state === StateId.SIMULATION || bypass) {
             this.btnPlay.alpha = 1.0;
             this.btnStop.alpha = 0.5;
 
-            this.state = this.tabState;
+            if (!bypass) this.state = this.tabState;
             this.simulator.reset();
             PIXI.Ticker.shared.remove(this.onSimulatorTick, this);
 
