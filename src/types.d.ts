@@ -37,6 +37,8 @@ type CoreAssetId = 'menu_background'
     | 'menu_btn_x'
     | 'menu_btn_main'
     | 'ui_background'
+    | 'ui_tab_top'
+    | 'ui_tab_bot'
     | 'ui_btn_play'
     | 'ui_btn_stop'
     | `ui_btn_pipe_${AssetPipeIcon}`
@@ -71,6 +73,7 @@ type PipeSpriteId<T extends PipeAssetId> =
     `${T}_${'straight' | 'curve' | 'port'}_${AssetPipePressure}${'' | '_overlay_h' | '_overlay_v'}`
     | `${T}_edge_${AssetPipePressure}`
     | `${T}_${AssetPipeAction}`
+    | `${T}_filter`
 
 
     
@@ -119,6 +122,8 @@ type PaletteTextures<T> = {
 } & {
     // 'edge' is indexed by PressureId, 'action' is indexed by TileId - TileId.ACTION_START
     [key in 'edge' | 'action']: Array4<T>
+} & {
+    filter: T
 };
 
 interface _TexturePalette<T> extends Palette {
@@ -141,3 +146,12 @@ interface V1SaveData {
 
 type LocalSaveData = VersionedSaveData<SaveDataVersion> & UnknownSaveData;
 type VersionedSaveData<Version extends number, T = {}> = { version: Version } & T;
+
+
+/**
+ * A heavily restricted version of PIXI's `Container` as an interface. This only exposes `addChildAt(_, N)`,
+ * to enforce that any runtime sprite additions only add at a certain index.
+ */
+type RestrictContainer<C, T, N> = Omit<C, 'addChild' | 'addChildAt'> & {
+    addChildAt<U extends T>(child: U, index: N): U;
+}

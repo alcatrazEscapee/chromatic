@@ -35,7 +35,7 @@ async function main() {
     const updateProgress = (pct: number) => progress.width = (Constants.STAGE_WIDTH - 100 - 2) * pct;
 
     const app = new PIXI.Application({
-        background: '#000',
+        background: Constants.COLOR_BLACK,
         width: Constants.STAGE_WIDTH,
         height: Constants.STAGE_HEIGHT,
         view: document.getElementById('main-canvas') as HTMLCanvasElement,
@@ -58,6 +58,8 @@ async function main() {
         ui_background: 'art/ui_background.png',
         ui_btn_play: 'art/ui_btn_play.png',
         ui_btn_stop: 'art/ui_btn_stop.png',
+        ui_tab_bot: 'art/ui_tab_bot.png',
+        ui_tab_top: 'art/ui_tab_top.png',
 
         ui_btn_pipe_empty: 'art/ui_btn_pipe_empty.png',
         ui_btn_pipe_straight: 'art/ui_btn_pipe_straight.png',

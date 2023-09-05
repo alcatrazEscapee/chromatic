@@ -1,6 +1,6 @@
 import type { Container, Texture } from "pixi.js";
 
-import { AxisId, ColorId, DirectionId, TileId, type TexturePalette } from "../gen/constants";
+import { AxisId, ColorId, DirectionId, TileId, type TexturePalette, Constants } from "../gen/constants";
 import { Flow } from "./flow";
 import { Util } from "./util";
 
@@ -168,7 +168,7 @@ export class Tile {
                     const cornerX = Util.insideTop(palette, propertyV.pressure) - palette.pipeWidth;
                     const cornerY = Util.insideTop(palette, propertyH.pressure) - palette.pipeWidth;
     
-                    mask.beginFill('#000000');
+                    mask.beginFill(Constants.COLOR_BLACK);
                     mask.drawRect(cornerX, cornerY, palette.tileWidth - 2 * cornerX, palette.tileWidth - 2 * cornerY);
                     mask.pivot.set(palette.tileWidth / 2, palette.tileWidth / 2)
     
