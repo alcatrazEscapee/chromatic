@@ -1,5 +1,4 @@
 import { Fonts, type AssetBundle, Constants } from "./gen/constants";
-import { DebugMode } from "./gen/debug";
 import { Menu } from "./menu";
 
 
@@ -7,12 +6,14 @@ declare global {
     interface Window {
         game: Menu;
     }
+
+    const DEBUG: boolean;
 }
 
 
 async function main() {
 
-    const start: number = DebugMode.ENABLED ? performance.now() : 0;
+    const start: number = DEBUG ? performance.now() : 0;
 
     // Font
     const font: FontFaceObserver = new FontFaceObserver(Fonts.ERAS_BOLD_ITC);
@@ -91,7 +92,7 @@ async function main() {
 
     window.game = new Menu(app, core);
 
-    if (DebugMode.ENABLED) console.log(`Finished loading in ${performance.now() - start} ms`);
+    if (DEBUG) console.log(`Finished loading in ${performance.now() - start} ms`);
 }
 
 window.onload = () => main();

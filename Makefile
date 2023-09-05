@@ -5,7 +5,6 @@ GEN         = src/gen
 TEX			= art/textures
 PIPE		= art/pipe
 
-GEN_DEBUG   = $(GEN)/debug.ts
 GEN_CONSTS  = $(GEN)/constants.ts
 
 SIZES       = 72 90 120
@@ -15,7 +14,7 @@ PY_DATA     = scripts/data.py
 PY_OVERLAY  = scripts/overlay.py
 PY_SPRITES  = scripts/spritesheet.py
 
-TS_SRC      = $(shell find src -name '*.ts') $(GEN_DEBUG) package-lock.json tsconfig.json
+TS_SRC      = $(shell find src -name '*.ts') package-lock.json tsconfig.json
 JS_OUT      = out/main.js
 
 PIPE_1	    = $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $(PRESSURE:%=straight_%) mix unmix up down filter
@@ -85,13 +84,6 @@ test : $(DATA_OUT) FORCE
 	npx jest
 
 
-# Writes gen/debug.ts
-# Uses `grep` to not overwrite if not source changed, to prevent needing to recompile TS on each build
-$(GEN_DEBUG) : FORCE
-	if ! grep $(DEBUG) $(GEN_DEBUG) -q -s ; then \
-		printf "export const enum DebugMode { ENABLED = $(DEBUG) }\n" > $(GEN_DEBUG) ; \
-	fi
-
 $(WEB_TS) : $(TS_SRC)
 	cp -r src $(WEB)/
 
@@ -122,7 +114,7 @@ $(JS_OUT) $(JS_OUT).map &: $(TS_SRC) package-lock.json tsconfig.json
 	printf "Checking types...\n"
 	npx tsc
 	printf "Compiling...\n"
-	npx esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap, --minify)
+	npx esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap --define:DEBUG=true, --minify --define:DEBUG=false)
 
 $(PIPE_OUT) &: $(PIPE_IN) $(OVERLAY_OUT) $(PY_SPRITES)
 	printf "Packing sprites...\n"

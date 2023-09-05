@@ -6,7 +6,6 @@ import { Animations } from "./animation";
 import { Constants, DirectionId, Fonts, Strings } from "./gen/constants";
 import { Util } from "./game/util";
 import { VictoryModal } from "./modal";
-import { DebugMode } from "./gen/debug";
 
 
 interface Panel {
@@ -100,7 +99,7 @@ export class Menu {
             this.titleContainer.addChild(letter);
         }
 
-        if (DebugMode.ENABLED && Math.abs(leftX - (Constants.STAGE_WIDTH - (x - 10))) > 2) {
+        if (DEBUG && Math.abs(leftX - (Constants.STAGE_WIDTH - (x - 10))) > 2) {
             throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
         }
 
@@ -343,7 +342,7 @@ export class Menu {
         try {
             localStorage.setItem(Strings.LOCAL_STORAGE_KEY, JSON.stringify(this.saveData));
         } catch (e) {
-            if (DebugMode.ENABLED) {
+            if (DEBUG) {
                 throw e;
             }
         }
@@ -394,7 +393,7 @@ export class Menu {
         try {
             localStorage.removeItem(Strings.LOCAL_STORAGE_KEY);
         } catch (e) {
-            if (DebugMode.ENABLED) {
+            if (DEBUG) {
                 throw e;
             }
         }
