@@ -8,6 +8,8 @@
 - Click and drag on existing pipes to move them, which functions as a replace + drag pipe
     - Click and drag also keeps labels?
 - Store last puzzle ID + the board layout in save data, and restore it if you go back to the same puzzle
+    - Add an icon on the main menu that indicates you have save data available (in-progress icon)
+- Add a color button that drags null / empty color label
 
 ### Graphics
 
@@ -23,3 +25,11 @@
 ### Bugs / Tech Enhancements
 
 - Add a main menu spritesheet for misc. non-background sprites
+
+
+### Puzzles
+
+- Fix for puzzle 96 (id 95) -> the yellow/blue filters can be bypassed, need to move around some other filters
+- Puzzle builder tool?
+    - Python script to heuristically find valid puzzle solutions?
+    - UI that allows placing things in a puzzle? Debug mode only?
