@@ -58,7 +58,7 @@ export class VictoryModal {
 
         Animations.fadeIn(this.root, () => {
             this.active = true;
-        });
+        }, Constants.ANIM_VICTORY_FADE_IN_DELAY_TICKS);
 
         parent.addChild(this.root);
     }

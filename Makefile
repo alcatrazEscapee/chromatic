@@ -18,7 +18,7 @@ PY_SPRITES  = scripts/spritesheet.py
 TS_SRC      = $(shell find src -name '*.ts') $(GEN_DEBUG) package-lock.json tsconfig.json
 JS_OUT      = out/main.js
 
-PIPE_1	    = $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $(PRESSURE:%=straight_%) mix unmix up down
+PIPE_1	    = $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $(PRESSURE:%=straight_%) mix unmix up down filter
 
 PIPE_IN     = $(PIPE_1:%=$(PIPE)/72/%.png) $(PIPE_1:%=$(PIPE)/90/%.png) $(PIPE_1:%=$(PIPE)/120/%.png)
 PIPE_OUT    = $(SIZES:%=out/sheets/pipe_%.png) $(SIZES:%=out/sheets/pipe_%@1x.png.json)
@@ -146,5 +146,5 @@ $(OVERLAY_OUT) &: $(PY_OVERLAY)
 	python $(PY_OVERLAY) --overlay72=11 --overlay90=11 --overlay120=16
 
 $(DATA_OUT) : $(DATA_IN) $(GEN_CONSTS) $(PY_DATA)
-	printf "Writing puzzles.json..."
+	printf "Writing puzzles.json...\n"
 	python $(PY_DATA)

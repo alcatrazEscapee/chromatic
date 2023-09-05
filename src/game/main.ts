@@ -22,6 +22,7 @@ interface GameCallback {
     readonly core: AssetBundle;
 
     onVictory(puzzleId: number): void;
+    unload(): void;
 }
 
 
@@ -34,7 +35,7 @@ export class Game {
 
     // UI Layer (background display)
     readonly gridContainer: Container; // The NxN grid, which is puzzle-dependent
-    readonly buttonsContainer: Container; // All tile buttons, start, stop, etc.)
+    readonly buttonsContainer: RestrictContainer<Container, DisplayObject, 0>; // All tile buttons, start, stop, etc.)
     readonly tilesContainer: Container; // All placed tiles
     readonly edgesContainer: Container; // All input / output edges. Also holds input / output flows, added by the simulator
     readonly topContainer: Container; // Top layer (held sprite, things that need to be fully top level)
@@ -46,6 +47,7 @@ export class Game {
 
     readonly btnPlay: Sprite;
     readonly btnStop: Sprite;
+    readonly btnMenu: Sprite;
 
     readonly simulator: Simulator.Kind;
 
@@ -72,8 +74,10 @@ export class Game {
         this.core = menu.core;
         this.tiles = [];
 
+        const buttonsContainer = new PIXI.Container();
+
         this.gridContainer = new PIXI.Container();
-        this.buttonsContainer = new PIXI.Container();
+        this.buttonsContainer = buttonsContainer;
         this.tilesContainer = new PIXI.Container();
         this.edgesContainer = new PIXI.Container();
         this.topContainer = new PIXI.Container();
@@ -87,13 +91,22 @@ export class Game {
         const core = menu.core;
         const ui = new PIXI.Sprite(this.core.ui_background);
 
+        const tabTopBackground = new PIXI.Sprite(core.ui_tab_top);
+        const tabBotBackground = new PIXI.Sprite(core.ui_tab_bot);
+
+        tabTopBackground.position.set(271, 431);
+        tabBotBackground.position.set(271, 431);
+
+        this.tileButtonsContainer.addChild(tabTopBackground);
+        this.colorButtonsContainer.addChild(tabBotBackground);
+
         const tileButtonTextures = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
         for (let i = 0; i <= TileId.last; i++) {
             const tileId: TileId = i;
             const texture: Texture = tileButtonTextures[i];
             const btn = new PIXI.Sprite(texture);
 
-            btn.position.set(10 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66);
+            btn.position.set(22 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66);
             btn.eventMode = 'static';
             btn.on('pointerdown', event => this.grabTile(event, tileId, texture));
             
@@ -108,7 +121,7 @@ export class Game {
 
             btn.beginFill(Util.COLORS[color]);
             btn.drawCircle(0, 0, 12);
-            btn.position.set(22 + Math.floor(offset / 3) * 40, 460 + (offset % 3) * 40);
+            btn.position.set(48 + Math.floor(offset / 3) * 41, 460 + (offset % 3) * 41);
 
             btn.eventMode = 'static';
             btn.on('pointerdown', event => this.grabColor(event, color));
@@ -120,12 +133,12 @@ export class Game {
         const btnPressureUp = new PIXI.Sprite(core.pipe_72.textures.pipe_72_up);
         const btnPressureDown = new PIXI.Sprite(core.pipe_72.textures.pipe_72_down);
 
-        btnPressureUp.position.set(22 + 5 * 40 - 13, 460 + 0 * 40 - 13);
+        btnPressureUp.position.set(240, 447);
         btnPressureUp.eventMode = 'static';
         btnPressureUp.on('pointerdown', event => this.grabPressure(event, 1));
         btnPressureUp.cursor = Strings.CURSOR;
         
-        btnPressureDown.position.set(22 + 5 * 40 - 13, 460 + 2 * 40 - 13);
+        btnPressureDown.position.set(240, 529);
         btnPressureDown.eventMode = 'static';
         btnPressureDown.on('pointerdown', event => this.grabPressure(event, -1));
         btnPressureDown.cursor = Strings.CURSOR;
@@ -134,38 +147,44 @@ export class Game {
         this.colorButtonsContainer.addChild(btnPressureDown);
 
         this.btnPlay = new PIXI.Sprite(this.core.ui_btn_play);
-        this.btnPlay.position.set(330, 438);
+        this.btnPlay.position.set(324, 438);
         this.btnPlay.eventMode = 'static';
         this.btnPlay.on('pointertap', event => this.onPlay(event));
-        this.buttonsContainer.addChild(this.btnPlay);
+        buttonsContainer.addChild(this.btnPlay);
 
         this.btnStop = new PIXI.Sprite(this.core.ui_btn_stop);
-        this.btnStop.position.set(361, 440);
+        this.btnStop.position.set(355, 440);
         this.btnStop.eventMode = 'static';
         this.btnStop.alpha = 0.5;
         this.btnStop.on('pointertap', event => this.onStop(event));
-        this.buttonsContainer.addChild(this.btnStop);
+        buttonsContainer.addChild(this.btnStop);
 
         const btnTabTop = new PIXI.Sprite();
         const btnTabBot = new PIXI.Sprite();
 
-        btnTabTop.hitArea = new PIXI.Rectangle(275, 431, 22, 70);
+        btnTabTop.hitArea = new PIXI.Rectangle(274, 431, 35, 70);
         btnTabTop.eventMode = 'static';
         btnTabTop.on('pointertap', event => this.onTabTop(event));
 
-        btnTabBot.hitArea = new PIXI.Rectangle(275, 431 + 70, 22, 70);
+        btnTabBot.hitArea = new PIXI.Rectangle(274, 431 + 70, 35, 70);
         btnTabBot.eventMode = 'static';
         btnTabBot.on('pointertap', event => this.onTabBot(event));
 
-        this.buttonsContainer.addChild(btnTabTop);
-        this.buttonsContainer.addChild(btnTabBot);
+        buttonsContainer.addChild(btnTabTop);
+        buttonsContainer.addChild(btnTabBot);
+
+        this.btnMenu = new PIXI.Sprite(this.core.menu_btn_main);
+        this.btnMenu.position.set(356, 542);
+        this.btnMenu.eventMode = 'static';
+        this.btnMenu.on('pointertap', event => this.onMenu(event));
+        buttonsContainer.addChild(this.btnMenu);
 
         // Default with tile buttons visible
-        this.buttonsContainer.addChild(this.tileButtonsContainer);
+        this.buttonsContainer.addChildAt(this.tileButtonsContainer, 0);
 
         root.addChild(ui);
         root.addChild(this.gridContainer);
-        root.addChild(this.buttonsContainer);
+        root.addChild(buttonsContainer);
         root.addChild(this.tilesContainer);
         root.addChild(this.edgesContainer);
         root.addChild(this.topContainer);
@@ -240,6 +259,18 @@ export class Game {
             edge.angle = 90 * dir;
 
             this.edgesContainer.addChild(edge);
+        }
+
+        for (const [x, y, dir, color] of puzzle?.filters ?? []) {
+            const filter = new PIXI.Sprite(palette.textures.filter);
+            const pos = Util.getFilterPos(palette, x, y, dir);
+
+            filter.anchor.set(0.5);
+            filter.angle = dir === DirectionId.UP ? 0 : 90;
+            filter.position.set(pos.x, pos.y);
+            filter.tint = Util.COLORS[color];
+
+            this.edgesContainer.addChild(filter);
         }
 
         this.puzzle = puzzle;
@@ -475,22 +506,34 @@ export class Game {
     }
 
     private onTabTop(_: FederatedPointerEvent): void {
-        if (this.state === StateId.MAIN_CONFIGURE) {
-            this.state = this.tabState = StateId.MAIN_TILE;
+        if (this.state === StateId.MAIN_CONFIGURE || this.state === StateId.SIMULATION) {
+            this.tabState = StateId.MAIN_TILE;
+            if (this.state !== StateId.SIMULATION) {
+                this.state = this.tabState;
+            }
             
             // Switch out buttons
             this.buttonsContainer.removeChild(this.colorButtonsContainer);
-            this.buttonsContainer.addChild(this.tileButtonsContainer);
+            this.buttonsContainer.addChildAt(this.tileButtonsContainer, 0);
         }
     }
 
     private onTabBot(_: FederatedPointerEvent): void {
-        if (this.state === StateId.MAIN_TILE) {
-            this.state = this.tabState = StateId.MAIN_CONFIGURE;
+        if (this.state === StateId.MAIN_TILE || this.state === StateId.SIMULATION) {
+            this.tabState = StateId.MAIN_CONFIGURE;
+            if (this.state !== StateId.SIMULATION) {
+                this.state = this.tabState;
+            }
             
             // Switch out buttons
             this.buttonsContainer.removeChild(this.tileButtonsContainer);
-            this.buttonsContainer.addChild(this.colorButtonsContainer);
+            this.buttonsContainer.addChildAt(this.colorButtonsContainer, 0);
+        }
+    }
+
+    private onMenu(_: FederatedPointerEvent): void {
+        if (this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) {
+            this.menu.unload();
         }
     }
 

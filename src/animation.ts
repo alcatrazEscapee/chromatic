@@ -8,8 +8,8 @@ type Event = () => void;
 
 export module Animations {
 
-    export function fadeIn(root: Container, onComplete: Event) {
-        new FadeIn(root, onComplete, false);
+    export function fadeIn(root: Container, onComplete: Event, delay: number = 0) {
+        new FadeIn(root, onComplete, false, delay);
     }
 
     export function fadeOut(root: Container, onComplete: Event) {
@@ -33,20 +33,22 @@ class FadeIn {
 
     private delta: number;
 
-    constructor(root: Container, onComplete: Event, invert: boolean) {
+    constructor(root: Container, onComplete: Event, invert: boolean, delay: number = 0) {
         this.onComplete = onComplete;
         this.root = root;
         this.invert = invert;
 
         this.root.alpha = this.invert ? 1.0 : 0.0;
-        this.delta = 0;
+        this.delta = -delay;
 
         PIXI.Ticker.shared.add(this.tick, this);
     }
 
     tick(delta: number): void {
         this.delta += delta;
-        if (this.delta < Constants.ANIM_FADE_IN_TICKS) {
+        if (this.delta < 0) {
+            // Initial delay - no-op
+        } else if (this.delta < Constants.ANIM_FADE_IN_TICKS) {
             const alpha = this.delta / Constants.ANIM_FADE_IN_TICKS;
             this.root.alpha = this.invert ? 1.0 - alpha : alpha;
         } else {

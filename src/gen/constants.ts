@@ -133,7 +133,8 @@ export const enum Constants {
 
     ANIM_EASE_IN_OUT_TICKS = 45,
 
-    ANIM_FADE_IN_TICKS = 30,
+    ANIM_FADE_IN_TICKS = 40,
+    ANIM_VICTORY_FADE_IN_DELAY_TICKS = 40,
 
     BITSET_SHIFT = 5,
     BITSET_MASK = (1 << BITSET_SHIFT) - 1,

@@ -4,17 +4,13 @@
 
 ### Game
 
-- Add Filters
-    - Graphics for filters in puzzle
 - Add tap on pipe input/output to pop up modal tooltips
-- Add button to return to main menu from main game
 - Click and drag on existing pipes to move them, which functions as a replace + drag pipe
     - Click and drag also keeps labels?
 - Store last puzzle ID + the board layout in save data, and restore it if you go back to the same puzzle
 
 ### Graphics
 
-- Improve background for tab top/bot buttons in game UI
 - Make victory modal not look like shit - improve buttons for it?
 
 ### Website

@@ -152,13 +152,15 @@ export module Util {
     }
 
     export function getInputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
-        const pos: Point = getGridPos(palette, x, y);
-        return move(pos, dir, -palette.tileWidth / 2 - Constants.GRID_LEFT_HALF);
+        return move(getGridPos(palette, x, y), dir, -palette.tileWidth / 2 - Constants.GRID_LEFT_HALF);
     }
 
     export function getOutputPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
-        const pos: Point = getGridPos(palette, x, y);
-        return move(pos, dir, -palette.tileWidth / 2 + Constants.GRID_LEFT_HALF);
+        return move(getGridPos(palette, x, y), dir, -palette.tileWidth / 2 + Constants.GRID_LEFT_HALF);
+    }
+
+    export function getFilterPos(palette: Palette, x: number, y: number, dir: DirectionId): Point {
+        return move(getGridPos(palette, x, y), dir, -palette.tileWidth / 2);
     }
 
     export function getGridPos(palette: Palette, x: number, y: number): Point {
@@ -369,6 +371,7 @@ export module Util {
                 core.textures[`${id}_up`],
                 core.textures[`${id}_down`],
             ],
+            filter: core.textures[`${id}_filter`],
         }
     }
 
