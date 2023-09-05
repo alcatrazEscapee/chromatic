@@ -1,6 +1,7 @@
 import type { Container, Graphics } from "pixi.js";
-import { Constants, type ColorId, type DirectionId } from "../gen/constants";
+import type { ColorId, DirectionId } from "../gen/constants";
 
+import { Constants } from "../gen/constants";
 import { Util } from './util';
 
 

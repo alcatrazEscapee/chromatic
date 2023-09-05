@@ -1,3 +1,4 @@
+import { Builder } from "./builder";
 import { Fonts, type AssetBundle, Constants } from "./gen/constants";
 import { Menu } from "./menu";
 
@@ -5,9 +6,10 @@ import { Menu } from "./menu";
 declare global {
     interface Window {
         game: Menu;
+        builder: Builder;
     }
 
-    const DEBUG: boolean;
+    const DEBUG: true;
 }
 
 
@@ -92,7 +94,10 @@ async function main() {
 
     window.game = new Menu(app, core);
 
-    if (DEBUG) console.log(`Finished loading in ${performance.now() - start} ms`);
+    if (DEBUG) {
+        console.log(`Finished loading in ${performance.now() - start} ms`);
+        window.builder = new Builder();
+    }
 }
 
 window.onload = () => main();
