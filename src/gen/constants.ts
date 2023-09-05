@@ -39,7 +39,7 @@ export type AssetBundle = _AssetBundle<NetworkData, Texture>;
 export type TexturePalette = _TexturePalette<Texture>;
 
 
-export const enum TileId {
+export enum TileId {
     EMPTY = 0,
     STRAIGHT = 1,
     CURVE = 2,
@@ -54,7 +54,7 @@ export const enum TileId {
     last = DOWN,
 }
 
-export const enum GridId {
+export enum GridId {
     _3x3 = 0,
     _4x4 = 1,
     _5x5 = 2,
@@ -62,7 +62,7 @@ export const enum GridId {
     default = _3x3,
 }
 
-export const enum ColorId {
+export enum ColorId {
     RED = 0,
     BLUE = 1,
     YELLOW = 2,
@@ -83,7 +83,7 @@ export const enum ColorId {
     last = MAGENTA,
 }
 
-export const enum DirectionId {
+export enum DirectionId {
     INTERNAL = 0,
 
     LEFT = 0,
@@ -94,7 +94,7 @@ export const enum DirectionId {
     last = 3
 }
 
-export const enum AxisId {
+export enum AxisId {
     HORIZONTAL = 0,
     VERTICAL = 1,
 
@@ -102,7 +102,7 @@ export const enum AxisId {
 }
 
 
-export const enum Constants {
+export enum Constants {
     STAGE_WIDTH = 400,
     STAGE_HEIGHT = 600,
 
@@ -143,13 +143,13 @@ export const enum Constants {
     N_DIRECTION = DirectionId.last + 1,
 }
 
-export const enum Strings {
+export enum Strings {
     /** See {@link https://pixijs.download/v6.1.0/docs/PIXI.InteractionManager.html#cursorStyles PIXI.InteractionManager.cursorStyles} */
     CURSOR = 'cursor',
     LOCAL_STORAGE_KEY = 'chromatic-save-data',
 }
 
-export const enum Fonts {
+export enum Fonts {
     ERAS_BOLD_ITC = 'Eras Bold ITC',
     ARIAL = 'Arial',
 }

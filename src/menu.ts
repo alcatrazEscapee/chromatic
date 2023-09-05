@@ -1,11 +1,12 @@
 import type { Application, Container, DisplayObject, FederatedPointerEvent, Sprite, Text } from "pixi.js";
-import type { AssetBundle } from "./gen/constants";
+import { AssetBundle, GridId } from "./gen/constants";
 
 import { Game } from "./game/main";
 import { Animations } from "./animation";
 import { Constants, DirectionId, Fonts, Strings } from "./gen/constants";
 import { Util } from "./game/util";
 import { VictoryModal } from "./modal";
+import { Builder } from "./builder";
 
 
 interface Panel {
@@ -13,6 +14,7 @@ interface Panel {
     readonly stars: (Sprite | null)[];
     readonly page: number;
 }
+
 
 export class Menu {
 

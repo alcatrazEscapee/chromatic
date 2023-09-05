@@ -4,8 +4,7 @@ WEB         = ../Website/public/chromatic/
 GEN         = src/gen
 TEX			= art/textures
 PIPE		= art/pipe
-
-GEN_CONSTS  = $(GEN)/constants.ts
+OUT_MODE    = out/debug
 
 SIZES       = 72 90 120
 PRESSURES   = 1 2 3 4
@@ -14,7 +13,7 @@ PY_DATA     = scripts/data.py
 PY_OVERLAY  = scripts/overlay.py
 PY_SPRITES  = scripts/spritesheet.py
 
-TS_SRC      = $(shell find src -name '*.ts') package-lock.json tsconfig.json
+TS_SRC      = $(shell find src -name '*.ts') $(OUT_MODE) package-lock.json tsconfig.json
 JS_OUT      = out/main.js
 
 PIPE_1	    = $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $(PRESSURE:%=straight_%) mix unmix up down filter
@@ -47,14 +46,14 @@ FORCE :
 # Includes .js.map, copies the /src/ directory for debugger use
 # Sets `DebugMode.ENABLED = 1`
 .PHONY : build
-build : build-debug $(GEN_DEBUG) $(WEB_ART) $(WEB_JSON) $(WEB_TS) $(WEB_JS) $(WEB_JS_MAP)
+build : build-debug $(OUT_MODE) $(WEB_ART) $(WEB_JSON) $(WEB_TS) $(WEB_JS) $(WEB_JS_MAP)
 
 # Build (release mode)
 # Depends on `clean`
 # Does not include any .js.map or /src/
 # Sets `DebugMode.ENABLED = 0`
 .PHONY : release
-release : clean-release build-release $(GEN_DEBUG) $(WEB_ART) $(WEB_JSON) $(WEB_JS)
+release : clean-release build-release $(OUT_MODE) $(WEB_ART) $(WEB_JSON) $(WEB_JS)
 
 .PHONY : build-debug
 build-debug :
@@ -78,6 +77,14 @@ clean-release :
 	rm -rf $(WEB)/lib
 	rm -rf $(WEB)/src
 
+
+# Writes $(OUT_MODE) as an indicator of what mode `main.js` was last compiled with.
+# Uses `grep` to not overwrite if not source changed, to prevent needing to recompile TS on each build
+$(OUT_MODE) : FORCE
+	@mkdir -p out
+	if ! grep $(DEBUG) $(OUT_MODE) -q -s ; then \
+		printf "$(DEBUG)" > $(OUT_MODE) ; \
+	fi
 
 .PHONY : test
 test : $(DATA_OUT) FORCE
@@ -137,6 +144,6 @@ $(OVERLAY_OUT) &: $(PY_OVERLAY)
 	printf "Generating overlays...\n"
 	python $(PY_OVERLAY) --overlay72=11 --overlay90=11 --overlay120=16
 
-$(DATA_OUT) : $(DATA_IN) $(GEN_CONSTS) $(PY_DATA)
+$(DATA_OUT) : $(DATA_IN) $(GEN)/constants.ts $(PY_DATA)
 	printf "Writing puzzles.json...\n"
 	python $(PY_DATA)
