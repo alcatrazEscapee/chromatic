@@ -31,7 +31,7 @@ class Impl implements Simulator.Callback, Navigator.Map {
     
     victory: boolean;
 
-    constructor(puzzleIn: Partial<NetworkPuzzle> | number) {        
+    constructor(puzzleIn: Partial<NetworkPuzzle> | number) {
         if (puzzleIn === -1) {
             puzzleIn = { id: -1, size: GridId._5x5, inputs: [], outputs: [] };
         } else if (typeof puzzleIn === 'number') {

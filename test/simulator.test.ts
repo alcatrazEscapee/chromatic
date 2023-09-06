@@ -27,8 +27,8 @@ test('simulator id=0 -> leak into straight perpendicular', () => {
     dsl.place(
         [0, 1, TileId.STRAIGHT],
         [1, 1, TileId.CURVE],
-        [1, 0, TileId.CURVE, DirectionId.DOWN],
-        [0, 0, TileId.CURVE, DirectionId.RIGHT],
+        [1, 0, TileId.CURVE, DirectionId._270],
+        [0, 0, TileId.CURVE, DirectionId._180],
     );
 
     expect(dsl.run()).toBe(5);
@@ -68,11 +68,11 @@ test('simulator id=80 -> victory, filter works', () => {
     const dsl = DSL(80);
 
     dsl.place(
-        [0, 0, TileId.CURVE, DirectionId.RIGHT],
-        [1, 0, TileId.UNMIX, DirectionId.DOWN],
-        [0, 1, TileId.CURVE, DirectionId.UP],
-        [1, 1, TileId.MIX, DirectionId.DOWN],
-        [1, 2, TileId.STRAIGHT, DirectionId.UP],
+        [0, 0, TileId.CURVE, DirectionId._180],
+        [1, 0, TileId.UNMIX, DirectionId._270],
+        [0, 1, TileId.CURVE, DirectionId._90],
+        [1, 1, TileId.MIX, DirectionId._270],
+        [1, 2, TileId.STRAIGHT, DirectionId._90],
     );
     dsl.label(0, 0, { color: ColorId.RED });
 
