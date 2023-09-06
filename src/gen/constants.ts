@@ -98,6 +98,11 @@ export enum DirectionId {
     RIGHT = 2,
     DOWN = 3,
 
+    // clockwise rotations
+    _90 = UP,
+    _180 = RIGHT,
+    _270 = DOWN,
+
     last = 3
 }
 

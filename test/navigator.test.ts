@@ -1,4 +1,4 @@
-import { AxisId, ColorId, DirectionId, GridId, TileId } from '../src/gen/constants';
+import { AxisId, ColorId, DirectionId, TileId } from '../src/gen/constants';
 import { DSL } from './_setup';
 
 
@@ -32,7 +32,7 @@ test('updateTile() inherit pressure EDGE -> CURVE -> STRAIGHT', () => {
     
     dsl.place(
         [0, 2, TileId.CURVE],
-        [0, 1, TileId.STRAIGHT, DirectionId.UP]
+        [0, 1, TileId.STRAIGHT, DirectionId._90]
     );
 
     expect(dsl.at(0, 1).pressure).toBe(3);
@@ -44,7 +44,7 @@ test('updateTile() inherit pressure EDGE -> STRAIGHT -> CURVE', () => {
     ]});
     
     dsl.place(
-        [1, 0, TileId.STRAIGHT, DirectionId.UP],
+        [1, 0, TileId.STRAIGHT, DirectionId._90],
         [1, 1, TileId.CURVE]
     );
 
@@ -58,9 +58,9 @@ test('updateTile() inherit pressure EDGE -> CROSS -> CURVE -> CROSS x2', () => {
     ]});
     
     dsl.place(
-        [0, 0, TileId.CROSS, DirectionId.UP],
-        [0, 1, TileId.CURVE, DirectionId.UP],
-        [1, 0, TileId.CURVE, DirectionId.DOWN],
+        [0, 0, TileId.CROSS, DirectionId._90],
+        [0, 1, TileId.CURVE, DirectionId._90],
+        [1, 0, TileId.CURVE, DirectionId._270],
         [1, 1, TileId.CROSS],
     );
 
@@ -166,7 +166,7 @@ test('updateFrom() apply color to STRAIGHT -> CROSS (rotated) -> STRAIGHT', () =
     
     dsl.place(
         [0, 0, TileId.STRAIGHT],
-        [1, 0, TileId.CROSS, DirectionId.UP],
+        [1, 0, TileId.CROSS, DirectionId._90],
         [2, 0, TileId.STRAIGHT],
     );
     dsl.label(0, 0, { color: ColorId.RED });
@@ -253,9 +253,9 @@ test('updateFrom() apply color to cycle', () => {
     const dsl = DSL(-1);
 
     dsl.place(
-        [1, 0, TileId.CURVE, DirectionId.DOWN],
-        [0, 0, TileId.CURVE, DirectionId.RIGHT],
-        [0, 1, TileId.CURVE, DirectionId.UP],
+        [1, 0, TileId.CURVE, DirectionId._270],
+        [0, 0, TileId.CURVE, DirectionId._180],
+        [0, 1, TileId.CURVE, DirectionId._90],
         [1, 1, TileId.CURVE],
     );
 
@@ -268,13 +268,13 @@ test('updateFrom() apply color to figure-8 cycle', () => {
     const dsl = DSL(-1);
 
     dsl.place(
-        [1, 0, TileId.CURVE, DirectionId.DOWN],
-        [0, 0, TileId.CURVE, DirectionId.RIGHT],
-        [0, 1, TileId.CURVE, DirectionId.UP],
+        [1, 0, TileId.CURVE, DirectionId._270],
+        [0, 0, TileId.CURVE, DirectionId._180],
+        [0, 1, TileId.CURVE, DirectionId._90],
         [1, 1, TileId.CROSS],
         [2, 2, TileId.CURVE],
-        [2, 1, TileId.CURVE, DirectionId.DOWN],
-        [1, 2, TileId.CURVE, DirectionId.UP],
+        [2, 1, TileId.CURVE, DirectionId._270],
+        [1, 2, TileId.CURVE, DirectionId._90],
     );
 
     dsl.label(0, 0, { color: ColorId.RED });
