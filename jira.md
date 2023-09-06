@@ -7,7 +7,6 @@
 - Add tap on pipe input/output to pop up modal tooltips
 - Store last puzzle ID + the board layout in save data, and restore it if you go back to the same puzzle
     - Add an icon on the main menu that indicates you have save data available (in-progress icon)
-- Add a color button that drags null / empty color label
 
 ### Graphics
 
