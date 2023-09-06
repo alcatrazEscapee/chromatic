@@ -179,6 +179,12 @@ export module Navigator {
 
 
     function recursiveUpdate(map: Map, pos: Position | null, copyFrom: StrictReadonly<TileProperties>, clearColor: boolean = false): void {
+        
+        // Since it's possible for cycles to occur, track already seen positions in a set
+        // The seen position needs to include the property direction, in addition to position, which we hash in a fairly basic manner
+        const seen: Set<number> = new Set();
+        const query: { key: DirectionId | AxisId } = { key: DirectionId.INTERNAL };
+        
         while (pos !== null) {
             // If we crossed a filter, then we need to not propagate color
             // `dir` is in an outgoing convention, but we need to test in an incoming convention, on the _next_ tile.
@@ -194,11 +200,18 @@ export module Navigator {
                 break;
             }
 
-            const property = access(map, pos, true);
+            const property = access(map, pos, true, query);
             if (property !== null) {
                 resolveFrom(property, copyFrom, clearColor);
                 map.updateTile(pos);
             }
+
+            const hashKey = query.key | (pos.x << 8) | (pos.y << 16);
+            if (seen.has(hashKey)) {
+                break; // Reached this position again, so abort
+            }
+            
+            seen.add(hashKey);
         }
     }
 
@@ -261,8 +274,11 @@ export module Navigator {
      * 
      * @param updating If `true`, then this will only access writable properties, instead of strict readonly ones (which may include edge properties).
      */
-    function access<T extends boolean>(map: Map, pos: Position | null, updating: T): (T extends true ? TileProperties : StrictReadonly<TileProperties>) | null {
+    function access<T extends boolean>(map: Map, pos: Position | null, updating: T, query?: { key: DirectionId | AxisId }): (T extends true ? TileProperties : StrictReadonly<TileProperties>) | null {
         
+        if (!query) {
+            query = { key: DirectionId.INTERNAL };
+        }
         if (pos === null) {
             return null;
         }
@@ -301,16 +317,20 @@ export module Navigator {
 
         switch (tile.tileId) {
             case TileId.STRAIGHT:
+                query.key = DirectionId.INTERNAL;
                 return Util.sameAxis(tile.dir, pos.dir) ? tile.property(DirectionId.INTERNAL) : null;
             case TileId.CURVE:
+                query.key = DirectionId.INTERNAL;
                 return Util.outputCurve(tile.dir, Util.flip(pos.dir)).dir !== -1 ? tile.property(DirectionId.INTERNAL) : null;
             case TileId.CROSS:
-                return Util.sameAxis(tile.dir, pos.dir) ? tile.property(AxisId.HORIZONTAL) : tile.property(AxisId.VERTICAL);
+                query.key = Util.sameAxis(tile.dir, pos.dir) ? AxisId.HORIZONTAL : AxisId.VERTICAL;
+                return tile.property(query.key);
             default:
-                return outgoingDir === tile.dir ? tile.property(DirectionId.LEFT)
-                    : outgoingDir === Util.cw(tile.dir) ? tile.property(DirectionId.UP)
-                    : outgoingDir === Util.flip(tile.dir) ? tile.property(DirectionId.RIGHT)
-                    : null;
+                query.key = outgoingDir === tile.dir ? DirectionId.LEFT
+                    : outgoingDir === Util.cw(tile.dir) ? DirectionId.UP
+                    : outgoingDir === Util.flip(tile.dir) ? DirectionId.RIGHT
+                    : DirectionId.DOWN;
+                return query.key === DirectionId.DOWN ? null : tile.property(query.key);
         }
     }
 
