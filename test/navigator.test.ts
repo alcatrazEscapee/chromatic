@@ -253,6 +253,33 @@ test('updateFrom() apply color to cycle', () => {
     const dsl = DSL(-1);
 
     dsl.place(
+        [1, 0, TileId.CURVE, DirectionId.DOWN],
+        [0, 0, TileId.CURVE, DirectionId.RIGHT],
+        [0, 1, TileId.CURVE, DirectionId.UP],
+        [1, 1, TileId.CURVE],
+    );
 
-    )
+    dsl.label(0, 0, { color: ColorId.RED });
+
+    expect(dsl.at(0, 0).color).toBe(ColorId.RED);
+});
+
+test('updateFrom() apply color to figure-8 cycle', () => {
+    const dsl = DSL(-1);
+
+    dsl.place(
+        [1, 0, TileId.CURVE, DirectionId.DOWN],
+        [0, 0, TileId.CURVE, DirectionId.RIGHT],
+        [0, 1, TileId.CURVE, DirectionId.UP],
+        [1, 1, TileId.CROSS],
+        [2, 2, TileId.CURVE],
+        [2, 1, TileId.CURVE, DirectionId.DOWN],
+        [1, 2, TileId.CURVE, DirectionId.UP],
+    );
+
+    dsl.label(0, 0, { color: ColorId.RED });
+
+    expect(dsl.at(1, 1, AxisId.VERTICAL).color).toBe(ColorId.RED);
+    expect(dsl.at(1, 1, AxisId.HORIZONTAL).color).toBe(ColorId.RED);
+    expect(dsl.at(2, 2).color).toBe(ColorId.RED);
 });
