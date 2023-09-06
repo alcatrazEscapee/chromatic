@@ -61,7 +61,7 @@ export class Menu {
         this.menuContainer.addChild(new PIXI.Sprite(core.menu_background)); // Needs to be before createPanel()
 
         this.game = new Game(this, this.gameContainer);
-        this.maxPageInclusive = Math.ceil(core.puzzles.puzzles.length / 16) - 1;
+        this.maxPageInclusive = Math.ceil(core.puzzles.puzzles.length / Constants.PUZZLES_PER_PAGE) - 1;
         this.maxPuzzleInclusive = core.puzzles.puzzles.length - 1;
 
         this.page = 0;
@@ -258,16 +258,16 @@ export class Menu {
 
     private createPanel(page: number): Panel {
         const root = new PIXI.Container();
-        const stars: (Sprite | null)[] = Util.nulls(16);
-        const max = Math.min(16, this.core.puzzles.puzzles.length - (16 * page));
+        const stars: (Sprite | null)[] = Util.nulls(Constants.PUZZLES_PER_PAGE);
+        const max = Math.min(Constants.PUZZLES_PER_PAGE, this.core.puzzles.puzzles.length - (Constants.PUZZLES_PER_PAGE * page));
         const panel: Panel = { root, stars, page };
 
         for (let i = 0; i < max; i++) {
-            const puzzleId: number = i + page * 16;
+            const puzzleId: number = i + page * Constants.PUZZLES_PER_PAGE;
             const button = new PIXI.Container();
             const back = new PIXI.Sprite(this.core.menu_panel);
 
-            const label = new PIXI.Text(String(i + page * 16 + 1), {
+            const label = new PIXI.Text(String(i + page * Constants.PUZZLES_PER_PAGE + 1), {
                 fontFamily: Fonts.ERAS_BOLD_ITC,
                 fontSize: 16,
                 fill: Constants.COLOR_WHITE,
@@ -285,8 +285,8 @@ export class Menu {
             root.addChild(button);
         }
 
-        for (let i = 0; i < 16; i++) {
-            this.updateStar(panel, i + page * 16);
+        for (let i = 0; i < Constants.PUZZLES_PER_PAGE; i++) {
+            this.updateStar(panel, i + page * Constants.PUZZLES_PER_PAGE);
         }
 
         this.menuContainer.addChild(root);
@@ -328,8 +328,8 @@ export class Menu {
     }
 
     private updateStar(panel: Panel | null, puzzleId: number): void {
-        const page: number = Math.floor(puzzleId / 16);
-        const index: number = puzzleId % 16;
+        const page: number = Math.floor(puzzleId / Constants.PUZZLES_PER_PAGE);
+        const index: number = puzzleId % Constants.PUZZLES_PER_PAGE;
 
         if (panel !== null && panel.page === page && panel.stars[index] === null && Util.bitGet(this.saveData.stars, puzzleId)) {
             const star = new PIXI.Sprite(this.core.menu_star);

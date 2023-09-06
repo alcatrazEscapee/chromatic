@@ -13,7 +13,7 @@ import fs from 'fs';
 /**
  * A test DSL for the navigator and simulator modules.
  */
-export function DSL(puzzle: Omit<NetworkPuzzle, 'id'> | number = -1): Impl {
+export function DSL(puzzle: Partial<NetworkPuzzle> | number = -1): Impl {
     return new Impl(puzzle);
 }
 
@@ -31,16 +31,20 @@ class Impl implements Simulator.Callback, Navigator.Map {
     
     victory: boolean;
 
-    constructor(puzzle: Omit<NetworkPuzzle, 'id'> | number) {
-        if (puzzle === -1) {
-            puzzle = { size: GridId._5x5, inputs: [], outputs: [] };
-        } else if (typeof puzzle === 'number') {
-            puzzle = (global as any).PUZZLES[puzzle] as NetworkPuzzle;
+    constructor(puzzleIn: Partial<NetworkPuzzle> | number) {        
+        if (puzzleIn === -1) {
+            puzzleIn = { id: -1, size: GridId._5x5, inputs: [], outputs: [] };
+        } else if (typeof puzzleIn === 'number') {
+            puzzleIn = (global as any).PUZZLES[puzzleIn] as NetworkPuzzle;
         }
         
-        if (!puzzle.hasOwnProperty('id')) {
-            (puzzle as NetworkPuzzle).id = -1;
-        }
+        const puzzle: NetworkPuzzle = {
+            id: puzzleIn.id ?? -1,
+            size: puzzleIn.size ?? GridId._5x5,
+            inputs: puzzleIn.inputs ?? [],
+            outputs: puzzleIn.outputs ?? [],
+            filters: puzzleIn?.filters ?? [],
+        } as NetworkPuzzle;
 
         this.grid = puzzle.size;
         this.palette = Util.buildPalettes({} as any, false)[puzzle.size];
@@ -51,9 +55,9 @@ class Impl implements Simulator.Callback, Navigator.Map {
         this.sim.init(this.palette, this);
     }
 
-    place(tiles: [number, number, Exclude<TileId, TileId.EMPTY>, DirectionId][]): void {
+    place(...tiles: ([number, number, Exclude<TileId, TileId.EMPTY>, DirectionId] | [number, number, Exclude<TileId, TileId.EMPTY>])[]): void {
         for (const [x, y, tileId, rot] of tiles) {
-            this.place1(x, y, tileId, rot);
+            this.place1(x, y, tileId, rot !== undefined ? rot : DirectionId.LEFT);
         }
     }
 
@@ -66,7 +70,7 @@ class Impl implements Simulator.Callback, Navigator.Map {
         Navigator.updateTile(this, { x, y }, tile);
     }
 
-    label(x: number, y: number, key: DirectionId, label?: { color?: ColorId | null, pressure?: 1 | 2 | 3 | 4 }) {
+    label(x: number, y: number, label: { color?: ColorId | null, pressure?: 1 | 2 | 3 | 4 }, key: DirectionId = DirectionId.INTERNAL) {
         const tile = this.tiles[x + this.palette.width * y]!;
         const property = tile.property(key);
         
@@ -84,7 +88,7 @@ class Impl implements Simulator.Callback, Navigator.Map {
         return n;
     }
 
-    at(x: number, y: number, key: DirectionId | AxisId): TileProperties {
+    at(x: number, y: number, key: DirectionId | AxisId = DirectionId.INTERNAL): TileProperties {
         return this.tiles[x + y * this.palette.width]!.property(key);
     }
 

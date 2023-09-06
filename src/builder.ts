@@ -3,6 +3,8 @@ import { Menu } from "./menu";
 
 
 type RelaxedIO = [number, number, DirectionId, ColorId, PressureId][];
+type DirectionKey = keyof typeof DirectionId;
+type ColorKey = keyof typeof ColorId;
 
 export class Builder {
 
@@ -50,12 +52,12 @@ export class Builder {
     }
 
     public input(x: number, y: number, dir: string, color: string, pressure: PressureId) {
-        (this.puzzle.inputs as RelaxedIO).push([x, y, DirectionId[dir.toUpperCase() as keyof typeof DirectionId], ColorId[color.toUpperCase() as keyof typeof ColorId], pressure]);
+        (this.puzzle.inputs as RelaxedIO).push([x, y, DirectionId[dir.toUpperCase() as DirectionKey], ColorId[color.toUpperCase() as ColorKey], pressure]);
         this.reload();
     }
 
     public output(x: number, y: number, dir: string, color: string, pressure: PressureId) {
-        (this.puzzle.outputs as RelaxedIO).push([x, y, DirectionId[dir.toUpperCase() as keyof typeof DirectionId], ColorId[color.toUpperCase() as keyof typeof ColorId], pressure]);
+        (this.puzzle.outputs as RelaxedIO).push([x, y, DirectionId[dir.toUpperCase() as DirectionKey], ColorId[color.toUpperCase() as ColorKey], pressure]);
         this.reload();
     }
 
