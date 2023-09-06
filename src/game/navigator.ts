@@ -150,20 +150,20 @@ export module Navigator {
 
         switch (tile.tileId) {
             case TileId.STRAIGHT:
-                recursiveUpdate(map, toPosition(pos, tile.dir), property);
-                recursiveUpdate(map, toPosition(pos, Util.flip(tile.dir)), property);
+                recursiveUpdate(map, toPosition(pos, tile.dir), property, true);
+                recursiveUpdate(map, toPosition(pos, Util.flip(tile.dir)), property, true);
                 break;
             case TileId.CURVE:
                 recursiveUpdate(map, toPosition(pos, tile.dir), property);
-                recursiveUpdate(map, toPosition(pos, Util.cw(tile.dir)), property);
+                recursiveUpdate(map, toPosition(pos, Util.cw(tile.dir)), property, true);
                 break;
             case TileId.CROSS:
                 {
                     // Key is an axis ID, either horizontal or vertical
                     const baseDir = key === AxisId.HORIZONTAL ? tile.dir : Util.cw(tile.dir); // So choose which side to update
 
-                    recursiveUpdate(map, toPosition(pos, baseDir), property);
-                    recursiveUpdate(map, toPosition(pos, Util.flip(baseDir)), property);
+                    recursiveUpdate(map, toPosition(pos, baseDir), property, true);
+                    recursiveUpdate(map, toPosition(pos, Util.flip(baseDir)), property, true);
                 }
                 break;
             default:
@@ -171,29 +171,32 @@ export module Navigator {
                     // Key is a direction, excluding DOWN
                     const outDir = Util.rotate(key as DirectionId, tile.dir); // In rotated coordinates
 
-                    recursiveUpdate(map, toPosition(pos, outDir), property);
+                    recursiveUpdate(map, toPosition(pos, outDir), property, true);
                 }
                 break;
         }
     }
 
 
-    function recursiveUpdate(map: Map, pos: Position | null, copyFrom: StrictReadonly<TileProperties>): void {
+    function recursiveUpdate(map: Map, pos: Position | null, copyFrom: StrictReadonly<TileProperties>, clearColor: boolean = false): void {
         while (pos !== null) {
             // If we crossed a filter, then we need to not propagate color
             // `dir` is in an outgoing convention, but we need to test in an incoming convention, on the _next_ tile.
             const adj = Util.move({ x: pos.x, y: pos.y, dir: pos.dir }, pos.dir);
             if (Util.filter(map.puzzle!, adj) !== -1) {
                 copyFrom = { pressure: copyFrom.pressure, color: null };
+                clearColor = false; // Prevent a clear color from being propagated past a filter
             }
 
             pos = traverse(map, pos);
             
-            if (pos === null) break;
+            if (pos === null) {
+                break;
+            }
 
             const property = access(map, pos, true);
             if (property !== null) {
-                resolveFrom(property, copyFrom);
+                resolveFrom(property, copyFrom, clearColor);
                 map.updateTile(pos);
             }
         }
@@ -315,8 +318,8 @@ export module Navigator {
         return { x: pos.x, y: pos.y, dir, ty: PositionType.VALID };
     }
 
-    function resolveFrom(self: TileProperties, other: StrictReadonly<TileProperties>): void {
-        if (other.color !== null) {
+    function resolveFrom(self: TileProperties, other: StrictReadonly<TileProperties>, clearColor: boolean = false): void {
+        if (other.color !== null || clearColor) {
             self.color = other.color!;
         }
         self.pressure = other.pressure!;

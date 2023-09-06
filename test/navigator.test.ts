@@ -228,6 +228,20 @@ test('updateFrom() apply color to (+) UP', () => {
     expect(dsl.at(0, 0, DirectionId.RIGHT).color).toBe(null);
 });
 
+test('updateFrom() apply clear color STRAIGHT -> STRAIGHT', () => {
+    const dsl = DSL();
+
+    dsl.place([
+        [0, 0, TileId.STRAIGHT, DirectionId.LEFT],
+        [1, 0, TileId.STRAIGHT, DirectionId.LEFT],
+    ]);
+    dsl.label(0, 0, DirectionId.INTERNAL, { color: ColorId.YELLOW });
+    dsl.label(0, 0, DirectionId.INTERNAL, { color: null });
+
+    expect(dsl.at(0, 0, DirectionId.INTERNAL).color).toBe(null);
+    expect(dsl.at(1, 0, DirectionId.INTERNAL).color).toBe(null);
+});
+
 test('updateFrom() apply color does not cross filter', () => {
     const dsl = DSL({
         size: GridId._3x3,
@@ -244,4 +258,28 @@ test('updateFrom() apply color does not cross filter', () => {
 
     expect(dsl.at(0, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
     expect(dsl.at(1, 0, DirectionId.INTERNAL).color).toBe(null);
+});
+
+test('updateFrom() apply clear color does not cross filter', () => {
+    const dsl = DSL({
+        size: GridId._3x3,
+        inputs: [],
+        outputs: [],
+        filters: [[0, 0, DirectionId.LEFT, ColorId.BROWN]]
+    });
+    
+    dsl.place([
+        [0, 0, TileId.STRAIGHT, DirectionId.LEFT],
+        [1, 0, TileId.STRAIGHT, DirectionId.LEFT],
+    ]);
+    dsl.label(0, 0, DirectionId.INTERNAL, { color: ColorId.RED });
+    dsl.label(1, 0, DirectionId.INTERNAL, { color: ColorId.YELLOW });
+
+    expect(dsl.at(0, 0, DirectionId.INTERNAL).color).toBe(ColorId.RED);
+    expect(dsl.at(1, 0, DirectionId.INTERNAL).color).toBe(ColorId.YELLOW);
+
+    dsl.label(0, 0, DirectionId.INTERNAL, { color: null });
+
+    expect(dsl.at(0, 0, DirectionId.INTERNAL).color).toBe(null);
+    expect(dsl.at(1, 0, DirectionId.INTERNAL).color).toBe(ColorId.YELLOW);
 });

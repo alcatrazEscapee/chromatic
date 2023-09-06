@@ -2,20 +2,12 @@ import { DirectionId, AxisId, ColorId } from '../src/gen/constants';
 import { Colors, Util } from '../src/game/util';
 
 
-test('test Colors.RED', () => expect(Util.COLORS[ColorId.RED]).toBe(Colors.RED));
-test('test Colors.BLUE', () => expect(Util.COLORS[ColorId.BLUE]).toBe(Colors.BLUE));
-test('test Colors.YELLOW', () => expect(Util.COLORS[ColorId.YELLOW]).toBe(Colors.YELLOW));
-test('test Colors.ORANGE', () => expect(Util.COLORS[ColorId.ORANGE]).toBe(Colors.ORANGE));
-test('test Colors.PURPLE', () => expect(Util.COLORS[ColorId.PURPLE]).toBe(Colors.PURPLE));
-test('test Colors.GREEN', () => expect(Util.COLORS[ColorId.GREEN]).toBe(Colors.GREEN));
-test('test Colors.BROWN', () => expect(Util.COLORS[ColorId.BROWN]).toBe(Colors.BROWN));
-test('test Colors.LIME', () => expect(Util.COLORS[ColorId.LIME]).toBe(Colors.LIME));
-test('test Colors.CYAN', () => expect(Util.COLORS[ColorId.CYAN]).toBe(Colors.CYAN));
-test('test Colors.AMBER', () => expect(Util.COLORS[ColorId.AMBER]).toBe(Colors.AMBER));
-test('test Colors.GOLD', () => expect(Util.COLORS[ColorId.GOLD]).toBe(Colors.GOLD));
-test('test Colors.MAGENTA', () => expect(Util.COLORS[ColorId.MAGENTA]).toBe(Colors.MAGENTA));
-test('test Colors.VIOLET', () => expect(Util.COLORS[ColorId.VIOLET]).toBe(Colors.VIOLET));
-
+test('Util.COLORS[ColorId.<X>] === Color.<X>', () => {
+    for (const id of Object.keys(ColorId)) {
+        if (id === 'last') continue; // Ignore the edge case
+        expect(Util.COLORS[ColorId[id as keyof typeof ColorId]]).toBe(Colors[id as keyof typeof Colors]);
+    }
+})
 
 test('lerp 0.0 to [6, 10]', () => expect(Util.lerp(0.0, 6, 10)).toBe(6));
 test('lerp 0.5 to [6, 10]', () => expect(Util.lerp(0.5, 6, 10)).toBe(8));
@@ -69,8 +61,9 @@ test('unrotate() of UP by base LEFT', () => expect(Util.unrotate(DirectionId.UP,
 test('unrotate() of UP by base UP', () => expect(Util.unrotate(DirectionId.UP, DirectionId.UP)).toBe(DirectionId.LEFT));
 test('unrotate() of LEFT by base UP', () => expect(Util.unrotate(DirectionId.LEFT, DirectionId.UP)).toBe(DirectionId.DOWN));
 
-for (let i = 0; i < 70; i++) {
-    test(`bitset set ${i}`, () => {
+
+test(`bitset bitSet() only at n`, () => {
+    for (let i = 0; i < 70; i++) {
         const bitset = Util.bitCreate();
 
         Util.bitSet(bitset, i);
@@ -78,9 +71,11 @@ for (let i = 0; i < 70; i++) {
         for (let j = 0; j < 80; j++) {
             expect(Util.bitGet(bitset, j)).toBe(i === j);
         }
-    });
+    }
+});
 
-    test(`bitset set up to ${i}`, () => {
+test(`bitset bitSet() from [0, n)`, () => {
+    for (let i = 0; i < 70; i++) {
         const bitset = Util.bitCreate();
 
         for (let j = 0; j < i; j++) {
@@ -90,9 +85,11 @@ for (let i = 0; i < 70; i++) {
         for (let j = 0; j < 80; j++) {
             expect(Util.bitGet(bitset, j)).toBe(j < i);
         }
-    });
+    }
+});
 
-    test(`bitset count with ${i} set`, () => {
+test(`bitset bitCount() with n set bits`, () => {
+    for (let i = 0; i < 70; i++) {
         const bitset = Util.bitCreate();
 
         for (let j = 0; j < i; j++) {
@@ -100,8 +97,8 @@ for (let i = 0; i < 70; i++) {
         }
 
         expect(Util.bitCount(bitset)).toBe(i);
-    });
-}
+    }
+});
 
 test('mix RED + BLUE', () => expect(Util.mix(ColorId.RED, ColorId.BLUE)).toBe(ColorId.PURPLE));
 test('mix BLUE + RED', () => expect(Util.mix(ColorId.BLUE, ColorId.RED)).toBe(ColorId.PURPLE));

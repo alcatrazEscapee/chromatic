@@ -1,4 +1,4 @@
-import type { Texture, Container, FederatedPointerEvent, Sprite, DisplayObject } from 'pixi.js';
+import { Texture, Container, FederatedPointerEvent, Sprite, DisplayObject, Graphics } from 'pixi.js';
 
 import { AssetBundle, AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId, type TexturePalette, Constants, Strings } from '../gen/constants';
 import { Util } from './util';
@@ -44,6 +44,7 @@ export class Game {
     readonly colorButtonsContainer: Container; // The buttons for selecting a color for the unmix configuration
 
     readonly palettes: PaletteMap<Texture>;
+    readonly tileButtonPalette: ReadonlyArray<Texture>;
 
     readonly btnPlay: Sprite;
     readonly btnStop: Sprite;
@@ -58,7 +59,20 @@ export class Game {
     grid: GridId = GridId.default;
 
     heldTile: { root: Sprite, tileId: TileId } | null = null;
-    heldLabel: { root: DisplayObject, colorId: ColorId | null, pressureId: -1 | 1 | null } | null = null;
+
+    // colorId:
+    //     ColorId : A color
+    //     -1      : Apply a `null` color
+    //     null    : Don't apply any color (pressure label)
+    // pressure:
+    //     -1 | 1  : Apply a delta pressure, either +1 or -1
+    //     null    : Don't apply any pressure (color label)
+    heldLabel: { root: DisplayObject, colorId: ColorId | -1 | null, pressure: -1 | 1 | null } | null = null;
+    
+    // When a mouse down occurs, we don't know a priori if it's a drag or rotate
+    // While we wait for a substantial mouse movement, we hold the mouse position here
+    // If we move enough, then we snap to assuming it's a click and drag, if not, we clear this on tap
+    movedTile: (Point & { index: number }) | null = null;
 
     // The last recorded screenX / screenY of the mouse, from mouse move event
     screenX: number = 0;
@@ -100,15 +114,14 @@ export class Game {
         this.tileButtonsContainer.addChild(tabTopBackground);
         this.colorButtonsContainer.addChild(tabBotBackground);
 
-        const tileButtonTextures = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
+        this.tileButtonPalette = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
         for (let i = 0; i <= TileId.last; i++) {
             const tileId: TileId = i;
-            const texture: Texture = tileButtonTextures[i];
-            const btn = new PIXI.Sprite(texture);
+            const btn = new PIXI.Sprite(this.tileButtonPalette[i]);
 
             btn.position.set(22 + (i % 4) * 66, 438 + Math.floor(i / 4) * 66);
             btn.eventMode = 'static';
-            btn.on('pointerdown', event => this.grabTile(event, tileId, texture));
+            btn.on('pointerdown', event => this.grabTile(event, tileId));
             
             this.tileButtonsContainer.addChild(btn);
         }
@@ -129,6 +142,15 @@ export class Game {
 
             this.colorButtonsContainer.addChild(btn);
         }
+
+        const emptyBtn = new PIXI.Sprite(core.pipe_72.textures.pipe_72_unmix);
+
+        emptyBtn.anchor.set(0.5);
+        emptyBtn.position.set(48 + 2 * 41 - 1, 460 - 1);
+        emptyBtn.eventMode = 'static';
+        emptyBtn.on('pointerdown', event => this.grabColor(event, null));
+
+        this.colorButtonsContainer.addChild(emptyBtn);
 
         const btnPressureUp = new PIXI.Sprite(core.pipe_72.textures.pipe_72_up);
         const btnPressureDown = new PIXI.Sprite(core.pipe_72.textures.pipe_72_down);
@@ -316,10 +338,10 @@ export class Game {
         this.menu.onVictory(this.puzzle!.id);
     }
 
-    private grabTile(event: FederatedPointerEvent, tileId: TileId, texture: Texture): void {
+    private grabTile(event: FederatedPointerEvent, tileId: TileId): void {
         if (this.state == StateId.MAIN_TILE) {
             this.heldTile = {
-                root: new PIXI.Sprite(texture),
+                root: new PIXI.Sprite(this.tileButtonPalette[tileId]),
                 tileId,
             };
 
@@ -331,30 +353,37 @@ export class Game {
         }
     }
 
-    private grabColor(event: FederatedPointerEvent, colorId: ColorId): void {
+    private grabColor(event: FederatedPointerEvent, colorId: ColorId | null): void {
         if (this.state === StateId.MAIN_CONFIGURE) {
-            const root = new PIXI.Graphics();
+            let root;
 
-            root.beginFill(Util.COLORS[colorId]);
-            root.drawCircle(0, 0, 12);
+            if (colorId !== null) {
+                root = new PIXI.Graphics();
+                root.beginFill(Util.COLORS[colorId]);
+                root.drawCircle(0, 0, 12);
+            } else {
+                root = new PIXI.Sprite(this.core.pipe_72.textures.pipe_72_unmix);
+                root.anchor.set(0.5);
+            }
+
             root.position.set(event.screenX, event.screenY);
 
-            this.heldLabel = { root, colorId, pressureId: null };
+            this.heldLabel = { root, colorId: colorId === null ? -1 : colorId, pressure: null };
             this.state = StateId.DRAGGING_LABEL;
 
             this.topContainer.addChild(this.heldLabel.root);
         }
     }
 
-    private grabPressure(event: FederatedPointerEvent, pressureId: -1 | 1): void {
+    private grabPressure(event: FederatedPointerEvent, pressure: -1 | 1): void {
         if (this.state === StateId.MAIN_CONFIGURE) {
             const textureSrc = this.core.pipe_72.textures;
-            const root = new PIXI.Sprite(pressureId === -1 ? textureSrc.pipe_72_down : textureSrc.pipe_72_up);
+            const root = new PIXI.Sprite(pressure === -1 ? textureSrc.pipe_72_down : textureSrc.pipe_72_up);
             
             root.position.set(event.screenX, event.screenY);
             root.anchor.set(0.5);
 
-            this.heldLabel = { root, colorId: null, pressureId };
+            this.heldLabel = { root, colorId: null, pressure };
             this.state = StateId.DRAGGING_LABEL;
 
             this.topContainer.addChild(this.heldLabel.root);
@@ -368,11 +397,45 @@ export class Game {
         // Update the position of the held object(s)
         this.heldTile?.root.position.set(event.screenX, event.screenY);
         this.heldLabel?.root.position.set(event.screenX, event.screenY);
+
+        // Check if we reach the threshold to be considered dragging a tile
+        if ((this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) &&
+            this.movedTile !== null &&
+            this.tiles[this.movedTile.index] !== null &&
+            Util.norm2(this.movedTile, { x: this.screenX, y: this.screenY }) > Constants.DRAG_TILE_MIN_NORM2
+        ) {
+            const index = this.movedTile.index;
+            const oldTile = this.tiles[index]!;
+
+            this.state = StateId.MAIN_TILE; // Force this, so `grabTile()` works
+            this.grabTile(event, oldTile.tileId); // Pickup the old tile
+
+            oldTile.destroy(); // And destroy it on the board
+            
+            this.tiles[index] = null;
+        }
     }
 
-    public onPointerDown(_: FederatedPointerEvent): void {}
+    public onPointerDown(event: FederatedPointerEvent): void {
+        if (this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) {
+            if (this.isInGrid(event)) {
+                const pos = this.projectToGrid(event);
+
+                // Mark this as the starting point of a click-and-drag to move a tile
+                const tile = this.tiles[pos.index];
+                if (tile !== null) {
+                    this.movedTile = { x: event.screenX, y: event.screenY, index: pos.index };
+                }
+            }
+        }
+    }
 
     public onPointerUp(event: FederatedPointerEvent): void {
+
+        if (this.movedTile !== null) {
+            this.movedTile = null; // Always reset the moved tile
+        }
+
         if (this.state === StateId.DRAGGING_TILE) {
             const heldTile = this.heldTile!;
 
@@ -403,7 +466,7 @@ export class Game {
             }
 
             this.heldTile = null;
-            this.state = StateId.MAIN_TILE;
+            this.state = this.tabState;
             this.bypassNextTap = true; // Don't rotate the tile immediately
 
             heldTile.root.destroy();
@@ -440,10 +503,10 @@ export class Game {
                         const property = tile.property(key);
 
                         if (heldLabel.colorId !== null) {
-                            property.color = heldLabel.colorId;
+                            property.color = heldLabel.colorId === -1 ? null : heldLabel.colorId;
                         }
-                        if (heldLabel.pressureId !== null) {
-                            property.pressure = Util.clamp(property.pressure + heldLabel.pressureId, 1, 4) as PressureId;
+                        if (heldLabel.pressure !== null) {
+                            property.pressure = Util.clamp(property.pressure + (heldLabel?.pressure ?? 0), 1, 4) as PressureId;
                         }
                         
                         // Applies the update to not only this tile, but all connecting tiles
@@ -453,7 +516,7 @@ export class Game {
             }
 
             this.heldLabel = null;
-            this.state = StateId.MAIN_CONFIGURE;
+            this.state = this.tabState;
             this.bypassNextTap = true;
 
             heldLabel.root.destroy();
