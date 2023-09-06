@@ -1,3 +1,6 @@
+SHELL := /bin/bash
+
+
 PIXI        = pixi-7.2.4
 FFO         = fontfaceobserver-2.1.0
 WEB         = ../Website/public/chromatic/
@@ -5,6 +8,7 @@ GEN         = src/gen
 TEX			= art/textures
 PIPE		= art/pipe
 OUT_MODE    = out/debug
+NODE_BIN    = .\\node_modules\\.bin\\
 
 SIZES       = 72 90 120
 PRESSURES   = 1 2 3 4
@@ -38,7 +42,6 @@ WEB_ART	    = $(WEB)/art
 WEB_JSON    = $(WEB)/lib/puzzles.json
 
 .DEFAULT_GOAL = build
-
 .SILENT :
 FORCE :
 
@@ -119,9 +122,9 @@ $(WEB)/lib/%.js.map : ./out/%.js.map
 
 $(JS_OUT) $(JS_OUT).map &: $(TS_SRC) package-lock.json tsconfig.json
 	printf "Checking types...\n"
-	npx tsc
+	$(NODE_BIN)tsc
 	printf "Compiling...\n"
-	npx esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap --define:DEBUG=true, --minify --define:DEBUG=false)
+	$(NODE_BIN)esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap --define:DEBUG=true, --minify --define:DEBUG=false)
 
 $(PIPE_OUT) &: $(PIPE_IN) $(OVERLAY_OUT) $(PY_SPRITES)
 	printf "Packing sprites...\n"
