@@ -63,6 +63,13 @@ export enum GridId {
 }
 
 export enum ColorId {
+    // Ordering is based on the order that colors are present in the UI
+    // Top down, then left right:
+    //
+    // red     orange  clear  amber   gold
+    // blue    purple  brown  violet  magenta
+    // yellow  green          lime    cyan
+
     RED = 0,
     BLUE = 1,
     YELLOW = 2,
@@ -73,14 +80,14 @@ export enum ColorId {
 
     BROWN = 6,
 
-    LIME = 7,
-    CYAN = 8,
-    AMBER = 9,
+    AMBER = 7,
+    VIOLET = 8,
+    LIME = 9,
     GOLD = 10,
-    VIOLET = 11,
-    MAGENTA = 12,
+    MAGENTA = 11,
+    CYAN = 12,
 
-    last = MAGENTA,
+    last = CYAN,
 }
 
 export enum DirectionId {
@@ -127,6 +134,8 @@ export enum Constants {
     POINTER_HOLD_MS = 400,
 
     MAX_PRESSURE = 4,
+
+    DRAG_TILE_MIN_NORM2 = 600,
 
     ANIM_FADE_TO_BLACK_TICKS = 54,
     ANIM_FADE_TO_BLACK_HALF = ANIM_FADE_TO_BLACK_TICKS / 2,

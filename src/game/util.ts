@@ -4,7 +4,7 @@ import { AssetBundle, AxisId, ColorId, Constants, DirectionId, NetworkPuzzle } f
 
 
 /** Exported for testing only */
-export const enum Colors {
+export enum Colors {
     RED = 0xff0000,
     YELLOW = 0xffff00,
     BLUE = 0x0000ff,
@@ -27,14 +27,7 @@ export const enum Colors {
 export module Util {
 
     export const RAINBOW: ReadonlyArray<ColorSource> = [Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.CYAN, Colors.BLUE, Colors.PURPLE];
-    export const COLORS: Readonly<{[_ in ColorId]: ColorSource}> & ReadonlyArray<ColorSource> = [
-        Colors.RED, Colors.BLUE, Colors.YELLOW,
-        Colors.ORANGE, Colors.PURPLE, Colors.GREEN,
-        Colors.BROWN,
-        Colors.LIME, Colors.CYAN,
-        Colors.AMBER, Colors.GOLD,
-        Colors.VIOLET, Colors.MAGENTA,
-    ];
+    export const COLORS: ReadonlyArray<ColorSource> = [Colors.RED, Colors.BLUE, Colors.YELLOW, Colors.ORANGE, Colors.PURPLE, Colors.GREEN, Colors.BROWN, Colors.AMBER, Colors.VIOLET, Colors.LIME, Colors.GOLD, Colors.MAGENTA, Colors.CYAN];
 
     export const ZERO: Readonly<Point> = Object.freeze({ x: 0, y: 0 });
 
@@ -89,7 +82,7 @@ export module Util {
      * N.B. This returns directions in Quadrant I semantics
      */
     export function interpretAsSwipe(start: Point & { instant: number }, end: Point & { instant: number }): DirectionId | -1 {
-        const distanceSq = pow2(start.x - end.x) + pow2(start.y - end.y);
+        const distanceSq = norm2(start, end);
         const velocity = end.instant > start.instant ? distanceSq / (end.instant - start.instant) : 0;
 
         // ~ 0 / 360 = left = 0
@@ -104,6 +97,12 @@ export module Util {
             return direction as DirectionId;
         }
         return -1;
+    }
+
+
+    /** Computes the square euclidean distance between two points. */
+    export function norm2(p: Point, q: Point): number {
+        return pow2(p.x - q.x) + pow2(p.y - q.y);
     }
 
     function pow2(x: number): number { return x * x; }

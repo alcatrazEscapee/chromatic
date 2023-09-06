@@ -50,7 +50,7 @@ type AssetUrl<K extends AssetId> =
     K extends PuzzlesAssetId ? 'lib/puzzles.json' :
     K extends PipeAssetId ? `art/sheets/${K}@1x.png.json` :
     K extends CoreAssetId ? `art/${K}.png` :
-    never
+    never;
 
 // N.B. The '_T' generics here are for types that we would have to otherwise import.
 // As this file is not a module, and for the convenience of typing, we are avoiding making it as such, we use these generics
