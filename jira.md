@@ -1,6 +1,5 @@
 # Jira
 
-### Main Menu
 
 ### Game
 
@@ -14,10 +13,6 @@
 - Add some images or other information
 - Make the background... passable? Somehow
 - Add a favicon.ico for alcatrazescapee.com somewhere
-
-### Bugs / Tech Enhancements
-
-- Add a main menu spritesheet for misc. non-background sprites
 
 
 ### Puzzles

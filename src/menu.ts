@@ -57,7 +57,7 @@ export class Menu {
         this.overlayContainer = new PIXI.Container();
         this.titleContainer = new PIXI.Container();
 
-        this.menuContainer.addChild(new PIXI.Sprite(core.menu_background)); // Needs to be before createPanel()
+        this.menuContainer.addChild(new PIXI.Sprite(core.core.textures.menu_background)); // Needs to be before createPanel()
 
         this.game = new Game(this, this.gameContainer);
         this.maxPageInclusive = Math.ceil(core.puzzles.puzzles.length / Constants.PUZZLES_PER_PAGE) - 1;
@@ -104,8 +104,8 @@ export class Menu {
             throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
         }
 
-        this.btnLeft = new PIXI.Sprite(core.menu_btn_left);
-        this.btnRight = new PIXI.Sprite(core.menu_btn_left);
+        this.btnLeft = new PIXI.Sprite(core.core.textures.menu_btn_left);
+        this.btnRight = new PIXI.Sprite(core.core.textures.menu_btn_left);
 
         this.btnLeft.position.set(10, 523);
         this.btnLeft.eventMode = 'static';
@@ -275,7 +275,7 @@ export class Menu {
         for (let i = 0; i < max; i++) {
             const puzzleId: number = i + page * Constants.PUZZLES_PER_PAGE;
             const button = new PIXI.Container();
-            const back = new PIXI.Sprite(this.core.menu_panel);
+            const back = new PIXI.Sprite(this.core.core.textures.menu_panel);
 
             const label = new PIXI.Text(String(i + page * Constants.PUZZLES_PER_PAGE + 1), {
                 fontFamily: Fonts.ERAS_BOLD_ITC,
@@ -342,7 +342,7 @@ export class Menu {
         const index: number = puzzleId % Constants.PUZZLES_PER_PAGE;
 
         if (panel !== null && panel.page === page && panel.stars[index] === null && Util.bitGet(this.saveData.stars, puzzleId)) {
-            const star = new PIXI.Sprite(this.core.menu_star);
+            const star = new PIXI.Sprite(this.core.core.textures.menu_star);
 
             star.position.set(21, 23);
             (panel.root.children[index] as Sprite).addChild(star);

@@ -5,7 +5,6 @@ PIXI        = pixi-7.2.4
 FFO         = fontfaceobserver-2.1.0
 WEB         = ../Website/public/chromatic/
 GEN         = src/gen
-TEX			= art/textures
 PIPE		= art/pipe
 OUT_MODE    = out/debug
 NODE_BIN    = .\\node_modules\\.bin\\
@@ -24,11 +23,12 @@ PIPE_1	    = $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $
 
 PIPE_IN     = $(PIPE_1:%=$(PIPE)/72/%.png) $(PIPE_1:%=$(PIPE)/90/%.png) $(PIPE_1:%=$(PIPE)/120/%.png)
 PIPE_OUT    = $(SIZES:%=out/sheets/pipe_%.png) $(SIZES:%=out/sheets/pipe_%@1x.png.json)
+CORE_OUT    = out/sheets/core.png out/sheets/core@1x.png.json
 
 DATA_IN     = $(shell find data -name '\*.json')
 DATA_OUT    = out/puzzles.json
 
-ART_IN      = $(shell find $(TEX) -name '*.png')
+ART_IN      = $(shell find art/textures -name '*.png')
 
 OVERLAY_1   = $(PRESSURES:%=_%_overlay_h.png) $(PRESSURES:%=_%_overlay_v.png)
 OVERLAY_2   = $(OVERLAY_1:%=curve%) $(OVERLAY_1:%=port%) $(OVERLAY_1:%=straight%)
@@ -97,11 +97,10 @@ test : $(DATA_OUT) FORCE
 $(WEB_TS) : $(TS_SRC)
 	cp -r src $(WEB)/
 
-$(WEB_ART) : $(ART_IN) $(PIPE_OUT)
+$(WEB_ART) : $(PIPE_OUT) $(CORE_OUT)
 	printf "Copying art...\n"
 	rm -rf $(WEB_ART)
-	cp -r $(TEX)/. $(WEB_ART)
-	cp -r out/sheets $(WEB_ART)
+	cp -r out/sheets/. $(WEB_ART)
 
 $(WEB_JSON) : $(DATA_OUT)
 	mkdir -p $(@D)
@@ -126,12 +125,17 @@ $(JS_OUT) $(JS_OUT).map &: $(TS_SRC) package-lock.json tsconfig.json
 	printf "Compiling...\n"
 	$(NODE_BIN)esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap --define:DEBUG=true, --minify --define:DEBUG=false)
 
-$(PIPE_OUT) &: $(PIPE_IN) $(OVERLAY_OUT) $(PY_SPRITES)
+
+.PHONY : spritesheets
+spritesheets : $(PIPE_OUT)
+
+$(PIPE_OUT) $(CORE_OUT) &: $(PIPE_IN) $(OVERLAY_OUT) $(ART_IN) $(PY_SPRITES)
 	printf "Packing sprites...\n"
 	mkdir -p out/sheets
 	python $(PY_SPRITES) --src $(PIPE)/72 --dest out/sheets/ --key pipe_72
 	python $(PY_SPRITES) --src $(PIPE)/90 --dest out/sheets/ --key pipe_90
 	python $(PY_SPRITES) --src $(PIPE)/120 --dest out/sheets/ --key pipe_120
+	python $(PY_SPRITES) --src art/textures --dest out/sheets/ --key core --no-prefix
 
 
 # make overlay := prints out scan results

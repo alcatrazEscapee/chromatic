@@ -103,8 +103,8 @@ export class Game {
         this.palettes = Util.buildPalettes(menu.core);
         this.simulator = Simulator.create(this.edgesContainer);
 
-        const core = menu.core;
-        const ui = new PIXI.Sprite(this.core.ui_background);
+        const core = menu.core.core.textures;
+        const ui = new PIXI.Sprite(this.core.core.textures.ui_background);
 
         const tabTopBackground = new PIXI.Sprite(core.ui_tab_top);
         const tabBotBackground = new PIXI.Sprite(core.ui_tab_bot);
@@ -115,7 +115,17 @@ export class Game {
         this.tileButtonsContainer.addChild(tabTopBackground);
         this.colorButtonsContainer.addChild(tabBotBackground);
 
-        this.tileButtonPalette = [core.ui_btn_pipe_empty, core.ui_btn_pipe_straight, core.ui_btn_pipe_curve, core.ui_btn_pipe_cross, core.ui_btn_pipe_mix, core.ui_btn_pipe_unmix, core.ui_btn_pipe_up, core.ui_btn_pipe_down];
+        this.tileButtonPalette = [
+            core.ui_btn_pipe_empty,
+            core.ui_btn_pipe_straight,
+            core.ui_btn_pipe_curve,
+            core.ui_btn_pipe_cross,
+            core.ui_btn_pipe_mix,
+            core.ui_btn_pipe_unmix,
+            core.ui_btn_pipe_up,
+            core.ui_btn_pipe_down
+        ] as const;
+
         for (let i = 0; i <= TileId.last; i++) {
             const tileId: TileId = i;
             const btn = new PIXI.Sprite(this.tileButtonPalette[i]);
@@ -144,7 +154,7 @@ export class Game {
             this.colorButtonsContainer.addChild(btn);
         }
 
-        const emptyBtn = new PIXI.Sprite(core.pipe_72.textures.pipe_72_unmix);
+        const emptyBtn = new PIXI.Sprite(this.core.pipe_72.textures.pipe_72_unmix);
 
         emptyBtn.anchor.set(0.5);
         emptyBtn.position.set(48 + 2 * 41 - 1, 460 - 1);
@@ -153,8 +163,8 @@ export class Game {
 
         this.colorButtonsContainer.addChild(emptyBtn);
 
-        const btnPressureUp = new PIXI.Sprite(core.pipe_72.textures.pipe_72_up);
-        const btnPressureDown = new PIXI.Sprite(core.pipe_72.textures.pipe_72_down);
+        const btnPressureUp = new PIXI.Sprite(this.core.pipe_72.textures.pipe_72_up);
+        const btnPressureDown = new PIXI.Sprite(this.core.pipe_72.textures.pipe_72_down);
 
         btnPressureUp.position.set(240, 447);
         btnPressureUp.eventMode = 'static';
@@ -169,13 +179,13 @@ export class Game {
         this.colorButtonsContainer.addChild(btnPressureUp);
         this.colorButtonsContainer.addChild(btnPressureDown);
 
-        this.btnPlay = new PIXI.Sprite(this.core.ui_btn_play);
+        this.btnPlay = new PIXI.Sprite(core.ui_btn_play);
         this.btnPlay.position.set(324, 438);
         this.btnPlay.eventMode = 'static';
         this.btnPlay.on('pointertap', () => this.onPlay());
         buttonsContainer.addChild(this.btnPlay);
 
-        this.btnStop = new PIXI.Sprite(this.core.ui_btn_stop);
+        this.btnStop = new PIXI.Sprite(core.ui_btn_stop);
         this.btnStop.position.set(355, 440);
         this.btnStop.eventMode = 'static';
         this.btnStop.alpha = 0.5;
@@ -196,14 +206,14 @@ export class Game {
         buttonsContainer.addChild(btnTabTop);
         buttonsContainer.addChild(btnTabBot);
 
-        const btnMenu = new PIXI.Sprite(this.core.menu_btn_main);
+        const btnMenu = new PIXI.Sprite(core.menu_btn_main);
 
         btnMenu.position.set(Constants.BTN_MAIN_X, Constants.BTN_MAIN_Y);
         btnMenu.eventMode = 'static';
         btnMenu.on('pointertap', () => this.onMenu());
         buttonsContainer.addChild(btnMenu);
 
-        this.btnNext = new PIXI.Sprite(this.core.menu_btn_left);
+        this.btnNext = new PIXI.Sprite(core.menu_btn_left);
 
         this.btnNext.angle += 180;
         this.btnNext.position.set(Constants.BTN_NEXT_X, Constants.BTN_NEXT_Y);

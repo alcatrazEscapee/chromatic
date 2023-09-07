@@ -30,7 +30,8 @@ type AssetPipeAction = 'mix' | 'unmix' | 'up' | 'down'
 
 type PuzzlesAssetId = 'puzzles'
 type PipeAssetId = `pipe_${AssetPipeSize}`
-type CoreAssetId = 'menu_background'
+type CoreAssetId = 'core'
+type CoreTextureId = 'menu_background'
     | 'menu_panel'
     | 'menu_star'
     | 'menu_btn_left'
@@ -49,8 +50,7 @@ type AssetId = PuzzlesAssetId | PipeAssetId | CoreAssetId;
 
 type AssetUrl<K extends AssetId> = 
     K extends PuzzlesAssetId ? 'lib/puzzles.json' :
-    K extends PipeAssetId ? `art/sheets/${K}@1x.png.json` :
-    K extends CoreAssetId ? `art/${K}.png` :
+    K extends PipeAssetId | CoreAssetId ? `art/${K}@1x.png.json` :
     never;
 
 // N.B. The '_T' generics here are for types that we would have to otherwise import.
@@ -59,7 +59,7 @@ type AssetUrl<K extends AssetId> =
 type AssetType<K extends AssetId, _NetworkData, _Texture> =
     K extends PuzzlesAssetId ? _NetworkData :
     K extends PipeAssetId ? PipeSpritesheet<K, _Texture> :
-    K extends CoreAssetId ? _Texture :
+    K extends CoreAssetId ? CoreSpritesheet<_Texture> :
     never;
 
 type AssetManifest = { [key in AssetId]: AssetUrl<key> };
@@ -67,7 +67,11 @@ type _AssetBundle<_NetworkData, _Texture> = { [key in AssetId]: AssetType<key, _
 
 
 interface PipeSpritesheet<T extends PipeAssetId, _Texture> {
-    readonly textures: { [key in PipeSpriteId<T>]: _Texture }
+    readonly textures: { [key in PipeSpriteId<T>]: _Texture };
+};
+
+interface CoreSpritesheet<_Texture> {
+    readonly textures: { [key in CoreTextureId]: _Texture };
 };
 
 type PipeSpriteId<T extends PipeAssetId> = 
