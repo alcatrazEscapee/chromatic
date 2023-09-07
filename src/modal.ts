@@ -24,9 +24,9 @@ export class VictoryModal {
             fontSize: 24,
             fill: Constants.COLOR_WHITE,
         });
-        const btnX = new PIXI.Sprite(menu.core.menu_btn_x);
-        const btnMain = new PIXI.Sprite(menu.core.menu_btn_main);
-        const star = new PIXI.Sprite(menu.core.victory_star);
+        const btnX = new PIXI.Sprite(menu.core.core.textures.menu_btn_x);
+        const btnMain = new PIXI.Sprite(menu.core.core.textures.menu_btn_main);
+        const star = new PIXI.Sprite(menu.core.core.textures.victory_star);
 
         overlay.beginFill(Constants.COLOR_BLACK);
         overlay.drawRect(0, 0, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
@@ -49,7 +49,7 @@ export class VictoryModal {
 
         const nextPuzzleIsValid: boolean = puzzleId < menu.maxPuzzleInclusive;
         if (nextPuzzleIsValid) {
-            const btnNext = new PIXI.Sprite(menu.core.menu_btn_left);
+            const btnNext = new PIXI.Sprite(menu.core.core.textures.menu_btn_left);
 
             btnNext.position.set(Constants.BTN_NEXT_X, Constants.BTN_NEXT_Y);
             btnNext.angle += 180;

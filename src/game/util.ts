@@ -328,7 +328,7 @@ export module Util {
             insideWidth: 18,
             insideTop: 51,
             portWidth: 27,
-            grid: core.grid_3x3,
+            grid: core.core.textures.grid_3x3,
             textures: textures ? buildPalette('pipe_120', core.pipe_120) : null!,
         }, {
             width: 4,
@@ -338,7 +338,7 @@ export module Util {
             insideWidth: 12,
             insideTop: 39,
             portWidth: 20,
-            grid: core.grid_4x4,
+            grid: core.core.textures.grid_4x4,
             textures: textures ? buildPalette('pipe_90', core.pipe_90) : null!,
         }, {
             width: 5,
@@ -348,7 +348,7 @@ export module Util {
             insideWidth: 10,
             insideTop: 31,
             portWidth: 16,
-            grid: core.grid_5x5,
+            grid: core.core.textures.grid_5x5,
             textures: textures ? buildPalette('pipe_72', core.pipe_72) : null!,
         }];
     }
