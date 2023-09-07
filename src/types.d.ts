@@ -42,6 +42,7 @@ type CoreAssetId = 'menu_background'
     | 'ui_btn_play'
     | 'ui_btn_stop'
     | `ui_btn_pipe_${AssetPipeIcon}`
+    | 'victory_star'
     | 'grid_3x3' | 'grid_4x4' | 'grid_5x5'
 
 type AssetId = PuzzlesAssetId | PipeAssetId | CoreAssetId;

@@ -126,6 +126,12 @@ export enum Constants {
 
     GRID_ID_TO_WIDTH = 3,
 
+    BTN_MAIN_X = 356,
+    BTN_MAIN_Y = 542,
+
+    BTN_NEXT_X = 357 + 25,
+    BTN_NEXT_Y = 486 + 40,
+
     COLOR_WHITE = 0xffffff,
     COLOR_BLACK = 0x000000,
     COLOR_GREEN = 0x00b000,
@@ -147,7 +153,7 @@ export enum Constants {
     ANIM_FADE_TO_BLACK_TICKS = 54,
     ANIM_FADE_TO_BLACK_HALF = ANIM_FADE_TO_BLACK_TICKS / 2,
 
-    ANIM_EASE_IN_OUT_TICKS = 45,
+    ANIM_EASE_IN_OUT_TICKS = 35,
 
     ANIM_FADE_IN_TICKS = 40,
     ANIM_VICTORY_FADE_IN_DELAY_TICKS = 40,

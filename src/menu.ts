@@ -1,12 +1,11 @@
 import type { Application, Container, DisplayObject, FederatedPointerEvent, Sprite, Text } from "pixi.js";
-import { AssetBundle, GridId } from "./gen/constants";
+import type { AssetBundle } from "./gen/constants";
 
 import { Game } from "./game/main";
 import { Animations } from "./animation";
 import { Constants, DirectionId, Fonts, Strings } from "./gen/constants";
 import { Util } from "./game/util";
 import { VictoryModal } from "./modal";
-import { Builder } from "./builder";
 
 
 interface Panel {
@@ -209,6 +208,17 @@ export class Menu {
         });
     }
 
+    public nextPuzzle(): void {
+        // Only allow this transition if the puzzle is complete
+        if (this.game.puzzle !== null && Util.bitGet(this.saveData.stars, this.game.puzzle.id) && this.game.puzzle.id < this.maxPuzzleInclusive) {
+            Animations.fadeToBlack(this.overlayContainer, () => {
+                this.enterNextPuzzle();
+            }, () => {
+                this.game.postInit();
+            });
+        }
+    }
+
     private tick(delta: number): void {
         this.delta += delta;
 
@@ -364,7 +374,7 @@ export class Menu {
 
     public enterGame(puzzleId: number): void {
         this.stage.addChildAt(this.gameContainer, 0);
-        this.game.init(this.core.puzzles.puzzles[puzzleId]);
+        this.game.init(this.core.puzzles.puzzles[puzzleId], this.nextIsValid(puzzleId));
     }
 
     public leaveGame(): void {
@@ -372,11 +382,23 @@ export class Menu {
         this.stage.removeChild(this.gameContainer);
     }
 
-    public nextPuzzle(): void {
+    /**
+     * Leaves and enters the game UI, to go to the next puzzle.
+     * Caller must have asserted that the next puzzle is valid first before calling. This is checked in debug.
+     */
+    public enterNextPuzzle(): void {
         const puzzleId: number = this.game.puzzle!.id + 1;
 
+        if (DEBUG && puzzleId > this.maxPuzzleInclusive) {
+            throw new Error(`Puzzle id ${puzzleId} is out of range of [0, ${this.maxPuzzleInclusive}], must not call.`);
+        }
+
         this.game.teardown(); // Teardown the current puzzle
-        this.game.init(this.core.puzzles.puzzles[puzzleId]); // Immediately load the next puzzle
+        this.game.init(this.core.puzzles.puzzles[puzzleId], this.nextIsValid(puzzleId)); // Immediately load the next puzzle
+    }
+
+    private nextIsValid(puzzleId: number): boolean {
+        return puzzleId < this.maxPuzzleInclusive && Util.bitGet(this.saveData.stars, puzzleId);
     }
 
     // Cheats

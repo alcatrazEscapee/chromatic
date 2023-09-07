@@ -1,4 +1,4 @@
-import type { Container, Graphics } from "pixi.js";
+import type { Container, DisplayObject, Graphics } from "pixi.js";
 
 import { Util } from "./game/util";
 import { Constants } from "./gen/constants";
@@ -20,8 +20,12 @@ export module Animations {
         new FadeToBlack(root, onHalf, onComplete);
     }
 
-    export function easeInOut(root: Container, start: Point, end: Point, onComplete: Event): void {
-        new EaseInOut(root, start, end, onComplete);
+    export function easeInOut(root: DisplayObject, start: Point, end: Point, onComplete: Event): void {
+        new Easing(root, start, end, applyEaseInOutCubic, onComplete);
+    }
+
+    export function easeOutBounce(root: DisplayObject, start: Point, end: Point, onComplete: Event): void {
+        new Easing(root, start, end, applyEaseOutBounce, onComplete);
     }
 }
 
@@ -109,19 +113,21 @@ class FadeToBlack {
 }
 
 
-class EaseInOut {
+class Easing {
 
-    private readonly root: Container;
+    private readonly root: DisplayObject;
     private readonly start: Point;
     private readonly end: Point;
+    private readonly easing: (x: number) => number;
     private readonly onComplete: Event;
 
     delta: number;
 
-    constructor(root: Container, start: Point, end: Point, onComplete: Event) {
+    constructor(root: DisplayObject, start: Point, end: Point, easing: (x: number) => number, onComplete: Event) {
         this.root = root;
         this.start = start;
         this.end = end;
+        this.easing = easing;
         this.onComplete = onComplete;
         this.delta = 0;
 
@@ -132,7 +138,7 @@ class EaseInOut {
         this.delta += delta / Constants.ANIM_EASE_IN_OUT_TICKS;
         
         if (this.delta < 1) {
-            const ease = easeInOutCubic(this.delta);
+            const ease = this.easing(this.delta);
             this.root.position.set(
                 Util.clampLerp(ease, this.start.x, this.end.x),
                 Util.clampLerp(ease, this.start.y, this.end.y));
@@ -145,6 +151,24 @@ class EaseInOut {
     }
 }
 
-function easeInOutCubic(x: number): number {
+
+/** From [easeInOutCubic](https://easings.net/#easeInOutCubic) */
+function applyEaseInOutCubic(x: number): number {
     return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+}
+
+/** From [easeOutBounce](https://easings.net/#easeOutBounce) */
+function applyEaseOutBounce(x: number): number {
+    const n1 = 7.5625;
+    const d1 = 2.75;
+    
+    if (x < 1 / d1) {
+        return n1 * x * x;
+    } else if (x < 2 / d1) {
+        return n1 * (x -= 1.5 / d1) * x + 0.75;
+    } else if (x < 2.5 / d1) {
+        return n1 * (x -= 2.25 / d1) * x + 0.9375;
+    } else {
+        return n1 * (x -= 2.625 / d1) * x + 0.984375;
+    }
 }
