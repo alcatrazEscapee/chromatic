@@ -13,6 +13,8 @@ interface Panel {
     readonly root: Container;
     readonly stars: (Sprite | null)[];
     readonly page: number;
+    
+    progressDot: boolean;
 }
 
 
@@ -46,6 +48,8 @@ export class Menu {
     swipeStart: (Point & { readonly instant: number }) | null = null;
 
     saveData: LocalSaveData;
+
+    progressDot: { root: DisplayObject, id: number, panel: Panel } | null = null;
 
     constructor(app: Application, core: AssetBundle) {
 
@@ -85,6 +89,9 @@ export class Menu {
         }
 
         this.panel = this.createPanel(this.page);
+        if (this.saveData.state) {
+            this.updateProgressDot(this.panel);
+        }
 
         const title = 'CHROMATIC';
         const leftX = 24;
@@ -226,6 +233,7 @@ export class Menu {
         } else {
             this.saveData.state = save;
         }
+        this.updateProgressDot(this.panel);
         this.save();
     }
 
@@ -267,6 +275,12 @@ export class Menu {
 
         Animations.easeInOut(oldPanel.root, Util.ZERO, { x: -sign * Constants.STAGE_WIDTH, y: 0 }, () => {
             oldPanel.root.destroy();
+
+            // If the old panel held the progress dot, the `destroy()` above will have freed it.
+            // So we need to clear up the reference here.
+            if (oldPanel.progressDot) {
+                this.progressDot = null;
+            }
         });
 
         Animations.easeInOut(newPanel.root, { x: sign * Constants.STAGE_WIDTH, y: 0 }, Util.ZERO, () => {
@@ -280,7 +294,7 @@ export class Menu {
         const root = new PIXI.Container();
         const stars: (Sprite | null)[] = Util.nulls(Constants.PUZZLES_PER_PAGE);
         const max = Math.min(Constants.PUZZLES_PER_PAGE, this.core.puzzles.puzzles.length - (Constants.PUZZLES_PER_PAGE * page));
-        const panel: Panel = { root, stars, page };
+        const panel: Panel = { root, stars, page, progressDot: false };
 
         for (let i = 0; i < max; i++) {
             const puzzleId: number = i + page * Constants.PUZZLES_PER_PAGE;
@@ -308,6 +322,8 @@ export class Menu {
         for (let i = 0; i < Constants.PUZZLES_PER_PAGE; i++) {
             this.updateStar(panel, i + page * Constants.PUZZLES_PER_PAGE);
         }
+
+        this.updateProgressDot(panel);
 
         this.menuContainer.addChild(root);
         return panel;
@@ -348,16 +364,59 @@ export class Menu {
     }
 
     private updateStar(panel: Panel | null, puzzleId: number): void {
+        if (panel === null) {
+            return;
+        }
+
         const page: number = Math.floor(puzzleId / Constants.PUZZLES_PER_PAGE);
         const index: number = puzzleId % Constants.PUZZLES_PER_PAGE;
 
-        if (panel !== null && panel.page === page && panel.stars[index] === null && Util.bitGet(this.saveData.stars, puzzleId)) {
+        // Update the star, if needed
+        if (panel.page === page && panel.stars[index] === null && Util.bitGet(this.saveData.stars, puzzleId)) {
             const star = new PIXI.Sprite(this.core.core.textures.menu_star);
 
             star.position.set(21, 23);
             (panel.root.children[index] as Sprite).addChild(star);
             panel.stars[index] = star;
         }
+    }
+
+    private updateProgressDot(panel: Panel | null)
+    {
+        const currentId: number | null = this.saveData.state?.id ?? null;
+        if (
+            // If we have a non-null current ID, and either a progress dot that is null, or a different puzzle,
+            (currentId !== null && (this.progressDot === null || this.progressDot.id !== currentId)) ||
+            // Otherwise, if we have no current progress, and we have a progress dot
+            (currentId === null && this.progressDot !== null)
+        ) {
+            // Clear the previous one; if it was pointing to a different puzzle
+            if (this.progressDot !== null) {
+                this.progressDot.panel.progressDot = false;
+                this.progressDot.root.destroy();
+                this.progressDot = null;
+            }
+
+            // Add a new progress dot, if we have a current ID, and we're updating the correct panel
+            if (currentId !== null) {
+                const page: number = Math.floor(currentId / Constants.PUZZLES_PER_PAGE);
+                const index: number = currentId % Constants.PUZZLES_PER_PAGE;
+
+                if (panel !== null && panel.page === page) {
+                    const dot = new PIXI.Graphics();
+
+                    dot.beginFill(Constants.COLOR_GREEN);
+                    dot.drawCircle(0, 0, 4);
+                    dot.position.set(69, 69);
+
+                    (panel.root.children[index] as Sprite).addChild(dot);
+
+                    this.progressDot = { root: dot, id: currentId, panel };
+                    panel.progressDot = true; // Mark the panel as holding the current progress dot
+                }
+            }
+        }
+
     }
 
     private save(): void {
