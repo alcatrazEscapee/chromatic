@@ -452,6 +452,8 @@ export class Game {
             oldTile.destroy(); // And destroy it on the board
             
             this.tiles[index] = null;
+            
+            this.menu.saveState();
         }
     }
 
@@ -497,9 +499,8 @@ export class Game {
                     this.tilesContainer.addChild(newTile.root);
 
                     Navigator.updateTile(this, pos, newTile);
-
-                    this.menu.saveState();
                 }
+                this.menu.saveState();
             }
 
             this.heldTile = null;

@@ -4,13 +4,9 @@
 ### Game
 
 - Add tap on pipe input/output to pop up modal tooltips
-- Add an icon on the main menu that indicates you have save data available (in-progress icon)
 
 ### Website
 
-- Add some information, lower down on how to play
-- Add some images or other information
-- Make the background... passable? Somehow
 - Add a favicon.ico for alcatrazescapee.com somewhere
 
 

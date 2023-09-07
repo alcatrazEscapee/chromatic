@@ -70,6 +70,9 @@ async function main() {
 
     window.game = new Menu(app, core);
 
+    const puzzlesSpan = document.getElementById('main-number-of-puzzles') as HTMLSpanElement;
+    puzzlesSpan.innerText = String(core.puzzles.puzzles.length);
+
     if (DEBUG) {
         console.log(`Finished loading in ${performance.now() - start} ms`);
         window.builder = new Builder();

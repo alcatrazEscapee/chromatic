@@ -39,6 +39,10 @@ export module State {
                 tiles.push(saveTile(index, tile));
             }
         }
+
+        if (tiles.length === 0) {
+            return null; // No tiles to save, so return null instead
+        }
     
         return { id: save.puzzle.id, tiles };
     }
@@ -96,8 +100,6 @@ export module State {
 
         const tile: Tile = new Tile(palette, tileId, (index % palette.width), Math.floor(index / palette.width));
 
-        tile.update(palette);
-
         for (let i = 0; i < dir; i++) {
             tile.rotate();
         }
@@ -117,6 +119,8 @@ export module State {
                 restoreProperty(tile, save[3]!, DirectionId.RIGHT);
                 break;
         }
+
+        tile.update(palette);
 
         return { index, tile };
     }
