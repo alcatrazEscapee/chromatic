@@ -319,7 +319,7 @@ export module Util {
         return { dir: -1, cw: false };
     }
 
-    export function buildPalettes(core: AssetBundle, textures: boolean = true): PaletteMap<Texture> {
+    export function buildPalettes(core: AssetBundle): PaletteMap<Texture> {
         return [{
             width: 3,
             tileWidth: 120,
@@ -329,7 +329,7 @@ export module Util {
             insideTop: 51,
             portWidth: 27,
             grid: core.core.textures.grid_3x3,
-            textures: textures ? buildPalette('pipe_120', core.pipe_120) : null!,
+            textures: buildPalette('pipe_120', core.pipe_120),
         }, {
             width: 4,
             tileWidth: 90,
@@ -339,7 +339,7 @@ export module Util {
             insideTop: 39,
             portWidth: 20,
             grid: core.core.textures.grid_4x4,
-            textures: textures ? buildPalette('pipe_90', core.pipe_90) : null!,
+            textures: buildPalette('pipe_90', core.pipe_90),
         }, {
             width: 5,
             tileWidth: 72,
@@ -349,11 +349,11 @@ export module Util {
             insideTop: 31,
             portWidth: 16,
             grid: core.core.textures.grid_5x5,
-            textures: textures ? buildPalette('pipe_72', core.pipe_72) : null!,
+            textures: buildPalette('pipe_72', core.pipe_72),
         }];
     }
 
-    export function buildPalette<T extends PipeAssetId>(id: T, core: PipeSpritesheet<T, Texture>): PaletteTextures<Texture> {
+    export function buildPalette<T extends PipeAssetId>(id: T, core: Spritesheet<PipeSpriteId<T>, Texture>): PaletteTextures<Texture> {
         return {
             straight: buildPalettePipe(id, 'straight', core),
             curve: buildPalettePipe(id, 'curve', core),
@@ -374,7 +374,7 @@ export module Util {
         }
     }
 
-    function buildPalettePipe<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', core: PipeSpritesheet<T, Texture>): Array4<PalettePipeTextures<Texture>> {
+    function buildPalettePipe<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', core: Spritesheet<PipeSpriteId<T>, Texture>): Array4<PalettePipeTextures<Texture>> {
         return [
             buildPalettePipePressure(id, key, 1, core),
             buildPalettePipePressure(id, key, 2, core),
@@ -383,7 +383,7 @@ export module Util {
         ]
     }
 
-    function buildPalettePipePressure<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', pressure: PressureId, core: PipeSpritesheet<T, Texture>): PalettePipeTextures<Texture> {
+    function buildPalettePipePressure<T extends PipeAssetId>(id: T, key: 'straight' | 'curve' | 'port', pressure: PressureId, core: Spritesheet<PipeSpriteId<T>, Texture>): PalettePipeTextures<Texture> {
         return {
             pipe: core.textures[`${id}_${key}_${pressure}`],
             overlay: {

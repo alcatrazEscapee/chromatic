@@ -5,6 +5,7 @@ import { Util } from './util';
 import { Tile } from './tile';
 import { Simulator } from './simulator';
 import { Navigator } from './navigator';
+import { State } from './save';
 
 
 const enum StateId {
@@ -24,6 +25,7 @@ interface GameCallback {
     onVictory(puzzleId: number): void;
     unload(): void;
     nextPuzzle(): void;
+    saveState(): void;
 }
 
 
@@ -235,7 +237,7 @@ export class Game {
     /**
      * Initializes per-puzzle data
      */
-    public init(puzzle: NetworkPuzzle, nextIsValid: boolean = false): void {
+    public init(puzzle: NetworkPuzzle, nextIsValid: boolean = false, saveState: SavedPuzzleState | null = null): void {
         this.grid = puzzle.size;
 
         const palette: TexturePalette = this.palettes[this.grid];
@@ -317,6 +319,18 @@ export class Game {
 
         this.puzzle = puzzle;
         this.updateNextPuzzle(nextIsValid);
+        
+        if (saveState !== null) {
+            State.restoreState(this, saveState, palette);
+
+            // If any tiles were added here, they won't be present on the tile container yet
+            // Adding these unconditionally is safe since before this, there shouldn't be any tiles present on the container
+            for (const tile of this.tiles) {
+                if (tile !== null) {
+                    this.tilesContainer.addChild(tile.root);
+                }
+            }
+        }
     }
 
     /**
@@ -477,16 +491,14 @@ export class Game {
 
                 // Add a new tile, if we're not creating an empty tile
                 if (heldTile.tileId !== TileId.EMPTY) {
-                    const newTile = new Tile(heldTile.tileId);
-                    
-                    newTile.root.position.set(
-                        Constants.GRID_LEFT + pos.x * palette.tileWidth + palette.tileWidth / 2,
-                        Constants.GRID_TOP + pos.y * palette.tileWidth + palette.tileWidth / 2);
+                    const newTile = new Tile(palette, heldTile.tileId, pos.x, pos.y);
                     
                     this.tiles[pos.index] = newTile;
                     this.tilesContainer.addChild(newTile.root);
 
                     Navigator.updateTile(this, pos, newTile);
+
+                    this.menu.saveState();
                 }
             }
 
@@ -536,6 +548,8 @@ export class Game {
                         
                         // Applies the update to not only this tile, but all connecting tiles
                         Navigator.updateFrom(this, pos, tile, key);
+
+                        this.menu.saveState();
                     }
                 }
             }
@@ -562,6 +576,8 @@ export class Game {
                 tile.rotate();
 
                 Navigator.updateTile(this, pos, tile);
+
+                this.menu.saveState();
             }
         }
     }

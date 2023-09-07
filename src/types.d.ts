@@ -31,20 +31,6 @@ type AssetPipeAction = 'mix' | 'unmix' | 'up' | 'down'
 type PuzzlesAssetId = 'puzzles'
 type PipeAssetId = `pipe_${AssetPipeSize}`
 type CoreAssetId = 'core'
-type CoreTextureId = 'menu_background'
-    | 'menu_panel'
-    | 'menu_star'
-    | 'menu_btn_left'
-    | 'menu_btn_x'
-    | 'menu_btn_main'
-    | 'ui_background'
-    | 'ui_tab_top'
-    | 'ui_tab_bot'
-    | 'ui_btn_play'
-    | 'ui_btn_stop'
-    | `ui_btn_pipe_${AssetPipeIcon}`
-    | 'victory_star'
-    | 'grid_3x3' | 'grid_4x4' | 'grid_5x5'
 
 type AssetId = PuzzlesAssetId | PipeAssetId | CoreAssetId;
 
@@ -58,21 +44,15 @@ type AssetUrl<K extends AssetId> =
 // in place of the actual type, at point of instantiation. 
 type AssetType<K extends AssetId, _NetworkData, _Texture> =
     K extends PuzzlesAssetId ? _NetworkData :
-    K extends PipeAssetId ? PipeSpritesheet<K, _Texture> :
-    K extends CoreAssetId ? CoreSpritesheet<_Texture> :
+    K extends PipeAssetId ? Spritesheet<PipeSpriteId<K>, _Texture> :
+    K extends CoreAssetId ? Spritesheet<CoreSpriteId, _Texture> :
     never;
+
+type Spritesheet<T, _Texture> = { readonly textures: { readonly [key in T]: _Texture } };
 
 type AssetManifest = { [key in AssetId]: AssetUrl<key> };
 type _AssetBundle<_NetworkData, _Texture> = { [key in AssetId]: AssetType<key, _NetworkData, _Texture> };
 
-
-interface PipeSpritesheet<T extends PipeAssetId, _Texture> {
-    readonly textures: { [key in PipeSpriteId<T>]: _Texture };
-};
-
-interface CoreSpritesheet<_Texture> {
-    readonly textures: { [key in CoreTextureId]: _Texture };
-};
 
 type PipeSpriteId<T extends PipeAssetId> = 
     `${T}_${'straight' | 'curve' | 'port'}_${AssetPipePressure}${'' | '_overlay_h' | '_overlay_v'}`
@@ -80,6 +60,20 @@ type PipeSpriteId<T extends PipeAssetId> =
     | `${T}_${AssetPipeAction}`
     | `${T}_filter`
 
+type CoreSpriteId = 'menu_background'
+    | 'menu_panel'
+    | 'menu_star'
+    | 'menu_btn_left'
+    | 'menu_btn_x'
+    | 'menu_btn_main'
+    | 'ui_background'
+    | 'ui_tab_top'
+    | 'ui_tab_bot'
+    | 'ui_btn_play'
+    | 'ui_btn_stop'
+    | `ui_btn_pipe_${AssetPipeIcon}`
+    | 'victory_star'
+    | 'grid_3x3' | 'grid_4x4' | 'grid_5x5'
 
     
 type PaletteMap<T> = [TexturePalette<T>, TexturePalette<T>, TexturePalette<T>];
@@ -136,6 +130,20 @@ interface _TexturePalette<T> extends Palette {
     textures: PaletteTextures<T>
 }
 
+
+type SavedIndexTileAndRotation = number;
+type SavedProperty = number;
+type SavedTile
+    = [SavedIndexTileAndRotation, SavedProperty] // Straight, Curve
+    | [SavedIndexTileAndRotation, SavedProperty, SavedProperty] // Cross
+    | [SavedIndexTileAndRotation, SavedProperty, SavedProperty, SavedProperty] // Action
+    ;
+type SavedPuzzleState = {
+    id: number,
+    tiles: SavedTile[],
+}
+
+
 type SaveDataVersion = 1;
 
 type UnknownSaveData = null 
@@ -147,6 +155,7 @@ type UnknownSaveData = null
 interface V1SaveData {
     page: number;
     stars: BitSet;
+    state?: SavedPuzzleState,
 }
 
 type LocalSaveData = VersionedSaveData<SaveDataVersion> & UnknownSaveData;
