@@ -5,7 +5,7 @@ PIXI        = pixi-7.2.4
 FFO         = fontfaceobserver-2.1.0
 WEB         = ../Website/public/chromatic/
 GEN         = src/gen
-PIPE		= art/pipe
+PIPE        = art/pipe
 OUT_MODE    = out/debug
 NODE_BIN    = .\\node_modules\\.bin\\
 
@@ -19,7 +19,7 @@ PY_SPRITES  = scripts/spritesheet.py
 TS_SRC      = $(shell find src -name '*.ts') $(OUT_MODE) package-lock.json tsconfig.json
 JS_OUT      = out/main.js
 
-PIPE_1	    = $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $(PRESSURE:%=straight_%) mix unmix up down filter
+PIPE_1      = $(PRESSURES:%=curve_%) $(PRESSURES:%=edge_%) $(PRESSURE:%=port_%) $(PRESSURE:%=straight_%) mix unmix up down filter
 
 PIPE_IN     = $(PIPE_1:%=$(PIPE)/72/%.png) $(PIPE_1:%=$(PIPE)/90/%.png) $(PIPE_1:%=$(PIPE)/120/%.png)
 PIPE_OUT    = $(SIZES:%=out/sheets/pipe_%.png) $(SIZES:%=out/sheets/pipe_%@1x.png.json)
@@ -38,7 +38,7 @@ OVERLAY_OUT = $(OVERLAY_2:%=$(PIPE)/72/%) $(OVERLAY_2:%=$(PIPE)/90/%) $(OVERLAY_
 WEB_JS      = $(WEB)/lib/main.js $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(FFO).js
 WEB_JS_MAP  = $(WEB)/lib/main.js.map
 WEB_TS      = $(WEB)/src
-WEB_ART	    = $(WEB)/art
+WEB_ART     = $(WEB)/art
 WEB_JSON    = $(WEB)/lib/puzzles.json
 
 .DEFAULT_GOAL = build

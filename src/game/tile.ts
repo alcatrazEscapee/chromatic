@@ -24,7 +24,7 @@ export class Tile {
 
     dir: DirectionId = DirectionId.LEFT;
     
-    constructor(tileId: Exclude<TileId, TileId.EMPTY>) {
+    constructor(palette: Palette, tileId: Exclude<TileId, TileId.EMPTY>, x: number, y: number) {
         this.tileId = tileId;
         this.root = new PIXI.Container();
 
@@ -41,6 +41,10 @@ export class Tile {
         this.root.addChild(this.overlayUpper);
         this.root.addChild(this.pipeFixed);
         this.root.addChild(this.flowContainer);
+
+        this.root.position.set(
+            Constants.GRID_LEFT + x * palette.tileWidth + palette.tileWidth / 2,
+            Constants.GRID_TOP + y * palette.tileWidth + palette.tileWidth / 2);
     }
 
     public rotate(): void {
@@ -220,7 +224,7 @@ export class Tile {
         }
     }
 
-    private addOverlay(property: TileProperties, texture: Omit<PalettePipeTextures<Texture>, 'pipe'>, options: { upper?: boolean, rotation?: 90 | 180 } | null = null): void {
+    private addOverlay(property: TileProperties, texture: Pick<PalettePipeTextures<Texture>, 'overlay'>, options: { upper?: boolean, rotation?: 90 | 180 } | null = null): void {
         if (property.color !== null) {
 
             // Need to flip the H/V texture, then rotate the H texture by 180 after

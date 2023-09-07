@@ -6,6 +6,7 @@ import { Animations } from "./animation";
 import { Constants, DirectionId, Fonts, Strings } from "./gen/constants";
 import { Util } from "./game/util";
 import { VictoryModal } from "./modal";
+import { State } from "./game/save";
 
 
 interface Panel {
@@ -153,7 +154,6 @@ export class Menu {
         new VictoryModal(this.overlayContainer, this, puzzleId);
     }
 
-
     private onPointerTap(event: FederatedPointerEvent): void {
         this.game.onPointerTap(event);
     }
@@ -217,6 +217,16 @@ export class Menu {
                 this.game.postInit();
             });
         }
+    }
+
+    public saveState(): void {
+        const save = State.saveState(this.game);
+        if (save === null) {
+            delete this.saveData.state;
+        } else {
+            this.saveData.state = save;
+        }
+        this.save();
     }
 
     private tick(delta: number): void {
@@ -374,7 +384,7 @@ export class Menu {
 
     public enterGame(puzzleId: number): void {
         this.stage.addChildAt(this.gameContainer, 0);
-        this.game.init(this.core.puzzles.puzzles[puzzleId], this.nextIsValid(puzzleId));
+        this.game.init(this.core.puzzles.puzzles[puzzleId], this.nextIsValid(puzzleId), this.saveData?.state ?? null);
     }
 
     public leaveGame(): void {
@@ -394,7 +404,7 @@ export class Menu {
         }
 
         this.game.teardown(); // Teardown the current puzzle
-        this.game.init(this.core.puzzles.puzzles[puzzleId], this.nextIsValid(puzzleId)); // Immediately load the next puzzle
+        this.game.init(this.core.puzzles.puzzles[puzzleId], this.nextIsValid(puzzleId), this.saveData?.state ?? null); // Immediately load the next puzzle
     }
 
     private nextIsValid(puzzleId: number): boolean {

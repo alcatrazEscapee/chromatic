@@ -1,5 +1,5 @@
 import type { Leak } from '../src/game/leak';
-import type { AxisId, ColorId, NetworkPuzzle, TexturePalette, TileId } from '../src/gen/constants';
+import type { AssetBundle, AxisId, ColorId, NetworkPuzzle, TexturePalette, TileId } from '../src/gen/constants';
 
 import { Constants, DirectionId, GridId } from '../src/gen/constants';
 import { Tile, TileProperties } from '../src/game/tile';
@@ -46,8 +46,11 @@ class Impl implements Simulator.Callback, Navigator.Map {
             filters: puzzleIn?.filters ?? [],
         } as NetworkPuzzle;
 
+        const spritesheet: any = { textures: {} };
+        const bundle: AssetBundle = { puzzles: { puzzles: [] }, core: spritesheet, pipe_72: spritesheet, pipe_90: spritesheet, pipe_120: spritesheet };
+
         this.grid = puzzle.size;
-        this.palette = Util.buildPalettes({} as any, false)[puzzle.size];
+        this.palette = Util.buildPalettes(bundle)[puzzle.size];
         this.puzzle = puzzle as NetworkPuzzle;
         this.sim = Simulator.create(new (global as any).PIXI.Container()) as any;
         this.victory = false;
@@ -62,7 +65,7 @@ class Impl implements Simulator.Callback, Navigator.Map {
     }
 
     place1(x: number, y: number, tileId: Exclude<TileId, TileId.EMPTY>, rot: DirectionId = DirectionId.LEFT): void {
-        const tile = new Tile(tileId);
+        const tile = new Tile(this.palette, tileId, x, y);
         this.tiles[x + y * this.palette.width] = tile;
         for (let i = 0; i < rot; i++) {
             tile?.rotate();
@@ -70,7 +73,7 @@ class Impl implements Simulator.Callback, Navigator.Map {
         Navigator.updateTile(this, { x, y }, tile);
     }
 
-    label(x: number, y: number, label: { color?: ColorId | null, pressure?: 1 | 2 | 3 | 4 }, key: DirectionId = DirectionId.INTERNAL) {
+    label(x: number, y: number, label: { color?: ColorId | null, pressure?: 1 | 2 | 3 | 4 }, key: DirectionId | 0 | 1 = DirectionId.INTERNAL) {
         const tile = this.tiles[x + this.palette.width * y]!;
         const property = tile.property(key);
         
@@ -113,11 +116,17 @@ class Point {
     },
     Graphics: class {
         position: Point = new Point();
+        pivot: Point = new Point();
 
         constructor() {}
 
         beginFill(): void {}
         drawRect(): void {}
+    },
+    Sprite: class {
+        anchor: Point = new Point();
+
+        constructor() {}
     },
     Ticker: {
         shared: {
