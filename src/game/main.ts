@@ -23,6 +23,7 @@ interface GameCallback {
 
     onVictory(puzzleId: number): void;
     unload(): void;
+    nextPuzzle(): void;
 }
 
 
@@ -48,7 +49,7 @@ export class Game {
 
     readonly btnPlay: Sprite;
     readonly btnStop: Sprite;
-    readonly btnMenu: Sprite;
+    readonly btnNext: Sprite;
 
     readonly simulator: Simulator.Kind;
 
@@ -58,7 +59,7 @@ export class Game {
     unloadState: StateId = StateId.MAIN_TILE;
     grid: GridId = GridId.default;
 
-    heldTile: { root: Sprite, tileId: TileId } | null = null;
+    private heldTile: { root: Sprite, tileId: TileId } | null = null;
 
     // colorId:
     //     ColorId : A color
@@ -67,19 +68,19 @@ export class Game {
     // pressure:
     //     -1 | 1  : Apply a delta pressure, either +1 or -1
     //     null    : Don't apply any pressure (color label)
-    heldLabel: { root: DisplayObject, colorId: ColorId | -1 | null, pressure: -1 | 1 | null } | null = null;
+    private heldLabel: { root: DisplayObject, colorId: ColorId | -1 | null, pressure: -1 | 1 | null } | null = null;
     
     // When a mouse down occurs, we don't know a priori if it's a drag or rotate
     // While we wait for a substantial mouse movement, we hold the mouse position here
     // If we move enough, then we snap to assuming it's a click and drag, if not, we clear this on tap
-    movedTile: (Point & { index: number }) | null = null;
+    private movedTile: (Point & { index: number }) | null = null;
 
     // The last recorded screenX / screenY of the mouse, from mouse move event
-    screenX: number = 0;
-    screenY: number = 0;
+    private screenX: number = 0;
+    private screenY: number = 0;
 
     // If `true`, the next tap on the stage will by ignored
-    bypassNextTap: boolean = false;
+    private bypassNextTap: boolean = false;
 
     constructor(menu: GameCallback, root: Container) {
         
@@ -171,14 +172,14 @@ export class Game {
         this.btnPlay = new PIXI.Sprite(this.core.ui_btn_play);
         this.btnPlay.position.set(324, 438);
         this.btnPlay.eventMode = 'static';
-        this.btnPlay.on('pointertap', event => this.onPlay(event));
+        this.btnPlay.on('pointertap', () => this.onPlay());
         buttonsContainer.addChild(this.btnPlay);
 
         this.btnStop = new PIXI.Sprite(this.core.ui_btn_stop);
         this.btnStop.position.set(355, 440);
         this.btnStop.eventMode = 'static';
         this.btnStop.alpha = 0.5;
-        this.btnStop.on('pointertap', event => this.onStop(event));
+        this.btnStop.on('pointertap', () => this.onStop());
         buttonsContainer.addChild(this.btnStop);
 
         const btnTabTop = new PIXI.Sprite();
@@ -186,20 +187,29 @@ export class Game {
 
         btnTabTop.hitArea = new PIXI.Rectangle(274, 431, 35, 70);
         btnTabTop.eventMode = 'static';
-        btnTabTop.on('pointertap', event => this.onTabTop(event));
+        btnTabTop.on('pointertap', () => this.onTabTop());
 
         btnTabBot.hitArea = new PIXI.Rectangle(274, 431 + 70, 35, 70);
         btnTabBot.eventMode = 'static';
-        btnTabBot.on('pointertap', event => this.onTabBot(event));
+        btnTabBot.on('pointertap', () => this.onTabBot());
 
         buttonsContainer.addChild(btnTabTop);
         buttonsContainer.addChild(btnTabBot);
 
-        this.btnMenu = new PIXI.Sprite(this.core.menu_btn_main);
-        this.btnMenu.position.set(356, 542);
-        this.btnMenu.eventMode = 'static';
-        this.btnMenu.on('pointertap', event => this.onMenu(event));
-        buttonsContainer.addChild(this.btnMenu);
+        const btnMenu = new PIXI.Sprite(this.core.menu_btn_main);
+
+        btnMenu.position.set(Constants.BTN_MAIN_X, Constants.BTN_MAIN_Y);
+        btnMenu.eventMode = 'static';
+        btnMenu.on('pointertap', () => this.onMenu());
+        buttonsContainer.addChild(btnMenu);
+
+        this.btnNext = new PIXI.Sprite(this.core.menu_btn_left);
+
+        this.btnNext.angle += 180;
+        this.btnNext.position.set(Constants.BTN_NEXT_X, Constants.BTN_NEXT_Y);
+        this.btnNext.eventMode = 'static';
+        this.btnNext.on('pointertap', () => this.onNext());
+        buttonsContainer.addChild(this.btnNext);
 
         // Default with tile buttons visible
         this.buttonsContainer.addChildAt(this.tileButtonsContainer, 0);
@@ -215,7 +225,7 @@ export class Game {
     /**
      * Initializes per-puzzle data
      */
-    public init(puzzle: NetworkPuzzle): void {
+    public init(puzzle: NetworkPuzzle, nextIsValid: boolean = false): void {
         this.grid = puzzle.size;
 
         const palette: TexturePalette = this.palettes[this.grid];
@@ -296,6 +306,7 @@ export class Game {
         }
 
         this.puzzle = puzzle;
+        this.updateNextPuzzle(nextIsValid);
     }
 
     /**
@@ -319,7 +330,7 @@ export class Game {
     public teardown(): void {
 
         if (this.unloadState === StateId.SIMULATION) {
-            this.onStop(null, true);
+            this.onStop(true);
             this.unloadState = this.tabState; // Since we nuke the simulation, our actual unload state will be switching to the tab state
 
         }
@@ -336,6 +347,10 @@ export class Game {
 
     public onVictory(): void {
         this.menu.onVictory(this.puzzle!.id);
+    }
+
+    public updateNextPuzzle(valid: boolean): void {
+        this.btnNext.visible = valid && this.puzzle !== null && this.puzzle.id >= 0;
     }
 
     private grabTile(event: FederatedPointerEvent, tileId: TileId): void {
@@ -541,7 +556,7 @@ export class Game {
         }
     }
 
-    private onPlay(_: FederatedPointerEvent): void {
+    private onPlay(): void {
         if (this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) {
             this.btnPlay.alpha = 0.5;
             this.btnStop.alpha = 1.0;
@@ -552,7 +567,7 @@ export class Game {
         }
     }
 
-    private onStop(_: FederatedPointerEvent | null, bypass: boolean = false): void {
+    private onStop(bypass: boolean = false): void {
         if (this.state === StateId.SIMULATION || bypass) {
             this.btnPlay.alpha = 1.0;
             this.btnStop.alpha = 0.5;
@@ -568,7 +583,7 @@ export class Game {
         }
     }
 
-    private onTabTop(_: FederatedPointerEvent): void {
+    private onTabTop(): void {
         if (this.state === StateId.MAIN_CONFIGURE || this.state === StateId.SIMULATION) {
             this.tabState = StateId.MAIN_TILE;
             if (this.state !== StateId.SIMULATION) {
@@ -581,7 +596,7 @@ export class Game {
         }
     }
 
-    private onTabBot(_: FederatedPointerEvent): void {
+    private onTabBot(): void {
         if (this.state === StateId.MAIN_TILE || this.state === StateId.SIMULATION) {
             this.tabState = StateId.MAIN_CONFIGURE;
             if (this.state !== StateId.SIMULATION) {
@@ -594,9 +609,15 @@ export class Game {
         }
     }
 
-    private onMenu(_: FederatedPointerEvent): void {
-        if (this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) {
+    private onMenu(): void {
+        if (this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE || this.state === StateId.SIMULATION) {
             this.menu.unload();
+        }
+    }
+
+    private onNext(): void {
+        if ((this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE || this.state === StateId.SIMULATION) && this.btnNext.visible) {
+            this.menu.nextPuzzle();
         }
     }
 

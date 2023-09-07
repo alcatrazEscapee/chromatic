@@ -8,10 +8,6 @@
 - Store last puzzle ID + the board layout in save data, and restore it if you go back to the same puzzle
     - Add an icon on the main menu that indicates you have save data available (in-progress icon)
 
-### Graphics
-
-- Make victory modal not look like shit - improve buttons for it?
-
 ### Website
 
 - Add some information, lower down on how to play

@@ -1,4 +1,4 @@
-import type { Container } from "pixi.js";
+import type { Container, DisplayObject } from "pixi.js";
 import type { Menu } from "./menu";
 
 import { Animations } from "./animation";
@@ -19,36 +19,39 @@ export class VictoryModal {
         this.menu.game.preTeardown(); // Disable interactivity on the game object
 
         const overlay = new PIXI.Graphics();
-        const title = new PIXI.Text('VICTORY', {
+        const title = new PIXI.Text('puzzle complete!', {
             fontFamily: Fonts.ERAS_BOLD_ITC,
-            fontSize: 36,
-            fill: Constants.COLOR_DARK_GREEN,
+            fontSize: 24,
+            fill: Constants.COLOR_WHITE,
         });
         const btnX = new PIXI.Sprite(menu.core.menu_btn_x);
         const btnMain = new PIXI.Sprite(menu.core.menu_btn_main);
+        const star = new PIXI.Sprite(menu.core.victory_star);
 
         overlay.beginFill(Constants.COLOR_BLACK);
         overlay.drawRect(0, 0, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         overlay.alpha = 0.8;
 
-        title.position.set(Constants.STAGE_WIDTH / 2, 180);
+        title.position.set(Constants.STAGE_WIDTH / 2, 220);
         title.anchor.set(0.5, 0);
 
-        btnX.position.set(75, 180);
+        btnX.position.set(10, 10);
         btnX.eventMode = 'static';
         btnX.on('pointertap', () => this.onX());
 
-        btnMain.position.set(75, 300);
+        btnMain.position.set(Constants.BTN_MAIN_X, Constants.BTN_MAIN_Y);
         btnMain.eventMode = 'static';
         btnMain.on('pointertap', () => this.onMain());
 
-        this.root.addChild(overlay, title, btnX, btnMain);
+        star.position.set(144, -160);
 
-        const nextPuzzleId: number = puzzleId + 1;
-        if (nextPuzzleId < menu.maxPuzzleInclusive) {
+        this.root.addChild(overlay, star, title, btnX, btnMain);
+
+        const nextPuzzleIsValid: boolean = puzzleId < menu.maxPuzzleInclusive;
+        if (nextPuzzleIsValid) {
             const btnNext = new PIXI.Sprite(menu.core.menu_btn_left);
 
-            btnNext.position.set(Constants.STAGE_WIDTH - 75, 300 + 40);
+            btnNext.position.set(Constants.BTN_NEXT_X, Constants.BTN_NEXT_Y);
             btnNext.angle += 180;
             btnNext.eventMode = 'static';
             btnNext.on('pointertap', () => this.onNext());
@@ -58,9 +61,17 @@ export class VictoryModal {
 
         Animations.fadeIn(this.root, () => {
             this.active = true;
+            this.menu.game.updateNextPuzzle(nextPuzzleIsValid); // Once we're finished animating, update the 'next' button on the game beneath us
+            this.animateStar(star);
         }, Constants.ANIM_VICTORY_FADE_IN_DELAY_TICKS);
 
         parent.addChild(this.root);
+    }
+
+    private animateStar(star: DisplayObject): void {
+        // Star animation pops in from the bottom, after we are fully faded in
+        // If we exit this menu before the star is finished moving, that's okay, it will fade out with the rest
+        Animations.easeOutBounce(star, { x: star.position.x, y: star.position.y } as const, { x: 144, y: 85 } as const, () => {});
     }
 
     private onX(): void {
@@ -88,7 +99,7 @@ export class VictoryModal {
         if (this.active) {
             Animations.fadeToBlack(this.menu.overlayContainer, () => {
                 this.root.destroy(); // Nuke the modal
-                this.menu.nextPuzzle(); // And advance back to the next puzzle
+                this.menu.enterNextPuzzle(); // And advance back to the next puzzle. Safe because the button is only added if next puzzle is legal
             }, () => {
                 this.menu.game.postInit(); // Enable interactivity
             });

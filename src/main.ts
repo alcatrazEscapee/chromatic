@@ -76,6 +76,8 @@ async function main() {
         grid_3x3: 'art/grid_3x3.png',
         grid_4x4: 'art/grid_4x4.png',
         grid_5x5: 'art/grid_5x5.png',
+
+        victory_star: 'art/victory_star.png',
     };
 
     app.stage.addChild(progress);
