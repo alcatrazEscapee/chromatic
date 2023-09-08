@@ -217,7 +217,7 @@ export class Game {
         buttonsContainer.addChild(this.btnNext);
 
         this.btnVolume = new VolumeButton(menu.core, menu.music);
-        this.btnVolume.root.position.set(324, 523);
+        this.btnVolume.root.position.set(324, 543);
         this.btnVolume.root.eventMode = 'static';
         this.btnVolume.root.on('pointertap', () => this.btnVolume.toggle());
         buttonsContainer.addChild(this.btnVolume.root);
@@ -318,6 +318,7 @@ export class Game {
 
         this.puzzle = puzzle;
         this.updateNextPuzzle(nextIsValid);
+        this.btnVolume.update();
         
         if (saveState !== null) {
             State.restoreState(this, saveState, palette);

@@ -74,9 +74,8 @@ export class VolumeButton {
         }
     }
 
-    public destroy(): void {
-        this.on.destroy();
-        this.off.destroy();
-        this.root.destroy();
+    public update(): void {
+        this.root.removeChildAt(0);
+        this.root.addChild(this.parent.isPlaying() ? this.on : this.off);
     }
 }
