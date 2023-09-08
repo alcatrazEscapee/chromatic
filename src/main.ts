@@ -1,3 +1,4 @@
+import { Animations } from "./animation";
 import { Builder } from "./builder";
 import { Fonts, type AssetBundle, Constants } from "./gen/constants";
 import { Menu } from "./menu";
@@ -6,10 +7,12 @@ import { Menu } from "./menu";
 declare global {
     interface Window {
         game: Menu;
+        version: string;
         builder: Builder;
     }
 
     const DEBUG: true;
+    const VERSION: string;
 }
 
 
@@ -44,6 +47,11 @@ async function main() {
         view: document.getElementById('main-canvas') as HTMLCanvasElement,
     });
 
+    app.renderer.events.autoPreventDefault = false;
+    if (app.renderer.view.style) {
+        app.renderer.view.style.touchAction = 'auto';
+    }
+
     const manifest: AssetManifest = {
         puzzles: 'lib/puzzles.json',
 
@@ -68,7 +76,7 @@ async function main() {
     bar.destroy();
     progress.destroy();
 
-    window.game = new Menu(app, core);
+    const menu = window.game = new Menu(app, core);
 
     const puzzlesSpan = document.getElementById('main-number-of-puzzles') as HTMLSpanElement;
     puzzlesSpan.innerText = String(core.puzzles.puzzles.length);
@@ -77,6 +85,20 @@ async function main() {
         console.log(`Finished loading in ${performance.now() - start} ms`);
         window.builder = new Builder();
     }
+
+    // Additionally setup the small filter animation
+    const filterApp = new PIXI.Application({
+        background: Constants.COLOR_DARK_GRAY,
+        width: 120 * 3,
+        height: 120,
+        view: document.getElementById('filter-canvas') as HTMLCanvasElement,
+    });
+
+    Animations.filterDemo(filterApp, menu);
+
+    // Update the version both in the bottom of the display, and to the global constant
+    // `VERSION` is replaced by esbuild with the version from `package.json`
+    (document.getElementById('chromatic-version') as HTMLSpanElement).innerText = window.version = VERSION;
 }
 
 window.onload = () => main();

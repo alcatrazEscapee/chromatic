@@ -4941,7 +4941,7 @@
           "dir": "up"
         },
         {
-          "color": "blue",
+          "color": "yellow",
           "pressure": 1,
           "x": 2,
           "y": 3,
@@ -4958,14 +4958,8 @@
         {
           "color": "yellow",
           "dir": "up",
-          "x": 1,
-          "y": 0
-        },
-        {
-          "color": "blue",
-          "dir": "up",
           "x": 2,
-          "y": 1
+          "y": 0
         }
       ]
     },

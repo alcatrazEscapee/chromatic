@@ -7,7 +7,6 @@ WEB         = ../Website/public/chromatic/
 GEN         = src/gen
 PIPE        = art/pipe
 OUT_MODE    = out/debug
-NODE_BIN    = .\\node_modules\\.bin\\
 
 SIZES       = 72 90 120
 PRESSURES   = 1 2 3 4
@@ -37,9 +36,9 @@ OVERLAY_OUT = $(OVERLAY_2:%=$(PIPE)/72/%) $(OVERLAY_2:%=$(PIPE)/90/%) $(OVERLAY_
 
 WEB_JS      = $(WEB)/lib/main.js $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(FFO).js
 WEB_JS_MAP  = $(WEB)/lib/main.js.map
+WEB_JSON    = $(WEB)/lib/puzzles.json
 WEB_TS      = $(WEB)/src
 WEB_ART     = $(WEB)/art
-WEB_JSON    = $(WEB)/lib/puzzles.json
 
 .DEFAULT_GOAL = build
 .SILENT :
@@ -119,11 +118,11 @@ $(WEB)/lib/%.js.map : ./out/%.js.map
 	cp $< $@
 
 
-$(JS_OUT) $(JS_OUT).map &: $(TS_SRC) package-lock.json tsconfig.json
+$(JS_OUT) $(JS_OUT).map &: $(TS_SRC) package.json package-lock.json tsconfig.json
 	printf "Checking types...\n"
-	$(NODE_BIN)tsc
+	npx tsc
 	printf "Compiling...\n"
-	$(NODE_BIN)esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap --define:DEBUG=true, --minify --define:DEBUG=false)
+	npx esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap --define:DEBUG=true, --minify --define:DEBUG=false) --define:VERSION=\"$(shell grep -oP "version\": \"\K[^\"]+" package.json)\"
 
 
 .PHONY : spritesheets
