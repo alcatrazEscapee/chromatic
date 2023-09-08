@@ -6,6 +6,7 @@ import { Util } from './game/util';
 import type { AssetBundle } from './gen/constants';
 import { Constants, DirectionId, Fonts, Strings } from './gen/constants';
 import { VictoryModal } from './modal';
+import { MusicPlayer, VolumeButton } from './music';
 
 
 interface Panel {
@@ -22,6 +23,7 @@ export class Menu {
     readonly app: Application;
     readonly stage: RestrictContainer<Container, DisplayObject, 0>;
     readonly core: AssetBundle;
+    readonly music: MusicPlayer;
 
     readonly menuContainer: Container;
     readonly gameContainer: Container;
@@ -34,6 +36,7 @@ export class Menu {
 
     readonly btnLeft: Sprite;
     readonly btnRight: Sprite;
+    readonly btnVolume: VolumeButton;
     
     pageText: Text | null = null;
     starsText: Text | null = null;
@@ -55,6 +58,7 @@ export class Menu {
         this.app = app;
         this.stage = app.stage;
         this.core = core;
+        this.music = new MusicPlayer();
 
         this.menuContainer = new PIXI.Container();
         this.gameContainer = new PIXI.Container();
@@ -119,9 +123,15 @@ export class Menu {
         this.btnRight.eventMode = 'static';
         this.btnRight.on('pointertap', () => this.switchPage(1));
 
+        this.btnVolume = new VolumeButton(core, this.music);
+        this.btnVolume.root.position.set(118, 533);
+        this.btnVolume.root.eventMode = 'static';
+        this.btnVolume.root.on('pointertap', () => this.btnVolume.toggle());
+
         this.menuContainer.addChild(this.titleContainer);
         this.menuContainer.addChild(this.btnLeft);
         this.menuContainer.addChild(this.btnRight);
+        this.menuContainer.addChild(this.btnVolume.root);
 
         this.pageText = null;
 

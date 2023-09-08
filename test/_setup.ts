@@ -1,11 +1,11 @@
 import type { Leak } from '../src/game/leak';
-import type { AssetBundle, AxisId, ColorId, NetworkPuzzle, TexturePalette, TileId } from '../src/gen/constants';
+import type { AxisId, ColorId, NetworkPuzzle, TexturePalette, TileId } from '../src/gen/constants';
 
-import { Constants, DirectionId, GridId } from '../src/gen/constants';
-import { Tile, TileProperties } from '../src/game/tile';
-import { IncomingFlow, Simulator } from '../src/game/simulator';
 import { Navigator } from '../src/game/navigator';
+import { IncomingFlow, Simulator } from '../src/game/simulator';
+import { Tile, TileProperties } from '../src/game/tile';
 import { Util } from '../src/game/util';
+import { Constants, DirectionId, GridId } from '../src/gen/constants';
 
 import fs from 'fs';
 
@@ -47,7 +47,7 @@ class Impl implements Simulator.Callback, Navigator.Map {
         } as NetworkPuzzle;
 
         const spritesheet: any = { textures: {} };
-        const bundle: AssetBundle = { puzzles: { puzzles: [] }, core: spritesheet, pipe_72: spritesheet, pipe_90: spritesheet, pipe_120: spritesheet };
+        const bundle: any = { puzzles: { puzzles: [] }, core: spritesheet, pipe_72: spritesheet, pipe_90: spritesheet, pipe_120: spritesheet };
 
         this.grid = puzzle.size;
         this.palette = Util.buildPalettes(bundle)[puzzle.size];

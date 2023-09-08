@@ -1,7 +1,10 @@
 /**
  * The global constant PIXI available in production, via direct `<script>` tag.
+ * `@pixi/sound` is available as `PIXI.sound`
  */
-declare const PIXI: typeof import('pixi.js');
+declare const PIXI: 
+    typeof import('pixi.js') &
+    { sound: typeof import('@pixi/sound') };
 
 declare const FontFaceObserver: typeof import('fontfaceobserver');
 
@@ -73,6 +76,8 @@ type CoreSpriteId = 'menu_background'
     | 'ui_btn_stop'
     | `ui_btn_pipe_${AssetPipeIcon}`
     | 'victory_star'
+    | 'volume_on'
+    | 'volume_off'
     | 'grid_3x3' | 'grid_4x4' | 'grid_5x5'
 
     

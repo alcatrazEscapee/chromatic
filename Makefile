@@ -2,6 +2,7 @@ SHELL := /bin/bash
 
 
 PIXI        = pixi-7.2.4
+PIXI_SOUND  = pixi-sound-5.2.1
 FFO         = fontfaceobserver-2.1.0
 WEB         = ../Website/public/chromatic/
 GEN         = src/gen
@@ -27,18 +28,21 @@ CORE_OUT    = out/sheets/core.png out/sheets/core@1x.png.json
 DATA_IN     = $(shell find data -name '\*.json')
 DATA_OUT    = out/puzzles.json
 
-ART_IN      = $(shell find art/textures -name '*.png')
+ART_IN      = $(shell find art/textures -name '\*.png')
 
 OVERLAY_1   = $(PRESSURES:%=_%_overlay_h.png) $(PRESSURES:%=_%_overlay_v.png)
 OVERLAY_2   = $(OVERLAY_1:%=curve%) $(OVERLAY_1:%=port%) $(OVERLAY_1:%=straight%)
 
 OVERLAY_OUT = $(OVERLAY_2:%=$(PIPE)/72/%) $(OVERLAY_2:%=$(PIPE)/90/%) $(OVERLAY_2:%=$(PIPE)/120/%)
 
-WEB_JS      = $(WEB)/lib/main.js $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(FFO).js
+AUDIO_IN    = $(shell find audio -name '*.mp3')
+
+WEB_JS      = $(WEB)/lib/main.js $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(PIXI_SOUND).js $(WEB)/lib/$(FFO).js
 WEB_JS_MAP  = $(WEB)/lib/main.js.map
 WEB_JSON    = $(WEB)/lib/puzzles.json
 WEB_TS      = $(WEB)/src
 WEB_ART     = $(WEB)/art
+WEB_AUDIO   = $(WEB)/audio
 
 .DEFAULT_GOAL = build
 .SILENT :
@@ -48,14 +52,14 @@ FORCE :
 # Includes .js.map, copies the /src/ directory for debugger use
 # Sets `DebugMode.ENABLED = 1`
 .PHONY : build
-build : build-debug $(OUT_MODE) $(WEB_ART) $(WEB_JSON) $(WEB_TS) $(WEB_JS) $(WEB_JS_MAP)
+build : build-debug $(OUT_MODE) $(WEB_ART) $(WEB_AUDIO) $(WEB_JSON) $(WEB_TS) $(WEB_JS) $(WEB_JS_MAP)
 
 # Build (release mode)
 # Depends on `clean`
 # Does not include any .js.map or /src/
 # Sets `DebugMode.ENABLED = 0`
 .PHONY : release
-release : clean-release build-release $(OUT_MODE) $(WEB_ART) $(WEB_JSON) $(WEB_JS)
+release : clean-release build-release $(OUT_MODE) $(WEB_ART) $(WEB_AUDIO) $(WEB_JSON) $(WEB_JS)
 
 .PHONY : build-debug
 build-debug :
@@ -100,6 +104,11 @@ $(WEB_ART) : $(PIPE_OUT) $(CORE_OUT)
 	printf "Copying art...\n"
 	rm -rf $(WEB_ART)
 	cp -r out/sheets/. $(WEB_ART)
+
+$(WEB_AUDIO) : $(AUDIO_IN)
+	printf "Copying audio...\n"
+	rm -rf $(WEB_AUDIO)
+	cp -r audio $(WEB_AUDIO)
 
 $(WEB_JSON) : $(DATA_OUT)
 	mkdir -p $(@D)
