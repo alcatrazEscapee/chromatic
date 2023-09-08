@@ -218,6 +218,7 @@ export class Menu {
     public nextPuzzle(): void {
         // Only allow this transition if the puzzle is complete
         if (this.game.puzzle !== null && Util.bitGet(this.saveData.stars, this.game.puzzle.id) && this.game.puzzle.id < this.maxPuzzleInclusive) {
+            this.game.preTeardown();
             Animations.fadeToBlack(this.overlayContainer, () => {
                 this.enterNextPuzzle();
             }, () => {

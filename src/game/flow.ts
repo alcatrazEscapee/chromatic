@@ -45,7 +45,7 @@ abstract class BaseFlow implements Flow {
         this.internalTick(this.delta);
     }
 
-    protected abstract internalTick(delta: number): void;
+    abstract internalTick(delta: number): void;
 }
 
 

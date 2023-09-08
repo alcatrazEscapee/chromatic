@@ -1,7 +1,10 @@
-import type { Container, DisplayObject, Graphics } from "pixi.js";
+import type { Application, Container, DisplayObject, Graphics } from "pixi.js";
+import type { Menu } from "./menu";
 
+import { ColorId, Constants, DirectionId } from "./gen/constants";
+import { StraightFlow } from "./game/flow";
 import { Util } from "./game/util";
-import { Constants } from "./gen/constants";
+
 
 type Event = () => void;
 
@@ -26,6 +29,10 @@ export module Animations {
 
     export function easeOutBounce(root: DisplayObject, start: Point, end: Point, onComplete: Event): void {
         new Easing(root, start, end, applyEaseOutBounce, onComplete);
+    }
+
+    export function filterDemo(app: Application, menu: Menu): void {
+        new FilterDemo(app, menu);
     }
 }
 
@@ -147,6 +154,64 @@ class Easing {
             this.onComplete();
 
             PIXI.Ticker.shared.remove(this.tick, this);
+        }
+    }
+}
+
+
+class FilterDemo {
+
+    readonly flows: StraightFlow[];
+    delta: number;
+
+    constructor(app: Application, menu: Menu) {
+        this.delta = 0;
+        this.flows = [];
+
+        const palette: Palette = menu.game.palettes[0];
+
+        for (let x = 0; x < 3; x++) {
+            const pipe = new PIXI.Sprite(menu.core.pipe_120.textures.pipe_120_straight_2);
+
+            pipe.position.set(x * 120 + 60, 60);
+            pipe.anchor.set(0.5);
+            app.stage.addChild(pipe);
+        }
+
+        for (const [color, x] of [[ColorId.YELLOW, 0], [ColorId.BLUE, 1], [ColorId.RED, 2]]) {
+            const flow = new StraightFlow(palette, color, 2, DirectionId.RIGHT);
+
+            flow.root.position.set(120 * x + 60, 60);
+            app.stage.addChild(flow.root);
+            
+            this.flows[x] = flow;
+        }
+
+        for (const [color, x] of [[ColorId.BLUE, 1], [ColorId.RED, 2]]) {
+            const filter = new PIXI.Sprite(menu.core.pipe_120.textures.pipe_120_filter);
+
+            filter.position.set(x * 120, 60);
+            filter.angle += 90;
+            filter.anchor.set(0.5, 0.5);
+            filter.tint = Util.COLORS[color];
+            app.stage.addChild(filter);
+        }
+
+        PIXI.Ticker.shared.add(this.tick, this);
+    }
+
+    tick(delta: number): void {
+        this.delta += delta;
+
+        if (this.delta > Constants.TICKS_PER_FILTER_DEMO_CYCLE) {
+            this.delta -= Constants.TICKS_PER_FILTER_DEMO_CYCLE;
+        }
+
+        for (let i = 0; i < 3; i++) {
+            this.flows[i]!.internalTick(Util.clampMap(this.delta,
+                Constants.TICKS_PER_FILTER_DEMO_PRE_WAIT + i * Constants.TICKS_PER_SIMULATOR_STEP,
+                Constants.TICKS_PER_FILTER_DEMO_PRE_WAIT + (i + 1) * Constants.TICKS_PER_SIMULATOR_STEP,
+                0, 1));
         }
     }
 }

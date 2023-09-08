@@ -93,7 +93,7 @@ export module Util {
         const direction = Math.round(angle / 90) % 4;
         const delta = Math.min(Math.abs(angle - (direction * 90)), Math.abs(angle - (360 + direction * 90)));
         
-        if (distanceSq >= 20_000 && velocity >= 100 && delta <= 15) {
+        if (distanceSq >= 12_000 && velocity >= 60 && delta <= 20) {
             return direction as DirectionId;
         }
         return -1;

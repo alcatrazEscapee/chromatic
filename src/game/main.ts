@@ -1,4 +1,5 @@
-import { Texture, Container, FederatedPointerEvent, Sprite, DisplayObject, Graphics } from 'pixi.js';
+import type { Texture, Container, FederatedPointerEvent, Sprite, DisplayObject } from 'pixi.js';
+import type { Menu } from '../menu';
 
 import { AssetBundle, AxisId, ColorId, DirectionId, GridId, NetworkPuzzle, TileId, type TexturePalette, Constants, Strings } from '../gen/constants';
 import { Util } from './util';
@@ -19,19 +20,10 @@ const enum StateId {
     MENU,
 }
 
-interface GameCallback {
-    readonly core: AssetBundle;
-
-    onVictory(puzzleId: number): void;
-    unload(): void;
-    nextPuzzle(): void;
-    saveState(): void;
-}
-
 
 export class Game {
 
-    readonly menu: GameCallback;
+    readonly menu: Menu;
     readonly root: Container;
     readonly core: AssetBundle;
     readonly tiles: (Tile | null)[];
@@ -84,7 +76,7 @@ export class Game {
     // If `true`, the next tap on the stage will by ignored
     private bypassNextTap: boolean = false;
 
-    constructor(menu: GameCallback, root: Container) {
+    constructor(menu: Menu, root: Container) {
         
         this.menu = menu;
         this.root = root;
@@ -356,7 +348,6 @@ export class Game {
         if (this.unloadState === StateId.SIMULATION) {
             this.onStop(true);
             this.unloadState = this.tabState; // Since we nuke the simulation, our actual unload state will be switching to the tab state
-
         }
 
         Util.clear(this.tilesContainer);
