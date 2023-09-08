@@ -466,6 +466,11 @@ export class Game {
                 if (tile !== null) {
                     this.movedTile = { x: event.screenX, y: event.screenY, index: pos.index };
                 }
+            } else {
+                // Set when the tap down occurs outside the grid - prevents the tap from occurring on the grid
+                // This is a QoL improvement for mobile, when trying (and failing) to pickup a tile or color
+                // Instead of causing a rotation (down - miss color + drag + up/tap in tile), this no-ops it.
+                this.bypassNextTap = true;
             }
         }
     }
