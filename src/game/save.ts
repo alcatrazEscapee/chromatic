@@ -1,5 +1,5 @@
-import { AxisId, ColorId, DirectionId, NetworkPuzzle, TexturePalette, TileId } from "../gen/constants";
-import { Tile } from "./tile";
+import { AxisId, ColorId, DirectionId, NetworkPuzzle, TexturePalette, TileId } from '../gen/constants';
+import { Tile } from './tile';
 
 
 interface Saveable {
@@ -73,7 +73,11 @@ export module State {
     }
 
 
-    export function restoreState(save: Saveable, state: SavedPuzzleState, palette: TexturePalette): void {
+    export function restoreState(save: Saveable, state: SavedPuzzleState | null, palette: TexturePalette): void {
+        if (state === null) {
+            return; // No state to restore to
+        }
+        
         if (save.puzzle!.id !== state.id) {
             return; // No restore possible, since we were saved on a different puzzle
         }
