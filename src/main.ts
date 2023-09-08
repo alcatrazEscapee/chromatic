@@ -77,20 +77,9 @@ async function main() {
     const puzzlesSpan = document.getElementById('main-number-of-puzzles') as HTMLSpanElement;
     puzzlesSpan.innerText = String(core.puzzles.puzzles.length);
 
-    // Setup audio
-    // Avoids errors that the sound context was started without user interaction
-    document.addEventListener('click touchstart', async () => {
-        Util.debug('Loading @pixi/sound on interaction');
-        const script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'lib/pixi-sound-5.2.1.js';
-        script.onload = () => {
-            Util.debug('Loaded @pixi/sound, performing audio setup');
-            script.remove();
-            menu.music.setup();
-        };
-        document.body.appendChild(script);
-    }, { once: true });
+    // Audio
+    document.addEventListener('click', () => menu.music.setup(), { once: true });
+    document.addEventListener('touchstart', () => menu.music.setup(), { once: true });
 
     if (DEBUG) {
         Util.debug(`Finished loading in ${performance.now() - start} ms`);

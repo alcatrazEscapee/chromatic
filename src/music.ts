@@ -12,22 +12,40 @@ import { AssetBundle } from './gen/constants';
  */
 export class MusicPlayer {
 
+    private loaded: boolean = false;
     private music: Sound | null = null;
     private instance: IMediaInstance | null = null;
 
-    public setup(): void {
-        PIXI.sound.Sound.from({
-            url: 'audio/music.mp3',
-            preload: true,
-            loaded: (err, sound) => {
-                if (sound) {
-                    Util.debug('Loaded music, audio playback is now possible');
-                    this.music = sound;
-                } else {
-                    throw err;
+    public async setup(): Promise<void> {
+        if (this.loaded) {
+            return;
+        }
+        this.loaded = true; // Prevent loading multiple times
+
+        Util.debug('Loading @pixi/sound on first interaction');
+
+        const script = document.createElement('script');
+
+        script.type = 'text/javascript';
+        script.src = 'lib/pixi-sound-5.2.1.js';
+        script.onload = () => {
+            Util.debug('Loaded @pixi/sound, performing audio setup');
+
+            script.remove();
+            PIXI.sound.Sound.from({
+                url: 'audio/music.mp3',
+                preload: true,
+                loaded: (err, sound) => {
+                    if (sound) {
+                        Util.debug('Loaded music, audio playback is now possible');
+                        this.music = sound;
+                    } else {
+                        throw err;
+                    }
                 }
-            }
-        });
+            });
+        };
+        document.body.appendChild(script);
     }
 
     public start(): void {
