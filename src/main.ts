@@ -47,11 +47,6 @@ async function main() {
         view: document.getElementById('main-canvas') as HTMLCanvasElement,
     });
 
-    app.renderer.events.autoPreventDefault = false;
-    if (app.renderer.view.style) {
-        app.renderer.view.style.touchAction = 'auto';
-    }
-
     const manifest: AssetManifest = {
         puzzles: 'lib/puzzles.json',
 

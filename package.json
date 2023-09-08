@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "0.0.1",
+  "version": "0.2",
   "devDependencies": {
     "@types/fontfaceobserver": "2.1.0",
     "@types/jest": "^29.5.4",
