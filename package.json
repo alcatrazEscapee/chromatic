@@ -1,6 +1,6 @@
 {
   "name": "chromatic",
-  "version": "0.2",
+  "version": "0.3",
   "devDependencies": {
     "@pixi/sound": "5.2.1",
     "@types/fontfaceobserver": "2.1.0",
