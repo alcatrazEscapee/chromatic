@@ -1,6 +1,7 @@
 import type { Container, DisplayObject, FederatedPointerEvent, Sprite, Texture } from 'pixi.js';
 import { AssetBundle, AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, Strings, TileId, type TexturePalette } from '../gen/constants';
 import type { Menu } from '../menu';
+import { VolumeButton } from '../music';
 import { Navigator } from './navigator';
 import { State } from './save';
 import { Simulator } from './simulator';
@@ -43,6 +44,7 @@ export class Game {
     readonly btnPlay: Sprite;
     readonly btnStop: Sprite;
     readonly btnNext: Sprite;
+    readonly btnVolume: VolumeButton;
 
     readonly simulator: Simulator.Kind;
 
@@ -213,6 +215,12 @@ export class Game {
         this.btnNext.eventMode = 'static';
         this.btnNext.on('pointertap', () => this.onNext());
         buttonsContainer.addChild(this.btnNext);
+
+        this.btnVolume = new VolumeButton(menu.core, menu.music);
+        this.btnVolume.root.position.set(324, 523);
+        this.btnVolume.root.eventMode = 'static';
+        this.btnVolume.root.on('pointertap', () => this.btnVolume.toggle());
+        buttonsContainer.addChild(this.btnVolume.root);
 
         // Default with tile buttons visible
         this.buttonsContainer.addChildAt(this.tileButtonsContainer, 0);

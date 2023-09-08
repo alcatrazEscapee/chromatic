@@ -1,5 +1,5 @@
-import { DirectionId, AxisId, ColorId } from '../src/gen/constants';
 import { Colors, Util } from '../src/game/util';
+import { AxisId, ColorId, DirectionId } from '../src/gen/constants';
 
 
 test('Util.COLORS[ColorId.<X>] === Color.<X>', () => {

@@ -1,6 +1,6 @@
-import { ColorId, DirectionId, TileId } from "../src/gen/constants";
-import { Leak } from "../src/game/leak";
-import { DSL } from "./_setup";
+import { Leak } from '../src/game/leak';
+import { ColorId, DirectionId, TileId } from '../src/gen/constants';
+import { DSL } from './_setup';
 
 
 test('simulator id=0 -> leak from input', () => {

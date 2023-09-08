@@ -99,7 +99,7 @@ export class Tile {
 
     public destroy(): void {
         this.clearFlow();
-        this.root.destroy({ children: true });
+        this.root.destroy();
     }
 
     public canAccept(key: DirectionId | AxisId, inc: { color: ColorId, pressure: PressureId }): boolean {

@@ -1,3 +1,4 @@
+import { Util } from './game/util';
 import { ColorId, Constants, DirectionId, GridId, type NetworkPuzzle } from './gen/constants';
 import type { Menu } from './menu';
 
@@ -12,7 +13,7 @@ export class Builder {
     readonly puzzle: NetworkPuzzle;
 
     constructor() {
-        console.log('[Debug Mode] Builder loaded');
+        Util.debug('Builder loaded');
 
         this.menu = window.game;
         this.puzzle = {
@@ -31,7 +32,7 @@ export class Builder {
      */
     public open(size: GridId = GridId._3x3): void {
         // No animation, just jump straight to it
-        console.log('[Debug Mode] opening puzzle builder');
+        Util.debug('Opening puzzle builder');
 
         this.menu.active = false;
         this.menu.leaveMenu();

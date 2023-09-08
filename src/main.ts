@@ -1,5 +1,6 @@
 import { Animations } from './animation';
 import { Builder } from './builder';
+import { Util } from './game/util';
 import { Constants, Fonts, type AssetBundle } from './gen/constants';
 import { Menu } from './menu';
 
@@ -76,8 +77,23 @@ async function main() {
     const puzzlesSpan = document.getElementById('main-number-of-puzzles') as HTMLSpanElement;
     puzzlesSpan.innerText = String(core.puzzles.puzzles.length);
 
+    // Setup audio
+    // Avoids errors that the sound context was started without user interaction
+    document.addEventListener('click', async () => {
+        Util.debug('Loading @pixi/sound on interaction');
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'lib/pixi-sound-5.2.1.js';
+        script.onload = () => {
+            Util.debug('Loaded @pixi/sound, performing audio setup');
+            script.remove();
+            menu.music.setup();
+        };
+        document.body.appendChild(script);
+    }, { once: true });
+
     if (DEBUG) {
-        console.log(`Finished loading in ${performance.now() - start} ms`);
+        Util.debug(`Finished loading in ${performance.now() - start} ms`);
         window.builder = new Builder();
     }
 

@@ -25,6 +25,13 @@ export enum Colors {
 
 export module Util {
 
+    /** Logging that gets stripped in release compile mode. */
+    export function debug(...args: any[]): void {
+        if (DEBUG) {
+            console.log(...args);
+        }
+    }
+
     export const RAINBOW: ReadonlyArray<ColorSource> = [Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.CYAN, Colors.BLUE, Colors.PURPLE];
     export const COLORS: ReadonlyArray<ColorSource> = [Colors.RED, Colors.BLUE, Colors.YELLOW, Colors.ORANGE, Colors.PURPLE, Colors.GREEN, Colors.BROWN, Colors.AMBER, Colors.VIOLET, Colors.LIME, Colors.GOLD, Colors.MAGENTA, Colors.CYAN];
 
