@@ -110,6 +110,7 @@ async function main() {
     // Update the version both in the bottom of the display, and to the global constant
     // `VERSION` is replaced by esbuild with the version from `package.json`
     (document.getElementById('chromatic-version') as HTMLSpanElement).innerText = window.version = VERSION;
+    (document.getElementById('chromatic-version-link') as HTMLLinkElement).href = `https://github.com/alcatrazEscapee/chromatic/tree/v${VERSION}`;
 }
 
 window.onload = () => main();
