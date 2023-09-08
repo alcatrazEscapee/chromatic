@@ -444,6 +444,7 @@ export class Menu {
 
     public enterMenu(): void {
         this.stage.addChildAt(this.menuContainer, 0);
+        this.btnVolume.update();
         PIXI.Ticker.shared.add(this.tick, this);
     }
 
