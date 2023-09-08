@@ -79,7 +79,7 @@ async function main() {
 
     // Setup audio
     // Avoids errors that the sound context was started without user interaction
-    document.addEventListener('click', async () => {
+    document.addEventListener('click touchstart', async () => {
         Util.debug('Loading @pixi/sound on interaction');
         const script = document.createElement('script');
         script.type = 'text/javascript';
