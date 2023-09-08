@@ -6,7 +6,6 @@ from typing import Dict
 
 
 ENUMS: Dict[str, int] = {}
-SIZE_TO_GRID_ID: int = 3
 
 
 def main():
@@ -35,7 +34,7 @@ def export_data():
         index = pz_data['id']
         pz = {
             'id': index,
-            'size': pz_data['size'] - SIZE_TO_GRID_ID,
+            'size': pz_data['size'] - ENUMS['grid_id_to_width'],
             'inputs': [
                 [inp['x'], inp['y'], ENUMS[inp['dir']], ENUMS[inp['color']], inp['pressure']]
                 for inp in pz_data['inputs']

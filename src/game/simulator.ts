@@ -1,11 +1,10 @@
-import type { Container } from "pixi.js";
-import type { Tile } from "./tile";
-import type { Flow } from "./flow";
-
-import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from "../gen/constants";
-import { EdgeFlow, StraightFlow, CrossUnderFlow, CurveFlow, PartialFlow } from "./flow";
-import { Util } from "./util";
-import { Leak } from "./leak";
+import type { Container } from 'pixi.js';
+import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from '../gen/constants';
+import type { Flow } from './flow';
+import { CrossUnderFlow, CurveFlow, EdgeFlow, PartialFlow, StraightFlow } from './flow';
+import { Leak } from './leak';
+import type { Tile } from './tile';
+import { Util } from './util';
 
 
 export interface IncomingFlow {

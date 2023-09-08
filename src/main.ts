@@ -1,7 +1,7 @@
-import { Animations } from "./animation";
-import { Builder } from "./builder";
-import { Fonts, type AssetBundle, Constants } from "./gen/constants";
-import { Menu } from "./menu";
+import { Animations } from './animation';
+import { Builder } from './builder';
+import { Constants, Fonts, type AssetBundle } from './gen/constants';
+import { Menu } from './menu';
 
 
 declare global {

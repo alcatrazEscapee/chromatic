@@ -1,7 +1,6 @@
-import type { Tile, TileProperties } from "./tile.js";
-
-import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from "../gen/constants";
-import { Util } from "./util";
+import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../gen/constants';
+import type { Tile, TileProperties } from './tile.js';
+import { Util } from './util';
 
 
 const enum PositionType {

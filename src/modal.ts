@@ -1,8 +1,7 @@
-import type { Container, DisplayObject } from "pixi.js";
-import type { Menu } from "./menu";
-
-import { Animations } from "./animation";
-import { Constants, Fonts } from "./gen/constants";
+import type { Container, DisplayObject } from 'pixi.js';
+import { Animations } from './animation';
+import { Constants, Fonts } from './gen/constants';
+import type { Menu } from './menu';
 
 
 export class VictoryModal {

@@ -1,5 +1,5 @@
-import { ColorId, Constants, DirectionId, GridId, NetworkPuzzle } from "./gen/constants";
-import type { Menu } from "./menu";
+import { ColorId, Constants, DirectionId, GridId, type NetworkPuzzle } from './gen/constants';
+import type { Menu } from './menu';
 
 
 type RelaxedIO = [number, number, DirectionId, ColorId, PressureId][];

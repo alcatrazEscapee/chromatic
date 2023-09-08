@@ -1,7 +1,6 @@
-import type { Container, Graphics } from "pixi.js";
-import { Constants, type ColorId } from "../gen/constants";
-
-import { Util } from "./util";
+import type { Container, Graphics } from 'pixi.js';
+import { Constants, type ColorId } from '../gen/constants';
+import { Util } from './util';
 
 
 interface Blob {

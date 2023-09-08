@@ -1,6 +1,5 @@
-import type { ColorSource, Container, Texture } from "pixi.js";
-
-import { AssetBundle, AxisId, ColorId, Constants, DirectionId, NetworkPuzzle } from "../gen/constants";
+import type { ColorSource, Container, Texture } from 'pixi.js';
+import { AssetBundle, AxisId, ColorId, Constants, DirectionId, NetworkPuzzle } from '../gen/constants';
 
 
 /** Exported for testing only */

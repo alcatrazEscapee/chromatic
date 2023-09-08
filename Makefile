@@ -121,6 +121,8 @@ $(WEB)/lib/%.js.map : ./out/%.js.map
 $(JS_OUT) $(JS_OUT).map &: $(TS_SRC) package.json package-lock.json tsconfig.json
 	printf "Checking types...\n"
 	npx tsc
+	printf "Running tests...\n"
+	npx jest
 	printf "Compiling...\n"
 	npx esbuild src/main.ts --outfile=$(JS_OUT) --bundle $(if $(filter 1, $(DEBUG)), --sourcemap --define:DEBUG=true, --minify --define:DEBUG=false) --define:VERSION=\"$(shell grep -oP "version\": \"\K[^\"]+" package.json)\"
 

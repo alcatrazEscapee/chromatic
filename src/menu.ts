@@ -1,12 +1,11 @@
-import type { Application, Container, DisplayObject, FederatedPointerEvent, Sprite, Text } from "pixi.js";
-import type { AssetBundle } from "./gen/constants";
-
-import { Game } from "./game/main";
-import { Animations } from "./animation";
-import { Constants, DirectionId, Fonts, Strings } from "./gen/constants";
-import { Util } from "./game/util";
-import { VictoryModal } from "./modal";
-import { State } from "./game/save";
+import type { Application, Container, DisplayObject, FederatedPointerEvent, Sprite, Text } from 'pixi.js';
+import { Animations } from './animation';
+import { Game } from './game/main';
+import { State } from './game/save';
+import { Util } from './game/util';
+import type { AssetBundle } from './gen/constants';
+import { Constants, DirectionId, Fonts, Strings } from './gen/constants';
+import { VictoryModal } from './modal';
 
 
 interface Panel {

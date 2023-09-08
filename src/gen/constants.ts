@@ -1,4 +1,4 @@
-import type { Texture } from "pixi.js";
+import type { Texture } from 'pixi.js';
 
 
 type NetworkFlowAt<X, Y, Dir> = [X, Y, Dir, ColorId, PressureId];
