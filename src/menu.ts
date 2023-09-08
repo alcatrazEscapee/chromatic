@@ -108,10 +108,6 @@ export class Menu {
             this.titleContainer.addChild(letter);
         }
 
-        if (DEBUG && Math.abs(leftX - (Constants.STAGE_WIDTH - (x - 10))) > 2) {
-            throw new Error(`Title is misaligned, in menu.ts set leftX = ${(Constants.STAGE_WIDTH - ((x - 10) - leftX)) / 2}px`);        
-        }
-
         this.btnLeft = new PIXI.Sprite(core.core.textures.menu_btn_left);
         this.btnRight = new PIXI.Sprite(core.core.textures.menu_btn_left);
 
@@ -172,8 +168,14 @@ export class Menu {
 
     private onPointerUp(event: FederatedPointerEvent): void {
         this.game.onPointerUp(event);
+    }
+
+    private onPointerMove(event: FederatedPointerEvent): void {
+        this.game.onPointerMove(event);
 
         // Detect swipes
+        // Do this from pointer move, not pointer up, since we want to be able to move before the finger is lifted
+        // This saves the need to animate the "before lifted" swipe part.
         if (this.swipeStart !== null) {
             const swipeEnd = { x: event.screenX, y: event.screenY, instant: event.timeStamp };
             const swipe = Util.interpretAsSwipe(this.swipeStart, swipeEnd);
@@ -183,14 +185,13 @@ export class Menu {
                 this.switchPage(-1);
             } else if (swipe === DirectionId.LEFT) {
                 this.switchPage(1);
+            } else {
+                return;
             }
 
+            // Only clear the swipe if we actually interpreted a swipe here
             this.swipeStart = null;
         }
-    }
-
-    private onPointerMove(event: FederatedPointerEvent): void {
-        this.game.onPointerMove(event);
     }
 
 
