@@ -31,15 +31,15 @@ async function main() {
     // Initialize loading bar
     const bar = new PIXI.Graphics();
     bar.lineStyle(2, Constants.COLOR_WHITE);
-    bar.drawRect(50, 225, Constants.STAGE_WIDTH - 100, 25);
+    bar.drawRect(50, 225, 300, 25);
 
     const progress = new PIXI.Graphics();
     progress.position.set(50 + 2, 225 + 2);
     progress.beginFill(Constants.COLOR_GREEN);
-    progress.drawRect(0, 0, Constants.STAGE_WIDTH - 100 - 2, 25 - 4);
+    progress.drawRect(0, 0, 298, 21);
     progress.width = 0;
 
-    const updateProgress = (pct: number) => progress.width = (Constants.STAGE_WIDTH - 100 - 2) * pct;
+    const updateProgress = (pct: number) => progress.width = 298 * pct;
 
     const app = new PIXI.Application({
         background: Constants.COLOR_BLACK,

@@ -118,6 +118,9 @@ export enum Constants {
     STAGE_WIDTH = 400,
     STAGE_HEIGHT = 600,
 
+    STAGE_WIDTH_HALF = STAGE_WIDTH / 2,
+    STAGE_HEIGHT_HALF = STAGE_HEIGHT / 2,
+
     GRID_LEFT = 20,
     GRID_TOP = 20,
     GRID_SIZE = 360,

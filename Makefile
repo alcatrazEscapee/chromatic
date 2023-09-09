@@ -37,7 +37,7 @@ OVERLAY_OUT = $(OVERLAY_2:%=$(PIPE)/72/%) $(OVERLAY_2:%=$(PIPE)/90/%) $(OVERLAY_
 AUDIO_IN    = $(shell find audio -name '*.mp3')
 
 WEB_JS      = $(WEB)/lib/main.js $(WEB)/lib/$(PIXI).js $(WEB)/lib/$(PIXI_SOUND).js $(WEB)/lib/$(FFO).js
-WEB_JS_MAP  = $(WEB)/lib/main.js.map
+WEB_JS_MAP  = $(WEB)/lib/main.js.map $(WEB)/lib/pixi.js.map $(WEB)/lib/pixi-sound.js.map
 WEB_JSON    = $(WEB)/lib/puzzles.json
 WEB_TS      = $(WEB)/src
 WEB_ART     = $(WEB)/art
@@ -110,21 +110,23 @@ $(WEB_AUDIO) : $(AUDIO_IN)
 	cp -r audio $(WEB_AUDIO)
 
 $(WEB_JSON) : $(DATA_OUT)
-	mkdir -p $(@D)
+	mkdir -p $(WEB)/lib
 	cp $(DATA_OUT) $(WEB_JSON)
 
-$(WEB)/lib/%.js : ./lib/%.min.js
-	mkdir -p $(@D)
-	cp $< $@
+$(WEB_JS) &: $(JS_OUT)
+	printf "Copying scripts...\n"
+	mkdir -p $(WEB)/lib
+	cp $(JS_OUT) $(WEB)/lib/main.js
+	cp lib/$(PIXI).min.js $(WEB)/lib/pixi.js
+	cp lib/$(PIXI_SOUND).min.js $(WEB)/lib/pixi-sound.js
+	cp lib/$(FFO).min.js $(WEB)/lib/fontfaceobserver.js
 
-$(WEB)/lib/%.js : ./out/%.js
-	mkdir -p $(@D)
-	cp $< $@
-
-$(WEB)/lib/%.js.map : ./out/%.js.map
-	mkdir -p $(@D)
-	cp $< $@
-
+$(WEB_JS_MAP) &: $(JS_OUT).map
+	printf "Copying source maps...\n"
+	mkdir -p $(WEB)/lib
+	cp $(JS_OUT).map $(WEB)/lib/main.js.map
+	cp lib/$(PIXI).min.js.map $(WEB)/lib/pixi.min.js.map
+	cp lib/$(PIXI_SOUND).min.js.map $(WEB)/lib/pixi-sound.js.map
 
 $(JS_OUT) $(JS_OUT).map &: $(TS_SRC) package.json package-lock.json tsconfig.json
 	printf "Checking types...\n"

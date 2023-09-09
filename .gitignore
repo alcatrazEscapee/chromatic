@@ -9,7 +9,9 @@
 
 !/src/**/*.ts
 !/test/**/*.ts
+
 !/lib/**/*.js
+!/lib/**/*.js.map
 
 !/art/*.pdn
 !/art/**/*.png
