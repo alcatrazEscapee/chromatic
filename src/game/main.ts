@@ -1,5 +1,5 @@
 import type { Container, DisplayObject, FederatedPointerEvent, Sprite, Texture } from 'pixi.js';
-import { AssetBundle, AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, Strings, TileId, type TexturePalette } from '../gen/constants';
+import { AssetBundle, AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, Strings, TileId, type TexturePalette } from '../constants';
 import type { Menu } from '../menu';
 import { VolumeButton } from '../music';
 import { Navigator } from './navigator';
@@ -7,6 +7,8 @@ import { State } from './save';
 import { Simulator } from './simulator';
 import { Tile } from './tile';
 import { Util } from './util';
+import { TooltipModal } from '../modal';
+import { Animations } from '../animation';
 
 
 const enum StateId {
@@ -53,6 +55,7 @@ export class Game {
     tabState: StateId.MAIN_CONFIGURE | StateId.MAIN_TILE = StateId.MAIN_TILE;
     unloadState: StateId = StateId.MAIN_TILE;
     grid: GridId = GridId.default;
+    modal: { readonly root: Container, done: boolean } | null = null;
 
     private heldTile: { root: Sprite, tileId: TileId } | null = null;
 
@@ -253,6 +256,8 @@ export class Game {
             const edgePipe = new PIXI.Sprite(palette.textures.edge[pressure - 1]);
             
             edgePipe.anchor.set(0.5);
+            edgePipe.eventMode = 'static';
+            edgePipe.on('pointertap', () => this.onTooltip('Input', color, pressure));
 
             const edgeColor = new PIXI.Graphics();
             const insideWidth = Util.insideWidth(palette, pressure);
@@ -281,6 +286,8 @@ export class Game {
             const edgePipe = new PIXI.Sprite(palette.textures.edge[pressure - 1]);
 
             edgePipe.anchor.set(0.5);
+            edgePipe.eventMode = 'static';
+            edgePipe.on('pointertap', () => this.onTooltip('Output', color, pressure));
 
             const edgeColor = new PIXI.Graphics();
             const insideWidth = Util.insideWidth(palette, pressure);
@@ -312,6 +319,8 @@ export class Game {
             filter.angle = dir === DirectionId.UP ? 0 : 90;
             filter.position.set(pos.x, pos.y);
             filter.tint = Util.COLORS[color];
+            filter.eventMode = 'static';
+            filter.on('pointertap', () => this.onTooltip('Filter', color))
 
             this.edgesContainer.addChild(filter);
         }
@@ -425,6 +434,12 @@ export class Game {
             this.state = StateId.DRAGGING_LABEL;
 
             this.topContainer.addChild(this.heldLabel.root);
+        }
+    }
+
+    private onTooltip(type: 'Filter' | 'Input' | 'Output', color: ColorId, pressure: PressureId = 1): void {
+        if (this.modal === null && (this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE)) {
+            this.modal = new TooltipModal(this.topContainer, this.menu, type, color, pressure);
         }
     }
 
@@ -571,6 +586,21 @@ export class Game {
         if (this.bypassNextTap) {
             this.bypassNextTap = false;
             return;
+        }
+
+        if (this.modal !== null) {
+            const modal = this.modal;
+            if (modal.done) { // Only allowed to exit once the modal is done opening (and not already closing)
+                modal.done = false;
+                Animations.fadeOut(modal.root, () => {
+                    modal.root.destroy();
+                    
+                    this.postInit();
+                    this.modal = null;
+                });
+            }
+
+            return; // No tap actions are allowed with a modal open
         }
 
         if ((this.state === StateId.MAIN_TILE || this.state === StateId.MAIN_CONFIGURE) && this.isInGrid(event)) {

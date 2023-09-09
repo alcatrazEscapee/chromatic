@@ -1,5 +1,5 @@
+import { AxisId, ColorId, DirectionId, TileId } from '../src/constants';
 import { State } from '../src/game/save';
-import { AxisId, ColorId, DirectionId, TileId } from '../src/gen/constants';
 import { DSL } from './_setup';
 
 

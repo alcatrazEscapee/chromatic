@@ -1,7 +1,7 @@
 import type { Application, Container, DisplayObject, Graphics } from 'pixi.js';
 import { StraightFlow } from './game/flow';
 import { Util } from './game/util';
-import { ColorId, Constants, DirectionId } from './gen/constants';
+import { ColorId, Constants, DirectionId } from './constants';
 import type { Menu } from './menu';
 
 

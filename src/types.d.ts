@@ -20,8 +20,10 @@ type StrictReadonly<T> = { [k in keyof T]: T[k] | undefined };
 type Mutable<T> = { -readonly [k in keyof T]: T[k]; }
 type Tagged<Key extends string, T> = T & { __tag__: Key };
 
+type X = number;
+type Y = number;
 type Array4<T> = [T, T, T, T];
-type Point = { readonly x: number, readonly y: number };
+type Point = { readonly x: X, readonly y: Y };
 type BitSet = Tagged<'BitSet', number[]>;
 
 type PressureId = 1 | 2 | 3 | 4;

@@ -1,5 +1,5 @@
 import type { Container, Texture } from 'pixi.js';
-import { AxisId, ColorId, Constants, DirectionId, TileId, type TexturePalette } from '../gen/constants';
+import { AxisId, ColorId, Constants, DirectionId, TileId, type TexturePalette } from '../constants';
 import type { Flow } from './flow';
 import { Util } from './util';
 

@@ -1,5 +1,5 @@
 import { Util } from './game/util';
-import { ColorId, Constants, DirectionId, GridId, type NetworkPuzzle } from './gen/constants';
+import { ColorId, Constants, DirectionId, GridId, type NetworkPuzzle } from './constants';
 import type { Menu } from './menu';
 
 

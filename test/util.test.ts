@@ -1,13 +1,15 @@
+import { AxisId, ColorId, DirectionId } from '../src/constants';
 import { Colors, Util } from '../src/game/util';
-import { AxisId, ColorId, DirectionId } from '../src/gen/constants';
 
 
 test('Util.COLORS[ColorId.<X>] === Color.<X>', () => {
     for (const id of Object.keys(ColorId)) {
-        if (id === 'last') continue; // Ignore the edge case
+        if (id === 'last' || !Number.isNaN(Number(id))) continue; // Only iterate through the string constants
+        
         expect(Util.COLORS[ColorId[id as keyof typeof ColorId]]).toBe(Colors[id as keyof typeof Colors]);
+        expect(Util.COLOR_NAMES[ColorId[id as keyof typeof ColorId]]).toBe(id.charAt(0).toUpperCase() + id.substring(1).toLowerCase());
     }
-})
+});
 
 test('lerp 0.0 to [6, 10]', () => expect(Util.lerp(0.0, 6, 10)).toBe(6));
 test('lerp 0.5 to [6, 10]', () => expect(Util.lerp(0.5, 6, 10)).toBe(8));
@@ -112,6 +114,11 @@ test('unmix PURPLE - BLUE', () => expect(Util.unmix(ColorId.PURPLE, ColorId.BLUE
 test('unmix PURPLE - YELLOW', () => expect(Util.unmix(ColorId.PURPLE, ColorId.YELLOW)).toBe(-1));
 test('unmix VIOLET - BLUE', () => expect(Util.unmix(ColorId.VIOLET, ColorId.BLUE)).toBe(ColorId.PURPLE));
 test('unmix VIOLET - RED', () => expect(Util.unmix(ColorId.VIOLET, ColorId.RED)).toBe(-1));
+
+test('mixes RED', () => expect(Util.mixes(ColorId.RED)).toStrictEqual([]));
+test('mixes PURPLE', () => expect(Util.mixes(ColorId.PURPLE)).toStrictEqual([[ColorId.RED, ColorId.BLUE]]));
+test('mixes MAGENTA', () => expect(Util.mixes(ColorId.MAGENTA)).toStrictEqual([[ColorId.RED, ColorId.PURPLE]]));
+test('mixes BROWN', () => expect(Util.mixes(ColorId.BROWN)).toStrictEqual([[ColorId.RED, ColorId.GREEN], [ColorId.BLUE, ColorId.ORANGE], [ColorId.YELLOW, ColorId.PURPLE]]));
 
 test('outputDir tile = LEFT, incoming = LEFT, DOWN', () => expect(Util.outputDir(DirectionId.LEFT, DirectionId.LEFT, DirectionId.DOWN)).toBe(DirectionId.RIGHT));
 test('outputDir tile = LEFT, incoming = LEFT, RIGHT', () => expect(Util.outputDir(DirectionId.LEFT, DirectionId.LEFT, DirectionId.RIGHT)).toBe(DirectionId.DOWN));

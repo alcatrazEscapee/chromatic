@@ -5,7 +5,6 @@ PIXI        = pixi-7.2.4
 PIXI_SOUND  = pixi-sound-5.2.1
 FFO         = fontfaceobserver-2.1.0
 WEB         = ../Website/public/chromatic/
-GEN         = src/gen
 PIPE        = art/pipe
 OUT_MODE    = out/debug
 
@@ -50,14 +49,14 @@ FORCE :
 
 # Build (debug mode)
 # Includes .js.map, copies the /src/ directory for debugger use
-# Sets `DebugMode.ENABLED = 1`
+# Sets `DEBUG = true`
 .PHONY : build
 build : build-debug $(OUT_MODE) $(WEB_ART) $(WEB_AUDIO) $(WEB_JSON) $(WEB_TS) $(WEB_JS) $(WEB_JS_MAP)
 
 # Build (release mode)
 # Depends on `clean`
 # Does not include any .js.map or /src/
-# Sets `DebugMode.ENABLED = 0`
+# Sets `DEBUG = false`
 .PHONY : release
 release : clean-release build-release $(OUT_MODE) $(WEB_ART) $(WEB_AUDIO) $(WEB_JSON) $(WEB_JS)
 
@@ -161,6 +160,6 @@ $(OVERLAY_OUT) &: $(PY_OVERLAY)
 	printf "Generating overlays...\n"
 	python $(PY_OVERLAY) --overlay72=11 --overlay90=11 --overlay120=16
 
-$(DATA_OUT) : $(DATA_IN) $(GEN)/constants.ts $(PY_DATA)
+$(DATA_OUT) : $(DATA_IN) src/constants.ts $(PY_DATA)
 	printf "Writing puzzles.json...\n"
 	python $(PY_DATA)

@@ -74,7 +74,7 @@ def make(src: str, dest: str, key: str, prefix: bool, debug: bool):
     sheet.save('%s/%s.png' % (dest, key))
 
     with open('%s/%s@1x.png.json' % (dest, key), 'w', encoding='utf-8') as f:
-        json.dump(frames, f, indent=2 if debug else None)
+        json.dump(frames, f, indent=2 if debug else None, separators=None if debug else (',', ':'))
 
 
 def pack(images: list[Sprite]) -> tuple[int, int]:
