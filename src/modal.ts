@@ -29,7 +29,7 @@ export class VictoryModal {
         overlay.drawRect(0, 0, Constants.STAGE_WIDTH, Constants.STAGE_HEIGHT);
         overlay.alpha = 0.8;
 
-        title.position.set(Constants.STAGE_WIDTH / 2, 220);
+        title.position.set(Constants.STAGE_WIDTH_HALF, 220);
         title.anchor.set(0.5, 0);
 
         btnX.position.set(10, 10);
@@ -135,7 +135,7 @@ export class TooltipModal {
         this.root.addChild(textIO, textColor);
 
         textIO.anchor.set(0.5, 0);
-        textIO.position.set(Constants.STAGE_WIDTH / 2, 120);
+        textIO.position.set(Constants.STAGE_WIDTH_HALF, 120);
 
         let lineY = 170;
 
@@ -155,11 +155,11 @@ export class TooltipModal {
             if (textMultiplier !== null) {
                 const width = textMultiplier.width + textColor.width;
 
-                textMultiplier.position.set((Constants.STAGE_WIDTH - width) / 2, lineY);
-                textColor.position.set((Constants.STAGE_WIDTH - width) / 2 + textMultiplier.width, lineY);
+                textMultiplier.position.set(Constants.STAGE_WIDTH_HALF - width / 2, lineY);
+                textColor.position.set(Constants.STAGE_WIDTH_HALF - width / 2 + textMultiplier.width, lineY);
             } else {
                 textColor.anchor.set(0.5, 0);
-                textColor.position.set(Constants.STAGE_WIDTH / 2, lineY);
+                textColor.position.set(Constants.STAGE_WIDTH_HALF, lineY);
             }
         } else {
             // This color is a mix, so we display each mix (one, or three if brown)
@@ -178,7 +178,7 @@ export class TooltipModal {
                 if (equalWidth === -1) {
                     equalWidth = textEqual.width;
 
-                    textColor.position.set((Constants.STAGE_WIDTH - equalWidth) / 2 - textColor.width, lineY);
+                    textColor.position.set(Constants.STAGE_WIDTH_HALF - equalWidth / 2 - textColor.width, lineY);
                     
                     if (textMultiplier !== null) {
                         textMultiplier.position.set(textColor.x - textMultiplier.width, lineY);
@@ -186,9 +186,9 @@ export class TooltipModal {
                 }
 
                 textEqual.anchor.set(0.5, 0);
-                textEqual.position.set(Constants.STAGE_WIDTH / 2, lineY);
+                textEqual.position.set(Constants.STAGE_WIDTH_HALF, lineY);
 
-                textLeft.position.set((Constants.STAGE_WIDTH + equalWidth) / 2, lineY);
+                textLeft.position.set(Constants.STAGE_WIDTH_HALF + equalWidth / 2, lineY);
                 textAdd.position.set(textLeft.x + textLeft.width, lineY);
                 textRight.position.set(textAdd.x + textAdd.width, lineY);
 

@@ -27,7 +27,7 @@ export class MusicPlayer {
         const script = document.createElement('script');
 
         script.type = 'text/javascript';
-        script.src = 'lib/pixi-sound-5.2.1.js';
+        script.src = 'lib/pixi-sound.js';
         script.onload = () => {
             Util.debug('Loaded @pixi/sound, performing audio setup');
 
