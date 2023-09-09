@@ -1,11 +1,9 @@
+import { AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, TexturePalette, TileId } from '../src/constants';
 import type { Leak } from '../src/game/leak';
-import type { AxisId, ColorId, NetworkPuzzle, TexturePalette, TileId } from '../src/gen/constants';
-
 import { Navigator } from '../src/game/navigator';
 import { IncomingFlow, Simulator } from '../src/game/simulator';
 import { Tile, TileProperties } from '../src/game/tile';
 import { Util } from '../src/game/util';
-import { Constants, DirectionId, GridId } from '../src/gen/constants';
 
 import fs from 'fs';
 

@@ -3,8 +3,8 @@ import { Animations } from './animation';
 import { Game } from './game/main';
 import { State } from './game/save';
 import { Util } from './game/util';
-import type { AssetBundle } from './gen/constants';
-import { Constants, DirectionId, Fonts, Strings } from './gen/constants';
+import type { AssetBundle } from './constants';
+import { Constants, DirectionId, Fonts, Strings } from './constants';
 import { VictoryModal } from './modal';
 import { MusicPlayer, VolumeButton } from './music';
 
@@ -100,12 +100,7 @@ export class Menu {
         const leftX = 24;
         let x = leftX;
         for (let i = 0; i < title.length; i++) {
-            const letter = new PIXI.Text(title[i], {
-                fontFamily: Fonts.ARIAL,
-                fontWeight: 'bold',
-                fontSize: 44,
-                fill: Constants.COLOR_WHITE,
-            });
+            const letter = Util.text(title[i], Fonts.ARIAL, 44, Constants.COLOR_WHITE, true);
             letter.position.set(x, 30);
             x += letter.width + 10;
             this.titleContainer.addChild(letter);
@@ -312,11 +307,7 @@ export class Menu {
             const button = new PIXI.Container();
             const back = new PIXI.Sprite(this.core.core.textures.menu_panel);
 
-            const label = new PIXI.Text(String(i + page * Constants.PUZZLES_PER_PAGE + 1), {
-                fontFamily: Fonts.ERAS_BOLD_ITC,
-                fontSize: 16,
-                fill: Constants.COLOR_WHITE,
-            });
+            const label = Util.text(String(i + page * Constants.PUZZLES_PER_PAGE + 1), Fonts.ERAS_BOLD_ITC, 16);
 
             label.position.set(5, 5);
 
@@ -350,11 +341,7 @@ export class Menu {
             this.pageText = null;
         }
 
-        this.pageText = new PIXI.Text(`${1 + this.page} / ${1 + this.maxPageInclusive}`, {
-            fontFamily: Fonts.ERAS_BOLD_ITC,
-            fontSize: 20,
-            fill: Constants.COLOR_WHITE,
-        });
+        this.pageText = Util.text(`${1 + this.page} / ${1 + this.maxPageInclusive}`, Fonts.ERAS_BOLD_ITC, 20);
         this.pageText.position.set(45, 521 + 8);
         this.menuContainer.addChild(this.pageText);
     }
@@ -365,11 +352,7 @@ export class Menu {
             this.starsText = null;
         }
 
-        this.starsText = new PIXI.Text(String(Util.bitCount(this.saveData.stars)), {
-            fontFamily: Fonts.ERAS_BOLD_ITC,
-            fontSize: 20,
-            fill: Constants.COLOR_WHITE,
-        });
+        this.starsText = Util.text(String(Util.bitCount(this.saveData.stars)), Fonts.ERAS_BOLD_ITC, 20);
         this.starsText.position.set(315 - this.starsText.width, 521 + 8);
         this.menuContainer.addChild(this.starsText);
     }

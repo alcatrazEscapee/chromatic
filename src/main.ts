@@ -1,7 +1,7 @@
 import { Animations } from './animation';
 import { Builder } from './builder';
 import { Util } from './game/util';
-import { Constants, Fonts, type AssetBundle } from './gen/constants';
+import { Constants, Fonts, type AssetBundle } from './constants';
 import { Menu } from './menu';
 
 

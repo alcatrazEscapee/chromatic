@@ -1,4 +1,4 @@
-import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../gen/constants';
+import { AxisId, Constants, DirectionId, GridId, NetworkPuzzle, TileId } from '../constants';
 import type { Tile, TileProperties } from './tile.js';
 import { Util } from './util';
 

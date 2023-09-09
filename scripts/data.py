@@ -14,7 +14,7 @@ def main():
 
 
 def import_constants():
-    with open('./src/gen/constants.ts', 'r', encoding='utf-8') as f:
+    with open('./src/constants.ts', 'r', encoding='utf-8') as f:
         text = f.read()
     
     for line in text.split('\n'):

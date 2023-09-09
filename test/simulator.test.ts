@@ -1,5 +1,5 @@
+import { ColorId, DirectionId, TileId } from '../src/constants';
 import { Leak } from '../src/game/leak';
-import { ColorId, DirectionId, TileId } from '../src/gen/constants';
 import { DSL } from './_setup';
 
 

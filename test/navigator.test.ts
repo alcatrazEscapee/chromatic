@@ -1,4 +1,4 @@
-import { AxisId, ColorId, DirectionId, TileId } from '../src/gen/constants';
+import { AxisId, ColorId, DirectionId, TileId } from '../src/constants';
 import { DSL } from './_setup';
 
 

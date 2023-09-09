@@ -1,5 +1,5 @@
-import type { ColorSource, Container, Texture } from 'pixi.js';
-import { AssetBundle, AxisId, ColorId, Constants, DirectionId, NetworkPuzzle } from '../gen/constants';
+import type { Container, Text, Texture } from 'pixi.js';
+import { AssetBundle, AxisId, ColorId, Constants, DirectionId, Fonts, NetworkPuzzle } from '../constants';
 
 
 /** Exported for testing only */
@@ -32,8 +32,9 @@ export module Util {
         }
     }
 
-    export const RAINBOW: ReadonlyArray<ColorSource> = [Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.CYAN, Colors.BLUE, Colors.PURPLE];
-    export const COLORS: ReadonlyArray<ColorSource> = [Colors.RED, Colors.BLUE, Colors.YELLOW, Colors.ORANGE, Colors.PURPLE, Colors.GREEN, Colors.BROWN, Colors.AMBER, Colors.VIOLET, Colors.LIME, Colors.GOLD, Colors.MAGENTA, Colors.CYAN];
+    export const RAINBOW: ReadonlyArray<number> = [Colors.RED, Colors.ORANGE, Colors.YELLOW, Colors.GREEN, Colors.CYAN, Colors.BLUE, Colors.PURPLE];
+    export const COLORS: ReadonlyArray<number> = [Colors.RED, Colors.BLUE, Colors.YELLOW, Colors.ORANGE, Colors.PURPLE, Colors.GREEN, Colors.BROWN, Colors.AMBER, Colors.VIOLET, Colors.LIME, Colors.GOLD, Colors.MAGENTA, Colors.CYAN];
+    export const COLOR_NAMES: ReadonlyArray<string> = ['Red', 'Blue', 'Yellow', 'Orange', 'Purple', 'Green', 'Brown', 'Amber', 'Violet', 'Lime', 'Gold', 'Magenta', 'Cyan'];
 
     export const ZERO: Readonly<Point> = Object.freeze({ x: 0, y: 0 });
 
@@ -268,6 +269,16 @@ export module Util {
         return -1;
     }
 
+    export function mixes(mix: ColorId): [ColorId, ColorId][] {
+        const mixes: [ColorId, ColorId][] = [];
+        for (const [l, r, m] of MIXES) {
+            if (m === mix) {
+                mixes.push([l, r]);
+            }
+        }
+        return mixes;
+    }
+
     /**
      * Given a puzzle's set of filters, and a flow (x, y, and incoming direction), this computes a color, if filtered, otherwise returns -1.
      */
@@ -403,6 +414,10 @@ export module Util {
         for (let i = root.children.length - 1; i >= 0; i--) {
             root.children[0]?.destroy();
         }
+    }
+
+    export function text(text: string, fontFamily: Fonts, fontSize: number, fill: number = Constants.COLOR_WHITE, bold: boolean = false): Text {
+        return new PIXI.Text(text, { fontFamily, fontWeight: bold ? 'bold' : 'normal', fontSize, fill });
     }
 
     /** See {@link Palette.insideTop} */

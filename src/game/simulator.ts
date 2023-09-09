@@ -1,5 +1,5 @@
 import type { Container } from 'pixi.js';
-import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from '../gen/constants';
+import { AxisId, ColorId, Constants, DirectionId, NetworkPuzzle, TileId } from '../constants';
 import type { Flow } from './flow';
 import { CrossUnderFlow, CurveFlow, EdgeFlow, PartialFlow, StraightFlow } from './flow';
 import { Leak } from './leak';

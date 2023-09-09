@@ -1,4 +1,4 @@
-import { AxisId, ColorId, DirectionId, NetworkPuzzle, TexturePalette, TileId } from '../gen/constants';
+import { AxisId, ColorId, DirectionId, NetworkPuzzle, TexturePalette, TileId } from '../constants';
 import { Tile } from './tile';
 
 
