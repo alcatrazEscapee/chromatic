@@ -1,7 +1,7 @@
 import type { IMediaInstance, Sound } from '@pixi/sound';
 import type { Container, Sprite } from 'pixi.js';
-import { Util } from './game/util';
 import { AssetBundle } from './constants';
+import { Util } from './game/util';
 
 
 /**

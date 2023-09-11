@@ -1,14 +1,14 @@
 import type { Container, DisplayObject, FederatedPointerEvent, Sprite, Texture } from 'pixi.js';
+import { Animations } from '../animation';
 import { AssetBundle, AxisId, ColorId, Constants, DirectionId, GridId, NetworkPuzzle, Strings, TileId, type TexturePalette } from '../constants';
 import type { Menu } from '../menu';
+import { TooltipModal } from '../modal';
 import { VolumeButton } from '../music';
 import { Navigator } from './navigator';
 import { State } from './save';
 import { Simulator } from './simulator';
 import { Tile } from './tile';
 import { Util } from './util';
-import { TooltipModal } from '../modal';
-import { Animations } from '../animation';
 
 
 const enum StateId {

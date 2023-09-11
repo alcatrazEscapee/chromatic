@@ -6,6 +6,7 @@ from typing import Dict
 
 
 ENUMS: Dict[str, int] = {}
+DEBUG: bool = False
 
 
 def main():
@@ -55,7 +56,7 @@ def export_data():
     
     os.makedirs('out', exist_ok=True)
     with open('./out/puzzles.json', 'w', encoding='utf-8') as f:
-        json.dump(output, f)
+        json.dump(output, f, indent=2 if DEBUG else None, separators=None if DEBUG else (',', ':'))
 
 
 if __name__ == '__main__':

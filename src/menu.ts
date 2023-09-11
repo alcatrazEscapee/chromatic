@@ -1,10 +1,10 @@
 import type { Application, Container, DisplayObject, FederatedPointerEvent, Sprite, Text } from 'pixi.js';
 import { Animations } from './animation';
+import type { AssetBundle } from './constants';
+import { Constants, DirectionId, Fonts, Strings } from './constants';
 import { Game } from './game/main';
 import { State } from './game/save';
 import { Util } from './game/util';
-import type { AssetBundle } from './constants';
-import { Constants, DirectionId, Fonts, Strings } from './constants';
 import { VictoryModal } from './modal';
 import { MusicPlayer, VolumeButton } from './music';
 
