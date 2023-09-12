@@ -1,6 +1,6 @@
 # [Chromatic](https://alcatrazescapee.com/chromatic/)
 
-**Chromatic** is a Chromatic is a color-based puzzle game. The objective is to connect all input colors to their respective output colors by placing pipes.
+**Chromatic** is a color-based puzzle game. The objective is to connect all input colors to their respective output colors by placing pipes.
 
 - Tap and drag pipes to place them.
 - Tap on a pipe to rotate it.
