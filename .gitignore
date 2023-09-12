@@ -22,5 +22,6 @@
 /art/pipe/**/*_overlay_*.png
 
 !/scripts/**/*.py
-
 !/data/**/*.json
+
+!/README.md
