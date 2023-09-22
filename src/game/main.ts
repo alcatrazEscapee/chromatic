@@ -9,6 +9,7 @@ import { State } from './save';
 import { Simulator } from './simulator';
 import { Tile } from './tile';
 import { Util } from './util';
+import { Tutorial } from './tutorial';
 
 
 const enum StateId {
@@ -53,7 +54,6 @@ export class Game {
     puzzle: NetworkPuzzle | null = null;
     state: StateId = StateId.UNLOADED;
     tabState: StateId.MAIN_CONFIGURE | StateId.MAIN_TILE = StateId.MAIN_TILE;
-    unloadState: StateId = StateId.MAIN_TILE;
     grid: GridId = GridId.default;
     modal: { readonly root: Container, done: boolean } | null = null;
 
@@ -225,9 +225,6 @@ export class Game {
         this.btnVolume.root.on('pointertap', () => this.btnVolume.toggle());
         buttonsContainer.addChild(this.btnVolume.root);
 
-        // Default with tile buttons visible
-        this.buttonsContainer.addChildAt(this.tileButtonsContainer, 0);
-
         root.addChild(ui);
         root.addChild(this.gridContainer);
         root.addChild(buttonsContainer);
@@ -240,7 +237,9 @@ export class Game {
      * Initializes per-puzzle data
      */
     public init(puzzle: NetworkPuzzle, nextIsValid: boolean = false, saveState: SavedPuzzleState | null = null): void {
+        this.puzzle = puzzle;
         this.grid = puzzle.size;
+        this.tabState = StateId.MAIN_TILE;
 
         const palette: TexturePalette = this.palettes[this.grid];
 
@@ -249,7 +248,15 @@ export class Game {
 
         this.gridContainer.addChild(grid);
 
-        (this as Mutable<Game>).tiles = Util.nulls(palette.width * palette.width)
+        // Update tile button visibility
+        for (let tileId = 0; tileId <= TileId.last; tileId++) {
+            this.tileButtonsContainer.getChildAt(1 + tileId).visible = Tutorial.isTileEnabled(tileId, puzzle.id);
+        }
+
+        // Default with tile buttons visible
+        this.buttonsContainer.addChildAt(this.tileButtonsContainer, 0);
+
+        (this as Mutable<Game>).tiles = Util.nulls(palette.width * palette.width);
 
         for (const [x, y, dir, color, pressure] of puzzle.inputs) {
             const edge = new PIXI.Container();
@@ -325,7 +332,6 @@ export class Game {
             this.edgesContainer.addChild(filter);
         }
 
-        this.puzzle = puzzle;
         this.updateNextPuzzle(nextIsValid);
         this.btnVolume.update();
         
@@ -346,14 +352,13 @@ export class Game {
      * Enables interactivity, after the game has finished loading / animating
      */
     public postInit(): void {
-        this.state = this.unloadState;
+        this.state = StateId.MAIN_TILE;
     }
 
     /**
      * Disables interactivity, before the animation to teardown starts
      */
     public preTeardown(): void {
-        this.unloadState = this.state;
         this.state = StateId.UNLOADED;
     }
 
@@ -362,11 +367,9 @@ export class Game {
      */
     public teardown(): void {
 
-        if (this.unloadState === StateId.SIMULATION) {
-            this.onStop(true);
-            this.unloadState = this.tabState; // Since we nuke the simulation, our actual unload state will be switching to the tab state
-        }
+        this.onStop(true);
 
+        Util.clear(this.buttonsContainer as Container);
         Util.clear(this.tilesContainer);
         Util.clear(this.gridContainer);
         Util.clear(this.edgesContainer);
@@ -386,7 +389,7 @@ export class Game {
     }
 
     private grabTile(event: FederatedPointerEvent, tileId: TileId): void {
-        if (this.state == StateId.MAIN_TILE) {
+        if (this.state == StateId.MAIN_TILE && Tutorial.isTileEnabled(tileId, this.puzzle!.id)) {
             this.heldTile = {
                 root: new PIXI.Sprite(this.tileButtonPalette[tileId]),
                 tileId,
@@ -633,7 +636,7 @@ export class Game {
             this.btnPlay.alpha = 1.0;
             this.btnStop.alpha = 0.5;
 
-            if (!bypass) this.state = this.tabState;
+            this.state = this.tabState;
             this.simulator.reset();
             PIXI.Ticker.shared.remove(this.onSimulatorTick, this);
 
@@ -658,7 +661,7 @@ export class Game {
     }
 
     private onTabBot(): void {
-        if (this.state === StateId.MAIN_TILE || this.state === StateId.SIMULATION) {
+        if ((this.state === StateId.MAIN_TILE || this.state === StateId.SIMULATION) && Tutorial.isLabelTabEnabled(this.puzzle!.id)) {
             this.tabState = StateId.MAIN_CONFIGURE;
             if (this.state !== StateId.SIMULATION) {
                 this.state = this.tabState;

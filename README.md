@@ -14,8 +14,8 @@ More how-to-play details are available on the [web version](https://alcatrazesca
 
 Chromatic was originally written in Flash with AS3 (which is the version available on [Google Play](https://play.google.com/store/apps/details?id=air.Chromatic)). It was rewritten here in TypeScript for web using [PIXI.js](https://pixijs.com/) as a framework.
 
-It uses [esbuild](https://esbuild.github.io/) as a bundler, and [jest](https://jestjs.io/) as a testing framework. Since the build process got fairly complicated - testing, bundling, seperate debug + release builds, copying everything for serving on a seperate website, spritesheet and texture generation - I use `make` as a build system.
+It uses [esbuild](https://esbuild.github.io/) as a bundler, and [jest](https://jestjs.io/) as a testing framework. Since the build process got fairly complicated - testing, bundling, separate debug + release builds, copying everything for serving on a separate website, spritesheet and texture generation - I use `make` as a build system.
 
 `make release` and `make debug` build a release and debug build respectively, by default in `../Website/public/chromatic/` (specified in the `$(WEB)` Makefile variable). 
 
-Assets are all original and are packed into spritesheets using a custom texture packer script. Music is an original composition and recording. All >100 puzzles were designed by hand, mostly on graph paper.
+Assets are all original and are packed into a spritesheet using a custom texture packer script. Music is an original composition and recording. All >100 puzzles were designed by hand, mostly on graph paper.
